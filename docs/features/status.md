@@ -6,7 +6,7 @@ A phase is complete only after its documented checks pass.
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 0 | Repository and documentation baseline | Complete |
-| 1 | Local PostgreSQL, Redis, and Directus | Not started |
+| 1 | Local PostgreSQL, Redis, and Directus | Complete |
 | 2 | ASP.NET Core API and initial catalogue | Not started |
 | 3 | Public Next.js foundation | Not started |
 | 4 | Catalogue, destinations, search, and collection seeds | Not started |
@@ -24,3 +24,7 @@ A phase is complete only after its documented checks pass.
 
 Phase 0 is marked complete only after repository structure and documentation
 validation pass.
+
+Phase 1 was verified with Compose rendering, container health checks,
+least-privilege database ownership checks, Redis authentication checks, Directus
+dependency health, and a persistence-preserving stop/start cycle.

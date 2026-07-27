@@ -1,24 +1,60 @@
 # Local Setup
 
-## Phase 0 environment
+## Prerequisites
 
-The repository currently contains documentation and directory boundaries only.
-There are no dependencies to install or applications to run.
+Phase 1 requires:
 
-Required tools for later phases:
+- Git;
+- Docker Desktop or Docker Engine;
+- Docker Compose v2 or later;
+- Bash, OpenSSL, and curl.
 
-- Git
-- Node.js with npm
-- .NET SDK
-- Docker with Docker Compose
-- Python 3
-- GitHub CLI (recommended)
+Node.js, the .NET SDK, and Python are not required until their application
+phases.
 
-Copy `.env.example` to `.env` only when local infrastructure is introduced.
-Replace all placeholders locally and never commit the resulting file.
+## First-time setup
 
-## Planned Phase 1 commands
+From the repository root:
 
-Phase 1 will add documented Docker Compose commands for PostgreSQL, Redis, and
-Directus, along with health checks and troubleshooting. Do not infer or run
-those commands until the Compose definition has been reviewed.
+```bash
+./scripts/create-local-env.sh
+./scripts/local-infrastructure.sh config
+./scripts/local-infrastructure.sh pull
+./scripts/local-infrastructure.sh up
+./scripts/local-infrastructure.sh verify
+```
+
+The environment generator refuses to overwrite an existing `.env`. It creates
+random, local-only passwords with restrictive file permissions. Review
+`DIRECTUS_ADMIN_EMAIL` in `.env` before using a shared development machine.
+Never commit `.env`.
+
+Directus Studio is available at <http://127.0.0.1:8055>. Sign in with the
+`DIRECTUS_ADMIN_EMAIL` and `DIRECTUS_ADMIN_PASSWORD` stored in your local
+`.env`.
+
+## Everyday commands
+
+```bash
+# Show health and container status
+./scripts/local-infrastructure.sh status
+./scripts/local-infrastructure.sh verify
+
+# Follow service logs
+./scripts/local-infrastructure.sh logs
+
+# Stop containers but preserve data
+./scripts/local-infrastructure.sh down
+
+# Start them again
+./scripts/local-infrastructure.sh up
+```
+
+See the [infrastructure guide](../infrastructure/docker/README.md) for image
+versions, persistence, reset behavior, direct Compose commands, and
+troubleshooting.
+
+## Application status
+
+Phase 1 provides infrastructure only. The ASP.NET Core API begins in Phase 2,
+and the public Next.js application begins in Phase 3.

@@ -9,10 +9,10 @@ future AI service.
 
 ## Status
 
-Phase 0 establishes repository boundaries, engineering conventions, and the
-documentation baseline. It intentionally contains no business features,
-application scaffolds, dependency manifests, containers, or deployment
-resources.
+Phases 0 and 1 establish repository boundaries, engineering conventions,
+documentation, and containerized local PostgreSQL, Redis, and Directus
+infrastructure. Business features, application scaffolds, and deployment
+resources have not been started.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 
@@ -47,8 +47,8 @@ implementation phase begins, after compatibility and deprecation checks.
 
 ## Getting started
 
-Phase 0 has no runnable applications. Review [local setup](docs/local-setup.md)
-for the environment baseline and the work planned for Phase 1.
+Review [local setup](docs/local-setup.md) to generate local credentials and run
+the Phase 1 infrastructure. There are no runnable web or API applications yet.
 
 ## Documentation
 
