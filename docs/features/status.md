@@ -7,7 +7,7 @@ A phase is complete only after its documented checks pass.
 | --- | --- | --- |
 | 0 | Repository and documentation baseline | Complete |
 | 1 | Local PostgreSQL, Redis, and Directus | Complete |
-| 2 | ASP.NET Core API and initial catalogue | Not started |
+| 2 | ASP.NET Core API and initial catalogue | Complete |
 | 3 | Public Next.js foundation | Not started |
 | 4 | Catalogue, destinations, search, and collection seeds | Not started |
 | 5 | Authentication, authorization, and portal foundations | Not started |
@@ -28,3 +28,9 @@ validation pass.
 Phase 1 was verified with Compose rendering, container health checks,
 least-privilege database ownership checks, Redis authentication checks, Directus
 dependency health, and a persistence-preserving stop/start cycle.
+
+Phase 2 was verified with a locked restore, dependency vulnerability audit,
+formatting check, zero-warning release build, unit and database-backed
+integration tests, applied migration discovery, API startup, OpenAPI document
+inspection, health and readiness probes, correlation and security header checks,
+and live rate-limit validation.

@@ -45,3 +45,20 @@ contracts; neither system may silently duplicate authority.
 
 Detailed diagrams, deployment topology, module contracts, and runtime decisions
 will be added in their implementation phases.
+
+## Phase 2 implementation
+
+The API solution separates:
+
+- `D.Ceylon.Api` — HTTP hosting and cross-cutting transport concerns;
+- `D.Ceylon.BuildingBlocks` — dependency-light domain and pagination
+  primitives; and
+- `D.Ceylon.Modules.Catalogue` — Catalogue domain, DTO contracts, queries,
+  PostgreSQL mappings, and migrations.
+
+Only the Catalogue module exists as code. Planned module names are documented
+under `apps/api/src/Modules/README.md`; placeholder assemblies are avoided until
+their implementation phases.
+
+Database migrations remain an explicit operational action. Readiness checks
+database connectivity but application startup never changes the schema.

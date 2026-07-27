@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/D.Ceylon.Api/D.Ceylon.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/BuildingBlocks/">
+    <Project Path="src/BuildingBlocks/D.Ceylon.BuildingBlocks/D.Ceylon.BuildingBlocks.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/" />
+  <Folder Name="/src/Modules/Catalogue/">
+    <Project Path="src/Modules/Catalogue/D.Ceylon.Modules.Catalogue/D.Ceylon.Modules.Catalogue.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/D.Ceylon.Api.IntegrationTests/D.Ceylon.Api.IntegrationTests.csproj" />
+    <Project Path="tests/D.Ceylon.Api.UnitTests/D.Ceylon.Api.UnitTests.csproj" />
+  </Folder>
+</Solution>

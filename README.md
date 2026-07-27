@@ -9,10 +9,10 @@ future AI service.
 
 ## Status
 
-Phases 0 and 1 establish repository boundaries, engineering conventions,
-documentation, and containerized local PostgreSQL, Redis, and Directus
-infrastructure. Business features, application scaffolds, and deployment
-resources have not been started.
+Phases 0 through 2 establish repository boundaries, engineering conventions,
+documentation, containerized local infrastructure, and the ASP.NET Core modular
+API with its initial Catalogue persistence and read-only endpoints. Frontend,
+authentication, commerce workflows, and deployment resources have not started.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 
@@ -47,8 +47,9 @@ implementation phase begins, after compatibility and deprecation checks.
 
 ## Getting started
 
-Review [local setup](docs/local-setup.md) to generate local credentials and run
-the Phase 1 infrastructure. There are no runnable web or API applications yet.
+Review [local setup](docs/local-setup.md) to generate local credentials, run the
+infrastructure, apply migrations, and start the API. There is no frontend
+application yet.
 
 ## Documentation
 

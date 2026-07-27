@@ -21,6 +21,9 @@ coverage/
 bin/
 obj/
 TestResults/
+artifacts/
+.dotnet/
+*.binlog
 *.user
 *.suo
 *.nupkg

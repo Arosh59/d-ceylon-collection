@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <OutputType>Exe</OutputType>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3.mtp-v2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BuildingBlocks\D.Ceylon.BuildingBlocks\D.Ceylon.BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Catalogue\D.Ceylon.Modules.Catalogue\D.Ceylon.Modules.Catalogue.csproj" />
+  </ItemGroup>
+</Project>

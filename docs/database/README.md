@@ -30,3 +30,27 @@ Changing database names or credentials in `.env` does not mutate an existing
 volume. Follow the guarded reset procedure in the
 [local infrastructure guide](../../infrastructure/docker/README.md) when a
 fresh local database is intentionally required.
+
+## Phase 2 application schema
+
+The initial EF Core migration creates a dedicated `catalogue` schema containing:
+
+- product types and products;
+- categories, travel collections, and destinations; and
+- normalized product-category, product-collection, and product-destination
+  relations.
+
+The model includes UUID keys, UTC audit fields, explicit concurrency tokens,
+foreign keys, check constraints, unique slugs, and indexes for names,
+publication state, relationships, and update dates.
+
+Apply and inspect migrations with:
+
+```bash
+./scripts/api.sh migrations-list
+./scripts/api.sh migrate
+```
+
+API startup does not apply migrations automatically. Integration tests create
+and destroy an isolated PostgreSQL database and run the real migration against
+it.
