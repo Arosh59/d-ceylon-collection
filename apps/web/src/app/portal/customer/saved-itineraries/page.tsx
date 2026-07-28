@@ -37,8 +37,8 @@ export default async function SavedItinerariesPage({
             <p className="eyebrow">Planning metadata</p>
             <h1 className="mt-3 text-5xl text-navy">Saved itineraries</h1>
             <p className="mt-4 max-w-2xl leading-7 text-ink-muted">
-              Capture a title, dates, destination, and planning note. Route generation and the
-              itinerary builder are intentionally reserved for Phase 7.
+              Capture a title, dates, destination, and planning note, then link it from the
+              deterministic travel planner when you are ready to build a draft.
             </p>
           </div>
           <Link className="button-primary" href="/portal/customer/saved-itineraries/new">

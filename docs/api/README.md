@@ -1,8 +1,8 @@
 # API Guide
 
-The primary API is an ASP.NET Core 10 modular monolith. Phases 2 through 6 implement the host,
+The primary API is an ASP.NET Core 10 modular monolith. Phases 2 through 7 implement the host,
 Catalogue discovery, external JWT bearer validation, authorization policies, and ownership module
-foundations.
+and deterministic travel-planning foundations.
 
 ## Contract baseline
 
@@ -18,8 +18,8 @@ foundations.
 
 ## Versioning and contracts
 
-Version 1 routes use the `/api/v1` prefix. Catalogue and customer APIs expose DTOs only; Entity Framework
-entities never cross the HTTP boundary.
+Version 1 routes use the `/api/v1` prefix. Catalogue and customer APIs expose DTOs only; Entity
+Framework entities never cross the HTTP boundary.
 
 Phase 4 discovery routes cover products, product types, categories, tags, collections, and
 destinations. Product discovery accepts validated `query`, `productType`, `category`, `collection`,
@@ -56,7 +56,7 @@ Invalid input, missing records, rate limits, concurrency conflicts, and unexpect
 - Security headers deny framing, sniffing, referrers, and active content.
 - Request bodies are capped at 10 MiB at the server boundary.
 - `/health/live` checks process liveness.
-- `/health/ready` checks PostgreSQL through all four module contexts.
+- `/health/ready` checks PostgreSQL through all five module contexts.
 
 OpenAPI is available at `/openapi/v1.json`. The Phase 3 public application commits a reviewed
 snapshot at `packages/sdk/openapi/v1.json` and generates TypeScript response types from it. While
@@ -87,14 +87,22 @@ Authenticated customer-owned routes are:
 - `GET`, `POST`, `PUT`, and `DELETE /api/v1/customer/profile`;
 - paginated `GET` and `POST /api/v1/customer/travellers`, plus
   `GET`/`PUT`/`DELETE /travellers/{id}`;
-- paginated `GET` and `POST /api/v1/customer/wishlist`, plus
-  `PUT`/`DELETE /wishlist/{id}`; and
+- paginated `GET` and `POST /api/v1/customer/wishlist`, plus `PUT`/`DELETE /wishlist/{id}`; and
 - paginated `GET` and `POST /api/v1/customer/saved-itineraries`, plus
-  `GET`/`PUT`/`DELETE /saved-itineraries/{id}`.
+  `GET`/`PUT`/`DELETE /saved-itineraries/{id}`; and
+- paginated `GET` and `POST /api/v1/customer/travel-plans`, plan detail and input update,
+  deterministic `POST /travel-plans/{id}/generate`, and concurrency-protected day/item
+  create/update/reorder operations.
 
 The authenticated customer ID comes only from validated claims. Browser-supplied customer IDs are
 never trusted, and an owner-filtered missing record returns a correlated 404 without disclosing
 whether another customer owns it.
+
+Travel-plan requests validate dates, pace, destination and Catalogue preferences, customer-owned
+traveller associations, bounded accessibility/dietary considerations, and item ordering. Generated
+revisions record the fixed rule version and a fingerprint covering normalized input and the
+published Catalogue snapshot. They are drafts only and never claim availability, final pricing,
+quotes, bookability, bookings, or payments.
 
 ## Development
 

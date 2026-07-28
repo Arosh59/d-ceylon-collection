@@ -1,9 +1,10 @@
 # Public Web Application
 
 `apps/web` is the accessible public Next.js App Router host for D Ceylon Collection. Phases 3
-through 6 establish the visual foundation, public catalogue discovery, external OIDC session,
+through 7 establish the visual foundation, public catalogue discovery, external OIDC session,
 protected customer and agent boundaries, and customer-owned profile, traveller, wishlist, and
-saved-itinerary foundations. Planning, quotes, administration, and commerce remain later phases.
+saved-itinerary foundations plus deterministic draft planning. Quotes, administration, and commerce
+remain later phases.
 
 ## Runtime and configuration
 
@@ -61,6 +62,9 @@ Chrome channel.
 - `/portal/customer/travellers` and child routes — paginated traveller list/detail/create/edit;
 - `/portal/customer/wishlist` — paginated catalogue shortlist with note editing;
 - `/portal/customer/saved-itineraries` and child routes — metadata-only list/detail/create/edit;
+- `/portal/customer/travel-plans` and `/new` — paginated drafts and accessible planner input;
+- `/portal/customer/travel-plans/[id]` and `/edit` — draft review, generation, day/item editing,
+  reordering, input review, regeneration, and conflict/not-found states;
 - `/portal/agent` — protected agent organisation foundation;
 - `loading.tsx`, `error.tsx`, and `not-found.tsx` — explicit loading, recovery, and unknown-route
   experiences; and
@@ -91,3 +95,7 @@ Server actions use generated OpenAPI request/response types, enforce the authent
 surface validation/concurrency Problem Details, and preserve correlation IDs. Filters use native GET
 form controls, pagination preserves active filters, and media placeholders render from stable API
 metadata without licensed image assets.
+
+Planning pages use the same server-only token boundary and generated contracts. They label every
+result as a draft without availability, final price, quote, bookability, or booking confirmation.
+See the repository [planner rules and limitations](../../docs/planner-limitations.md).

@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\src\Modules\Catalogue\D.Ceylon.Modules.Catalogue\D.Ceylon.Modules.Catalogue.csproj" />
     <ProjectReference Include="..\..\src\Modules\CustomersTravellers\D.Ceylon.Modules.CustomersTravellers\D.Ceylon.Modules.CustomersTravellers.csproj" />
     <ProjectReference Include="..\..\src\Modules\IdentityAccess\D.Ceylon.Modules.IdentityAccess\D.Ceylon.Modules.IdentityAccess.csproj" />
+    <ProjectReference Include="..\..\src\Modules\ItinerariesTravelPlanning\D.Ceylon.Modules.ItinerariesTravelPlanning\D.Ceylon.Modules.ItinerariesTravelPlanning.csproj" />
     <ProjectReference Include="..\..\src\Modules\OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents.csproj" />
   </ItemGroup>
 </Project>

@@ -8,6 +8,7 @@ using D.Ceylon.Modules.Catalogue;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
 using D.Ceylon.Modules.CustomersTravellers;
 using D.Ceylon.Modules.IdentityAccess;
+using D.Ceylon.Modules.ItinerariesTravelPlanning;
 using D.Ceylon.Modules.OrganisationsAgents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -41,6 +42,7 @@ builder.Services.AddOpenApi("v1");
 builder.Services.AddCatalogueModule(builder.Configuration);
 builder.Services.AddCustomersTravellersModule(builder.Configuration);
 builder.Services.AddIdentityAccessModule(builder.Configuration, builder.Environment);
+builder.Services.AddItinerariesTravelPlanningModule(builder.Configuration);
 builder.Services.AddOrganisationsAgentsModule(builder.Configuration);
 builder.Services.AddSingleton<
     IAuthorizationMiddlewareResultHandler,
@@ -187,6 +189,7 @@ var versionOne = app.MapGroup("/api/v1");
 versionOne.MapCatalogueEndpoints();
 versionOne.MapAccessEndpoints(app.Environment);
 versionOne.MapCustomerEndpoints();
+versionOne.MapTravelPlanningEndpoints();
 
 app.Run();
 

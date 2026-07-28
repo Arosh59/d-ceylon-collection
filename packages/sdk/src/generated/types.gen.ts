@@ -33,6 +33,14 @@ export type CreateCustomerProfileRequest = {
   marketingConsent?: boolean;
 };
 
+export type CreateItineraryItemRequest = {
+  title: string;
+  notes?: null | string;
+  durationMinutes?: null | number | string;
+  destinationSlug: string;
+  position?: null | number | string;
+};
+
 export type CreateSavedItineraryRequest = {
   title: string;
   summary?: null | string;
@@ -49,6 +57,22 @@ export type CreateTravellerRequest = {
   dietaryNeeds?: null | string;
   emergencyContactName?: null | string;
   emergencyContactPhone?: null | string;
+};
+
+export type CreateTravelPlanRequest = {
+  title: string;
+  savedItineraryId?: null | string;
+  travelStartDate?: string;
+  travelEndDate?: string;
+  pace: string;
+  destinationSlugs?: Array<string>;
+  travellerIds?: Array<string>;
+  interests?: Array<string>;
+  productTypeSlugs?: Array<string>;
+  categorySlugs?: Array<string>;
+  tagSlugs?: Array<string>;
+  accessibilityConsiderations?: null | string;
+  dietaryConsiderations?: null | string;
 };
 
 export type CreateWishlistEntryRequest = {
@@ -98,6 +122,10 @@ export type DestinationSummaryResponse = {
   heroMedia: null | MediaMetadataResponse;
 };
 
+export type GenerateTravelPlanRequest = {
+  concurrencyToken?: string;
+};
+
 export type HttpValidationProblemDetails = {
   type?: null | string;
   title?: null | string;
@@ -107,6 +135,36 @@ export type HttpValidationProblemDetails = {
   errors?: {
     [key: string]: Array<string>;
   };
+};
+
+export type ItineraryDayResponse = {
+  id: string;
+  dayNumber: number | string;
+  date: string;
+  title: string;
+  concurrencyToken: string;
+  items: Array<ItineraryItemResponse>;
+};
+
+export type ItineraryItemResponse = {
+  id: string;
+  position: number | string;
+  title: string;
+  notes: null | string;
+  durationMinutes: null | number | string;
+  destinationSlug: string;
+  productSlug: null | string;
+  source: string;
+  concurrencyToken: string;
+};
+
+export type ItineraryRevisionResponse = {
+  id: string;
+  revisionNumber: number | string;
+  ruleVersion: string;
+  inputFingerprint: string;
+  generatedAtUtc: string;
+  days: Array<ItineraryDayResponse>;
 };
 
 export type MediaMetadataResponse = {
@@ -155,6 +213,11 @@ export type PagedResponseOfSavedItineraryResponse = {
 
 export type PagedResponseOfTravellerResponse = {
   items: Array<TravellerResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfTravelPlanSummaryResponse = {
+  items: Array<TravelPlanSummaryResponse>;
   pagination: PaginationMetadata;
 };
 
@@ -222,6 +285,12 @@ export type ProductTypeResponse = {
   slug: string;
 };
 
+export type ReorderItineraryItemRequest = {
+  targetDayId?: string;
+  position?: number | string;
+  concurrencyToken?: string;
+};
+
 export type SavedItineraryResponse = {
   id: string;
   title: string;
@@ -247,6 +316,44 @@ export type TravellerResponse = {
   updatedAtUtc: string;
 };
 
+export type TravelPlanInputResponse = {
+  destinationSlugs: Array<string>;
+  travellerIds: Array<string>;
+  interests: Array<string>;
+  productTypeSlugs: Array<string>;
+  categorySlugs: Array<string>;
+  tagSlugs: Array<string>;
+  accessibilityConsiderations: null | string;
+  dietaryConsiderations: null | string;
+};
+
+export type TravelPlanResponse = {
+  id: string;
+  savedItineraryId: null | string;
+  title: string;
+  travelStartDate: string;
+  travelEndDate: string;
+  pace: string;
+  status: string;
+  input: TravelPlanInputResponse;
+  currentRevision: ItineraryRevisionResponse;
+  concurrencyToken: string;
+  createdAtUtc: string;
+  updatedAtUtc: string;
+};
+
+export type TravelPlanSummaryResponse = {
+  id: string;
+  title: string;
+  travelStartDate: string;
+  travelEndDate: string;
+  pace: string;
+  status: string;
+  currentRevisionNumber: number | string;
+  concurrencyToken: string;
+  updatedAtUtc: string;
+};
+
 export type UpdateCustomerProfileRequest = {
   concurrencyToken?: string;
   givenName: string;
@@ -257,6 +364,20 @@ export type UpdateCustomerProfileRequest = {
   preferredLocale: string;
   preferredContactMethod: string;
   marketingConsent?: boolean;
+};
+
+export type UpdateItineraryDayRequest = {
+  title: string;
+  concurrencyToken?: string;
+};
+
+export type UpdateItineraryItemRequest = {
+  concurrencyToken?: string;
+  title: string;
+  notes?: null | string;
+  durationMinutes?: null | number | string;
+  destinationSlug: string;
+  position?: null | number | string;
 };
 
 export type UpdateSavedItineraryRequest = {
@@ -277,6 +398,23 @@ export type UpdateTravellerRequest = {
   dietaryNeeds?: null | string;
   emergencyContactName?: null | string;
   emergencyContactPhone?: null | string;
+};
+
+export type UpdateTravelPlanInputRequest = {
+  concurrencyToken?: string;
+  title: string;
+  savedItineraryId?: null | string;
+  travelStartDate?: string;
+  travelEndDate?: string;
+  pace: string;
+  destinationSlugs?: Array<string>;
+  travellerIds?: Array<string>;
+  interests?: Array<string>;
+  productTypeSlugs?: Array<string>;
+  categorySlugs?: Array<string>;
+  tagSlugs?: Array<string>;
+  accessibilityConsiderations?: null | string;
+  dietaryConsiderations?: null | string;
 };
 
 export type UpdateWishlistEntryRequest = {
@@ -1292,3 +1430,319 @@ export type UpdateCustomerSavedItineraryV1Responses = {
 
 export type UpdateCustomerSavedItineraryV1Response =
   UpdateCustomerSavedItineraryV1Responses[keyof UpdateCustomerSavedItineraryV1Responses];
+
+export type GetCustomerTravelPlansV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/customer/travel-plans";
+};
+
+export type GetCustomerTravelPlansV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetCustomerTravelPlansV1Error =
+  GetCustomerTravelPlansV1Errors[keyof GetCustomerTravelPlansV1Errors];
+
+export type GetCustomerTravelPlansV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfTravelPlanSummaryResponse;
+};
+
+export type GetCustomerTravelPlansV1Response =
+  GetCustomerTravelPlansV1Responses[keyof GetCustomerTravelPlansV1Responses];
+
+export type CreateCustomerTravelPlanV1Data = {
+  body: CreateTravelPlanRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/customer/travel-plans";
+};
+
+export type CreateCustomerTravelPlanV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type CreateCustomerTravelPlanV1Error =
+  CreateCustomerTravelPlanV1Errors[keyof CreateCustomerTravelPlanV1Errors];
+
+export type CreateCustomerTravelPlanV1Responses = {
+  /**
+   * Created
+   */
+  201: TravelPlanResponse;
+};
+
+export type CreateCustomerTravelPlanV1Response =
+  CreateCustomerTravelPlanV1Responses[keyof CreateCustomerTravelPlanV1Responses];
+
+export type GetCustomerTravelPlanV1Data = {
+  body?: never;
+  path: {
+    planId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/travel-plans/{planId}";
+};
+
+export type GetCustomerTravelPlanV1Errors = {
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type GetCustomerTravelPlanV1Error =
+  GetCustomerTravelPlanV1Errors[keyof GetCustomerTravelPlanV1Errors];
+
+export type GetCustomerTravelPlanV1Responses = {
+  /**
+   * OK
+   */
+  200: TravelPlanResponse;
+};
+
+export type GetCustomerTravelPlanV1Response =
+  GetCustomerTravelPlanV1Responses[keyof GetCustomerTravelPlanV1Responses];
+
+export type UpdateCustomerTravelPlanInputV1Data = {
+  body: UpdateTravelPlanInputRequest;
+  path: {
+    planId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/travel-plans/{planId}/input";
+};
+
+export type UpdateCustomerTravelPlanInputV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type UpdateCustomerTravelPlanInputV1Error =
+  UpdateCustomerTravelPlanInputV1Errors[keyof UpdateCustomerTravelPlanInputV1Errors];
+
+export type UpdateCustomerTravelPlanInputV1Responses = {
+  /**
+   * OK
+   */
+  200: TravelPlanResponse;
+};
+
+export type UpdateCustomerTravelPlanInputV1Response =
+  UpdateCustomerTravelPlanInputV1Responses[keyof UpdateCustomerTravelPlanInputV1Responses];
+
+export type GenerateCustomerTravelPlanV1Data = {
+  body: GenerateTravelPlanRequest;
+  path: {
+    planId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/travel-plans/{planId}/generate";
+};
+
+export type GenerateCustomerTravelPlanV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type GenerateCustomerTravelPlanV1Error =
+  GenerateCustomerTravelPlanV1Errors[keyof GenerateCustomerTravelPlanV1Errors];
+
+export type GenerateCustomerTravelPlanV1Responses = {
+  /**
+   * OK
+   */
+  200: TravelPlanResponse;
+};
+
+export type GenerateCustomerTravelPlanV1Response =
+  GenerateCustomerTravelPlanV1Responses[keyof GenerateCustomerTravelPlanV1Responses];
+
+export type UpdateCustomerItineraryDayV1Data = {
+  body: UpdateItineraryDayRequest;
+  path: {
+    planId: string;
+    dayId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/travel-plans/{planId}/days/{dayId}";
+};
+
+export type UpdateCustomerItineraryDayV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type UpdateCustomerItineraryDayV1Error =
+  UpdateCustomerItineraryDayV1Errors[keyof UpdateCustomerItineraryDayV1Errors];
+
+export type UpdateCustomerItineraryDayV1Responses = {
+  /**
+   * OK
+   */
+  200: TravelPlanResponse;
+};
+
+export type UpdateCustomerItineraryDayV1Response =
+  UpdateCustomerItineraryDayV1Responses[keyof UpdateCustomerItineraryDayV1Responses];
+
+export type CreateCustomerItineraryItemV1Data = {
+  body: CreateItineraryItemRequest;
+  path: {
+    planId: string;
+    dayId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/travel-plans/{planId}/days/{dayId}/items";
+};
+
+export type CreateCustomerItineraryItemV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type CreateCustomerItineraryItemV1Error =
+  CreateCustomerItineraryItemV1Errors[keyof CreateCustomerItineraryItemV1Errors];
+
+export type CreateCustomerItineraryItemV1Responses = {
+  /**
+   * Created
+   */
+  201: TravelPlanResponse;
+};
+
+export type CreateCustomerItineraryItemV1Response =
+  CreateCustomerItineraryItemV1Responses[keyof CreateCustomerItineraryItemV1Responses];
+
+export type UpdateCustomerItineraryItemV1Data = {
+  body: UpdateItineraryItemRequest;
+  path: {
+    planId: string;
+    itemId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/travel-plans/{planId}/items/{itemId}";
+};
+
+export type UpdateCustomerItineraryItemV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type UpdateCustomerItineraryItemV1Error =
+  UpdateCustomerItineraryItemV1Errors[keyof UpdateCustomerItineraryItemV1Errors];
+
+export type UpdateCustomerItineraryItemV1Responses = {
+  /**
+   * OK
+   */
+  200: TravelPlanResponse;
+};
+
+export type UpdateCustomerItineraryItemV1Response =
+  UpdateCustomerItineraryItemV1Responses[keyof UpdateCustomerItineraryItemV1Responses];
+
+export type ReorderCustomerItineraryItemV1Data = {
+  body: ReorderItineraryItemRequest;
+  path: {
+    planId: string;
+    itemId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/travel-plans/{planId}/items/{itemId}/reorder";
+};
+
+export type ReorderCustomerItineraryItemV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type ReorderCustomerItineraryItemV1Error =
+  ReorderCustomerItineraryItemV1Errors[keyof ReorderCustomerItineraryItemV1Errors];
+
+export type ReorderCustomerItineraryItemV1Responses = {
+  /**
+   * OK
+   */
+  200: TravelPlanResponse;
+};
+
+export type ReorderCustomerItineraryItemV1Response =
+  ReorderCustomerItineraryItemV1Responses[keyof ReorderCustomerItineraryItemV1Responses];

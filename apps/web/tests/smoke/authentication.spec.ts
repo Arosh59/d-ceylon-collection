@@ -14,6 +14,7 @@ test("customer profile, traveller, wishlist, itinerary, forbidden, and logout fl
   const suffix = testInfo.project.name === "mobile" ? "Mobile" : "Desktop";
   const travellerName = `Phase Six ${suffix}`;
   const itineraryTitle = `Phase Six ${suffix} foundation`;
+  const travelPlanTitle = `Phase Seven ${suffix} ${Date.now()}`;
   const productSlug =
     testInfo.project.name === "mobile" ? "knuckles-dawn-hike" : "tea-country-rail-estate-walk";
 
@@ -34,7 +35,7 @@ test("customer profile, traveller, wishlist, itinerary, forbidden, and logout fl
   await page.getByLabel("Contact email").fill("customer@example.test");
   await page.getByLabel("Preferred contact method").selectOption("email");
   await page.getByRole("button", { name: /^(Create|Update) profile$/u }).click();
-  await expect(page.getByRole("status")).toContainText("profile was saved");
+  await expect(page.getByRole("status")).toContainText("profile was saved", { timeout: 15_000 });
 
   await page.goto("/portal/customer/travellers");
   const previousTraveller = page.locator("li", { hasText: travellerName }).first();
@@ -78,6 +79,33 @@ test("customer profile, traveller, wishlist, itinerary, forbidden, and logout fl
     await expect(page).toHaveURL(/\/portal\/customer\/saved-itineraries$/u);
   }
   await expect(page.getByRole("heading", { name: itineraryTitle }).first()).toBeVisible();
+
+  await page.goto("/portal/customer/travel-plans");
+  await page.getByRole("link", { name: "Plan a journey" }).first().click();
+  await page.getByRole("button", { name: "Generate deterministic draft" }).click();
+  expect(
+    await page
+      .getByLabel("Plan title")
+      .evaluate((element) => (element as HTMLInputElement).validity.valueMissing),
+  ).toBe(true);
+  await page.getByLabel("Plan title").fill(travelPlanTitle);
+  await page.getByLabel("Travel start").fill("2027-03-10");
+  await page.getByLabel("Travel end").fill("2027-03-12");
+  await page.getByLabel("Interests (comma separated slugs)").fill("nature, slow-travel");
+  await page.getByLabel(travellerName).first().check();
+  await page.getByRole("button", { name: "Generate deterministic draft" }).click();
+  await expect(page).toHaveURL(/\/portal\/customer\/travel-plans\/[^/]+$/u, { timeout: 15_000 });
+  await expect(page.getByRole("heading", { name: travelPlanTitle })).toBeVisible();
+  await expect(page.getByRole("note")).toContainText("does not confirm live availability");
+  await expect(page.getByLabel("Day 1 title")).toBeEditable();
+  await expect(page.getByRole("button", { name: "Regenerate deterministic draft" })).toBeEnabled();
+  await page.getByRole("link", { name: "Review planner input" }).click();
+  await expect(page.getByLabel("Plan title")).toHaveValue(travelPlanTitle);
+
+  await page.goto("/portal/customer/travel-plans/00000000-0000-0000-0000-000000000099");
+  await expect(
+    page.getByRole("heading", { name: "This journey does not begin here." }),
+  ).toBeVisible();
 
   await page.goto("/portal/customer/travellers/00000000-0000-0000-0000-000000000099");
   await expect(

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using D.Ceylon.Modules.CustomersTravellers.Contracts;
+using D.Ceylon.Modules.ItinerariesTravelPlanning.Contracts;
 
 namespace D.Ceylon.Api.Infrastructure;
 
@@ -19,12 +20,16 @@ internal sealed partial class GlobalExceptionHandler(
         ArgumentNullException.ThrowIfNull(exception);
 
         var isConcurrencyConflict = exception is DbUpdateConcurrencyException;
-        var isRecordConflict = exception is CustomerRecordConflictException;
+        var isRecordConflict = exception is CustomerRecordConflictException
+            or TravelPlanConflictException;
+        var isMissingReference = exception is TravelPlanReferenceException;
         var statusCode = isConcurrencyConflict || isRecordConflict
             ? StatusCodes.Status409Conflict
-            : StatusCodes.Status500InternalServerError;
+            : isMissingReference
+                ? StatusCodes.Status404NotFound
+                : StatusCodes.Status500InternalServerError;
 
-        if (isConcurrencyConflict || isRecordConflict)
+        if (isConcurrencyConflict || isRecordConflict || isMissingReference)
         {
             LogRecordConflict(logger, exception, httpContext.Request.Path);
         }
@@ -41,15 +46,17 @@ internal sealed partial class GlobalExceptionHandler(
                 ? isConcurrencyConflict
                     ? "The record was changed by another request"
                     : "The request conflicts with an existing record"
-                : "An unexpected error occurred",
+                : isMissingReference ? "Referenced record not found" : "An unexpected error occurred",
             Detail = isConcurrencyConflict || isRecordConflict
                 ? isConcurrencyConflict
                     ? "Reload the latest record and retry the operation."
                     : exception.Message
-                : "The request could not be completed.",
+                : isMissingReference ? exception.Message : "The request could not be completed.",
             Type = isConcurrencyConflict || isRecordConflict
                 ? "https://www.rfc-editor.org/rfc/rfc9110#name-409-conflict"
-                : "https://www.rfc-editor.org/rfc/rfc9110#name-500-internal-server-error",
+                : isMissingReference
+                    ? "https://www.rfc-editor.org/rfc/rfc9110#name-404-not-found"
+                    : "https://www.rfc-editor.org/rfc/rfc9110#name-500-internal-server-error",
         };
 
         return await problemDetailsService.TryWriteAsync(

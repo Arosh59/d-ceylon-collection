@@ -236,6 +236,16 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
         }
       },
+      "d.ceylon.modules.itinerariestravelplanning": {
+        "type": "Project",
+        "dependencies": {
+          "D.Ceylon.BuildingBlocks": "[1.0.0, )",
+          "D.Ceylon.Modules.Catalogue": "[1.0.0, )",
+          "D.Ceylon.Modules.CustomersTravellers": "[1.0.0, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.10, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "CentralTransitive",
         "requested": "[10.0.10, )",

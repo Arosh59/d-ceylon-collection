@@ -12,7 +12,7 @@ only after its documented checks pass.
 | 4     | Catalogue, destinations, search, and collection seeds  | Complete    |
 | 5     | Authentication, authorization, and portal foundations  | Complete    |
 | 6     | Profiles, travellers, wishlists, and saved itineraries | Complete    |
-| 7     | Deterministic travel planner                           | Not started |
+| 7     | Deterministic travel planner                           | Complete    |
 | 8     | Quote workflow                                         | Not started |
 | 9     | Booking, payments, invoices, and vouchers              | Not started |
 | 10    | Suppliers and operations                               | Not started |
@@ -62,3 +62,11 @@ cross-customer denial checks, optimistic-concurrency and audit-event checks, Ope
 and equality, health/readiness probes, frontend unit/component/accessibility tests, and
 profile/traveller/wishlist/saved-itinerary validation, conflict, forbidden, not-found, logout, and
 responsive browser flows on desktop and mobile.
+
+Phase 7 was verified with locked NuGet and npm restores, zero-advisory dependency audits, a reviewed
+Itineraries and Travel Planning migration, no-pending-model and index checks, zero-warning API and
+web builds, deterministic rule/fingerprint fixtures, backend unit and isolated PostgreSQL
+integration tests, owner and cross-customer denial checks, traveller association, ordering,
+optimistic-concurrency, and audit checks, live OpenAPI regeneration and equality, health/readiness
+probes, frontend unit/component/accessibility tests, and planner generation, draft review, edit,
+validation, forbidden, not-found, logout, and responsive browser flows on desktop and mobile.

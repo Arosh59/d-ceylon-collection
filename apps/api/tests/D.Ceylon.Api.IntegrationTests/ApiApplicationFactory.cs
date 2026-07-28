@@ -3,6 +3,7 @@ using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
 using D.Ceylon.Modules.CustomersTravellers.Infrastructure.Persistence;
 using D.Ceylon.Modules.IdentityAccess.Infrastructure.Persistence;
+using D.Ceylon.Modules.ItinerariesTravelPlanning.Infrastructure.Persistence;
 using D.Ceylon.Modules.OrganisationsAgents.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -141,6 +142,17 @@ public sealed partial class ApiApplicationFactory : WebApplicationFactory<Progra
         using var customerDatabase =
             new CustomersTravellersDbContext(customerOptions, TimeProvider.System);
         customerDatabase.Database.Migrate();
+
+        var itineraryOptions =
+            new DbContextOptionsBuilder<ItinerariesTravelPlanningDbContext>()
+                .UseNpgsql(
+                    ConnectionString,
+                    postgres => postgres.MigrationsAssembly(
+                        typeof(ItinerariesTravelPlanningDbContext).Assembly.FullName))
+                .Options;
+        using var itineraryDatabase =
+            new ItinerariesTravelPlanningDbContext(itineraryOptions, TimeProvider.System);
+        itineraryDatabase.Database.Migrate();
     }
 
     private void DropDatabase()

@@ -2,18 +2,17 @@
 
 > Discover Ceylon. Rediscover Yourself.
 
-D Ceylon Collection is a planned premium Sri Lankan travel-commerce platform.
-This repository will contain the public website, administration application,
-modular ASP.NET Core API, shared packages, local infrastructure, and an isolated
-future AI service.
+D Ceylon Collection is a planned premium Sri Lankan travel-commerce platform. This repository will
+contain the public website, administration application, modular ASP.NET Core API, shared packages,
+local infrastructure, and an isolated future AI service.
 
 ## Status
 
-Phases 0 through 6 establish repository boundaries, containerized local infrastructure, the
-ASP.NET Core modular API, public Next.js catalogue, generated SDK, authentication and authorization,
-and protected customer profile, traveller, wishlist, and saved-itinerary foundations. The
-deterministic travel planner, quotes, bookings, payments, administration, editorial integration,
-and deployment resources remain in later phases.
+Phases 0 through 7 establish repository boundaries, containerized local infrastructure, the ASP.NET
+Core modular API, public Next.js catalogue, generated SDK, authentication and authorization,
+protected customer records, and the deterministic customer travel planner and draft-itinerary
+builder. Quotes, bookings, payments, administration, editorial integration, and deployment resources
+remain in later phases.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 
@@ -43,13 +42,13 @@ The expected toolchain is:
 - Python 3
 - GitHub CLI (recommended for repository workflows)
 
-Exact dependency and runtime versions will be selected only when their
-implementation phase begins, after compatibility and deprecation checks.
+Exact dependency and runtime versions will be selected only when their implementation phase begins,
+after compatibility and deprecation checks.
 
 ## Getting started
 
-Review [local setup](docs/local-setup.md) to generate local credentials, run the
-infrastructure, apply migrations, and start the API and public frontend.
+Review [local setup](docs/local-setup.md) to generate local credentials, run the infrastructure,
+apply migrations, and start the API and public frontend.
 
 ## Documentation
 
@@ -61,6 +60,7 @@ infrastructure, apply migrations, and start the API and public frontend.
 - [Security](docs/security/README.md)
 - [Threat model](docs/security/threat-model.md)
 - [Customer data and privacy](docs/privacy.md)
+- [Planner rules and limitations](docs/planner-limitations.md)
 - [Deployment](docs/deployment.md)
 - [Backup and restore](docs/backup-and-restore.md)
 - [Coding conventions](docs/coding-conventions.md)
@@ -69,5 +69,5 @@ infrastructure, apply migrations, and start the API and public frontend.
 
 ## Security
 
-Do not report vulnerabilities in public issues. Follow [SECURITY.md](SECURITY.md)
-for the private reporting process and handling expectations.
+Do not report vulnerabilities in public issues. Follow [SECURITY.md](SECURITY.md) for the private
+reporting process and handling expectations.

@@ -16,6 +16,8 @@ npm run sdk:generate
 Review both the OpenAPI snapshot and generated TypeScript diff before committing an API contract
 change.
 
-The wrapper exposes typed read-only product search, taxonomy, collection, and destination
-operations. Query types are derived from the versioned contract; the package does not recreate
-persistence or domain models.
+The wrapper exposes typed read-only product search, taxonomy, collection, and destination operations
+plus authenticated customer-record and deterministic travel-planning operations. Query, request, and
+response types are derived from the versioned contract; the package does not recreate persistence or
+domain models. Authentication, correlation forwarding, and token secrecy remain the responsibility
+of the server-side application boundary.

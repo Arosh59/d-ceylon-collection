@@ -49,3 +49,18 @@ export {
   type WishlistEntry,
   type WishlistPage,
 } from "./customer-client";
+
+export {
+  TravelPlanningApiError,
+  createTravelPlanningClient,
+  type CreateItineraryItemRequest,
+  type CreateTravelPlanRequest,
+  type ReorderItineraryItemRequest,
+  type TravelPlan,
+  type TravelPlanPage,
+  type TravelPlanningClient,
+  type TravelPlanningClientOptions,
+  type UpdateItineraryDayRequest,
+  type UpdateItineraryItemRequest,
+  type UpdateTravelPlanInputRequest,
+} from "./travel-planning-client";

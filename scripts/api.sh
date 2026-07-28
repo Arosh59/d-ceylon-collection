@@ -76,6 +76,8 @@ Commands:
                      Create an Organisations and Agents migration
   migration-add-customers NAME
                      Create a Customers and Travellers migration
+  migration-add-itineraries NAME
+                     Create an Itineraries and Travel Planning migration
   migration-remove   Remove the latest unapplied EF Core migration
   migrations-list    List EF Core migrations
   migrations-check   Verify the EF Core model has no pending changes
@@ -179,6 +181,19 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --output-dir Infrastructure/Persistence/Migrations
         ;;
+    migration-add-itineraries)
+        migration_name="${2:-}"
+        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
+            echo "Migration names must start with a letter and contain only letters and numbers." >&2
+            exit 1
+        fi
+        sdk_container tool restore
+        sdk_container ef migrations add "${migration_name}" \
+            --context ItinerariesTravelPlanningDbContext \
+            --project src/Modules/ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning \
+            --startup-project src/D.Ceylon.Api \
+            --output-dir Infrastructure/Persistence/Migrations
+        ;;
     migration-remove)
         sdk_container tool restore
         sdk_container ef migrations remove \
@@ -212,12 +227,24 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
+        sdk_container ef migrations list \
+            --context ItinerariesTravelPlanningDbContext \
+            --project src/Modules/ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
         ;;
     migrations-check)
         sdk_container tool restore
         sdk_container ef migrations has-pending-model-changes \
             --context CatalogueDbContext \
             --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
+        sdk_container ef migrations has-pending-model-changes \
+            --context ItinerariesTravelPlanningDbContext \
+            --project src/Modules/ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning \
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
@@ -257,6 +284,10 @@ case "${command_name}" in
         sdk_container ef database update \
             --context CustomersTravellersDbContext \
             --project src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers \
+            --startup-project src/D.Ceylon.Api
+        sdk_container ef database update \
+            --context ItinerariesTravelPlanningDbContext \
+            --project src/Modules/ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning \
             --startup-project src/D.Ceylon.Api
         ;;
     seed)

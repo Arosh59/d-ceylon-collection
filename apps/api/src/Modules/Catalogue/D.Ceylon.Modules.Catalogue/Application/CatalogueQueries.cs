@@ -78,6 +78,36 @@ internal sealed class CatalogueQueries(
                     .ToList()))
             .SingleOrDefaultAsync(cancellationToken);
 
+    public async Task<IReadOnlyList<PlanningCatalogueItem>> GetPlanningCatalogueAsync(
+        IReadOnlyCollection<string> destinationSlugs,
+        CancellationToken cancellationToken) =>
+        await database.Products
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(product =>
+                product.PublicationState == PublicationState.Published
+                && product.ProductDestinations.Any(link =>
+                    destinationSlugs.Contains(link.Destination.Slug)))
+            .OrderBy(product => product.Slug)
+            .Select(product => new PlanningCatalogueItem(
+                product.Slug,
+                product.Name,
+                product.DurationMinutes,
+                new[] { product.ProductType.Slug },
+                product.ProductCategories
+                    .OrderBy(link => link.Category.Slug)
+                    .Select(link => link.Category.Slug)
+                    .ToArray(),
+                product.ProductDestinations
+                    .OrderBy(link => link.Destination.Slug)
+                    .Select(link => link.Destination.Slug)
+                    .ToArray(),
+                product.ProductTags
+                    .OrderBy(link => link.Tag.Slug)
+                    .Select(link => link.Tag.Slug)
+                    .ToArray()))
+            .ToListAsync(cancellationToken);
+
     public Task<PagedResponse<ProductTypeResponse>> GetProductTypesAsync(
         int pageNumber,
         int pageSize,

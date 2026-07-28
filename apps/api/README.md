@@ -1,8 +1,9 @@
 # D Ceylon Collection API
 
-The primary backend is an ASP.NET Core 10 modular monolith. Phases 2 through 6 implement the API
+The primary backend is an ASP.NET Core 10 modular monolith. Phases 2 through 7 implement the API
 host, Catalogue discovery, external authentication, authorization policy foundations, and the
-Identity and Access, Organisations and Agents, and Customers and Travellers module boundaries.
+Identity and Access, Organisations and Agents, Customers and Travellers, and Itineraries and Travel
+Planning module boundaries.
 
 ## Toolchain
 
@@ -39,6 +40,7 @@ apps/api/
 │       ├── Catalogue/D.Ceylon.Modules.Catalogue/
 │       ├── CustomersTravellers/D.Ceylon.Modules.CustomersTravellers/
 │       ├── IdentityAccess/D.Ceylon.Modules.IdentityAccess/
+│       ├── ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning/
 │       └── OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents/
 └── tests/
     ├── D.Ceylon.Api.UnitTests/
@@ -97,6 +99,10 @@ ephemeral SDK container. It does not install .NET or store credentials in projec
 - `/api/v1/customer/travellers` and `/{travellerId}` — paginated traveller CRUD
 - `/api/v1/customer/wishlist` and `/{entryId}` — paginated wishlist CRUD
 - `/api/v1/customer/saved-itineraries` and `/{itineraryId}` — paginated saved-metadata CRUD
+- `/api/v1/customer/travel-plans` and `/{planId}` — paginated plan creation, review, and detail
+- `PUT /api/v1/customer/travel-plans/{planId}/input` — validated planner-input editing
+- `POST /api/v1/customer/travel-plans/{planId}/generate` — explicit deterministic regeneration
+- travel-plan day/item `PUT`, `POST`, and reorder routes — concurrency-protected draft editing
 
 List endpoints accept optional `pageNumber` and `pageSize` parameters. Page numbers range from 1 to
 100,000 and page sizes from 1 to 100.
@@ -128,6 +134,12 @@ key and concurrency/audit values; indexes support owner-scoped lists and uniquen
 dietary, and emergency-contact values are optional and deliberately bounded. Passport documents,
 quotes, bookings, and generated itinerary content are absent.
 
+Phase 7 adds the `itineraries_travel_planning` schema. It owns claim-scoped planner inputs,
+traveller associations, versioned revisions, ordered days and items, deterministic rule/fingerprint
+metadata, and optimistic concurrency/audit values. Stable Catalogue references are resolved through
+the Catalogue contract rather than duplicated entities. The planner contains no availability,
+pricing, quote, booking, payment, AI, or optimization persistence.
+
 Migrations are explicit; API startup never changes the database automatically. Create a future
 migration with:
 
@@ -136,6 +148,7 @@ migration with:
 ./scripts/api.sh migration-add-identity MigrationName
 ./scripts/api.sh migration-add-organisations MigrationName
 ./scripts/api.sh migration-add-customers MigrationName
+./scripts/api.sh migration-add-itineraries MigrationName
 ```
 
 Review generated SQL and model changes before applying it.
@@ -151,4 +164,7 @@ least-privilege application role, apply the real migration, start the API throug
 `WebApplicationFactory`, and drop the database afterward. Authentication tests use an HMAC issuer
 registered only in the Testing environment and cover missing/invalid/expired tokens, policies,
 cross-owner denial, indexes, and audit records. Phase 6 tests also cover validation, customer-scoped
-CRUD, pagination, stale-write conflicts, sensitive-change audit events, and migration indexes.
+CRUD, pagination, stale-write conflicts, sensitive-change audit events, and migration indexes. Phase
+7 tests add deterministic repeatability and Catalogue-snapshot fingerprints, rule/pace behavior,
+planner validation, traveller ownership, cross-owner denial, day/item ordering, stale-write
+conflicts, audit events, and planning indexes.

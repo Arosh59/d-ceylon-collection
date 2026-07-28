@@ -57,7 +57,8 @@ export function ItineraryForm({ itinerary }: { itinerary?: SavedItinerary }) {
         />
       </label>
       <p className="text-sm leading-6 text-ink-muted">
-        This saves planning metadata only. The deterministic travel planner begins in Phase 7.
+        This saves planning metadata only. Open the travel planner to build a separate, versioned
+        deterministic draft.
       </p>
       <FormStatus
         state={state}

@@ -89,6 +89,15 @@ public sealed record CatalogueSearchCriteria(
     int? MaximumDurationMinutes,
     string Sort);
 
+public sealed record PlanningCatalogueItem(
+    string ProductSlug,
+    string Name,
+    int? DurationMinutes,
+    IReadOnlyList<string> ProductTypeSlugs,
+    IReadOnlyList<string> CategorySlugs,
+    IReadOnlyList<string> DestinationSlugs,
+    IReadOnlyList<string> TagSlugs);
+
 public interface ICatalogueQueries
 {
     Task<PagedResponse<ProductSummaryResponse>> SearchPublishedProductsAsync(
@@ -130,5 +139,9 @@ public interface ICatalogueQueries
 
     Task<DestinationDetailResponse?> GetDestinationAsync(
         string slug,
+        CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<PlanningCatalogueItem>> GetPlanningCatalogueAsync(
+        IReadOnlyCollection<string> destinationSlugs,
         CancellationToken cancellationToken);
 }

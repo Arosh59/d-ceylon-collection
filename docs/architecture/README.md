@@ -127,3 +127,25 @@ constructs the generated customer SDK with the private access token, and uses se
 mutations. Validation, conflict, unauthorized, forbidden, not-found, loading, empty, and error
 states are explicit. Saved itineraries are metadata records only; route generation and itinerary
 building remain Phase 7.
+
+## Phase 7 implementation
+
+Itineraries and Travel Planning is an explicit module with its own assembly, EF Core context,
+`itineraries_travel_planning` PostgreSQL schema, migration set, contracts, and readiness probe. It
+owns validated planning inputs, associations to customer-owned travellers, immutable numbered
+revisions, ordered days and items, rule metadata, fingerprints, and concurrency/audit values.
+Customer, traveller, saved-itinerary, destination, and product references remain stable identifiers;
+the module does not duplicate another module's persistence entities or reach into its DbContext.
+
+`IDeterministicTravelPlanner` implements the fixed `dceylon-deterministic-v1` rules. Pace determines
+the bounded daily item capacity, destinations rotate in requested order, and published Catalogue
+candidates receive explicit preference scores with ordinal slug tie-breaking. A SHA-256 fingerprint
+covers the normalized request, rule version, and ordered Catalogue snapshot. Identical complete
+inputs produce identical days, items, ordering, and stable IDs; a rule, request, or Catalogue
+snapshot change is visible in the metadata.
+
+The protected customer portal keeps the bearer token at the server boundary and uses generated
+OpenAPI types for planner input, review, generation, day/item editing, and reordering. Every result
+is labelled as a draft. The planner does not query or claim availability, final prices, quotes,
+bookability, bookings, routing feasibility, or optimization. See
+[planner rules and limitations](../planner-limitations.md).

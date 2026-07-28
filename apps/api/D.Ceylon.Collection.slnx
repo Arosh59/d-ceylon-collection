@@ -12,6 +12,9 @@
   <Folder Name="/src/Modules/IdentityAccess/">
     <Project Path="src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess/D.Ceylon.Modules.IdentityAccess.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/ItinerariesTravelPlanning/">
+    <Project Path="src/Modules/ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/CustomersTravellers/">
     <Project Path="src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers/D.Ceylon.Modules.CustomersTravellers.csproj" />
   </Folder>

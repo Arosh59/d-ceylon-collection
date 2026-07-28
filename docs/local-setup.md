@@ -54,7 +54,7 @@ reset behavior, direct Compose commands, and troubleshooting.
 
 ## Application status
 
-The Phase 6 ASP.NET Core API is runnable through a pinned SDK container; no host .NET installation
+The Phase 7 ASP.NET Core API is runnable through a pinned SDK container; no host .NET installation
 is required:
 
 ```bash
@@ -114,11 +114,12 @@ npm run test:web:a11y
 ./scripts/web-acceptance.sh
 ```
 
-The acceptance script verifies infrastructure, starts the API with isolated random Testing keys,
-compares its live OpenAPI document with the committed SDK snapshot, builds and starts the production
-web application, and runs public and protected desktop/mobile Chrome flows. It also verifies
-missing-token denial, security headers, and authentication rate limiting, then stops temporary API
-and web processes.
+The acceptance script verifies infrastructure and all five module migration sets, starts the API
+with isolated random Testing keys, compares its live OpenAPI document with the committed SDK
+snapshot, builds and starts the production web application, and runs public and protected
+desktop/mobile Chrome flows. It also verifies missing-token denial, security headers, authentication
+rate limiting, and deterministic planner generation/editing boundaries, then stops temporary API and
+web processes.
 
 See the [public web guide](../apps/web/README.md) for routes, SDK regeneration, environment rules,
 and troubleshooting.

@@ -149,4 +149,4 @@ if [[ "${rate_limited}" != true ]]; then
     exit 1
 fi
 
-echo "Phase 6 customer records, protected portals, and responsive browser checks passed."
+echo "Phase 7 deterministic planning, protected portals, and responsive browser checks passed."

@@ -34,7 +34,7 @@ describe("customer portal forms", () => {
 
     rerender(<ItineraryForm />);
     expect(screen.getByLabelText("Travel start")).toHaveAttribute("type", "date");
-    expect(screen.getByText(/planner begins in Phase 7/u)).toBeInTheDocument();
+    expect(screen.getByText(/Open the travel planner/u)).toBeInTheDocument();
   });
 
   it("announces optimistic-concurrency conflicts", () => {

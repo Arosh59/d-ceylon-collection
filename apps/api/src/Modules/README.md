@@ -7,10 +7,11 @@ rather than reaching into one another's database sets or internal types.
 Phases 2 and 4 implement **Catalogue**, including its internal PostgreSQL search-provider boundary.
 Phase 5 adds **Identity and Access** and **Organisations and Agents**. Phase 6 adds **Customers and
 Travellers**, including customer-owned profile, traveller, wishlist, and saved-itinerary records.
-Each owns a separate assembly, EF Core context, schema, migration set, and readiness check.
-Cross-module user and
-organisation references are stable identifiers rather than navigation into another module's
-DbContext.
+Phase 7 adds **Itineraries and Travel Planning**, including validated planner input, versioned draft
+days/items, deterministic rules, and editing. Each owns a separate assembly, EF Core context,
+schema, migration set, and readiness check. Cross-module user, traveller, saved-itinerary,
+Catalogue, and organisation references are stable identifiers rather than navigation into another
+module's DbContext.
 
 The planned later boundaries are:
 
@@ -18,7 +19,6 @@ The planned later boundaries are:
 - Product Catalogue
 - Pricing
 - Availability
-- Itineraries
 - Quotes
 - Bookings
 - Payments

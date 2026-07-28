@@ -1,10 +1,12 @@
 # Customer Data and Privacy
 
-## Phase 6 scope
+## Phase 6 and 7 scope
 
 The Customers and Travellers module stores only information needed to support customer-controlled
-travel discovery and future planning. It does not store passport documents or numbers, identity
-documents, medical records, generated travel plans, quotes, bookings, or payment data.
+travel discovery and planning. Phase 7 adds planner inputs, traveller associations, draft
+days/items, and revision metadata in the separate planning module. The system does not store
+passport documents or numbers, identity documents, medical records, quotes, bookings, or payment
+data.
 
 ## Data-minimisation rules
 
@@ -14,6 +16,10 @@ documents, medical records, generated travel plans, quotes, bookings, or payment
   support, not diagnoses or unrelated history.
 - Emergency-contact name and phone are accepted only as a pair and are bounded.
 - Wishlist notes and saved-itinerary summaries are private planning notes with strict length limits.
+- Planner accessibility and dietary considerations are optional, bounded to 1,000 characters, and
+  must describe practical support only. They are not a request for diagnoses or medical history.
+- Traveller associations store only customer-owned traveller identifiers. The planner does not copy
+  dates of birth, emergency contacts, or traveller sensitive text into itinerary rows.
 - Client applications never submit or choose a customer owner ID. Ownership comes from validated
   authentication claims on every API query and mutation.
 - Persistence entities, access tokens, and customer identifiers are not exposed as browser session
@@ -21,14 +27,14 @@ documents, medical records, generated travel plans, quotes, bookings, or payment
 
 ## Access, change, and deletion
 
-Customers can read and change their own profile, travellers, wishlist entries, and saved-itinerary
-metadata. Profile and child records have explicit deletion operations. Cross-customer access
-returns the same not-found response as an absent record. Updates and deletes use concurrency tokens
-to prevent silent overwrites.
+Customers can read and change their own profile, travellers, wishlist entries, saved-itinerary
+metadata, and draft travel plans. Profile and Phase 6 child records have explicit deletion
+operations. Cross-customer access returns the same not-found response as an absent record. Updates
+and deletes use concurrency tokens to prevent silent overwrites.
 
-Security/privacy-sensitive creates, changes, and deletions write an audit event containing the
-event type, outcome, authenticated subject, time, and correlation ID. Audit records must not include
-contact values, dietary/accessibility text, emergency details, notes, or bearer tokens.
+Security/privacy-sensitive creates, changes, and deletions write an audit event containing the event
+type, outcome, authenticated subject, time, and correlation ID. Audit records must not include
+contact values, dietary/accessibility text, emergency details, itinerary notes, or bearer tokens.
 
 ## Operational requirements
 

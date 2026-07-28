@@ -1669,6 +1669,593 @@
           }
         }
       }
+    },
+    "/api/v1/customer/travel-plans": {
+      "get": {
+        "tags": ["Travel planning"],
+        "operationId": "GetCustomerTravelPlansV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfTravelPlanSummaryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Travel planning"],
+        "operationId": "CreateCustomerTravelPlanV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelPlanRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/travel-plans/{planId}": {
+      "get": {
+        "tags": ["Travel planning"],
+        "operationId": "GetCustomerTravelPlanV1",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlanResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/travel-plans/{planId}/input": {
+      "put": {
+        "tags": ["Travel planning"],
+        "operationId": "UpdateCustomerTravelPlanInputV1",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelPlanInputRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/travel-plans/{planId}/generate": {
+      "post": {
+        "tags": ["Travel planning"],
+        "operationId": "GenerateCustomerTravelPlanV1",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateTravelPlanRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/travel-plans/{planId}/days/{dayId}": {
+      "put": {
+        "tags": ["Travel planning"],
+        "operationId": "UpdateCustomerItineraryDayV1",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "dayId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItineraryDayRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/travel-plans/{planId}/days/{dayId}/items": {
+      "post": {
+        "tags": ["Travel planning"],
+        "operationId": "CreateCustomerItineraryItemV1",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "dayId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItineraryItemRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/travel-plans/{planId}/items/{itemId}": {
+      "put": {
+        "tags": ["Travel planning"],
+        "operationId": "UpdateCustomerItineraryItemV1",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItineraryItemRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/travel-plans/{planId}/items/{itemId}/reorder": {
+      "post": {
+        "tags": ["Travel planning"],
+        "operationId": "ReorderCustomerItineraryItemV1",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReorderItineraryItemRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelPlanResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1788,6 +2375,38 @@
           }
         }
       },
+      "CreateItineraryItemRequest": {
+        "required": ["title", "destinationSlug"],
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "notes": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "durationMinutes": {
+            "maximum": 1440,
+            "minimum": 1,
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["null", "integer", "string"],
+            "format": "int32"
+          },
+          "destinationSlug": {
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "type": "string"
+          },
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["null", "integer", "string"],
+            "format": "int32"
+          }
+        }
+      },
       "CreateSavedItineraryRequest": {
         "required": ["title"],
         "type": "object",
@@ -1853,6 +2472,79 @@
           },
           "emergencyContactPhone": {
             "maxLength": 40,
+            "minLength": 0,
+            "type": ["null", "string"]
+          }
+        }
+      },
+      "CreateTravelPlanRequest": {
+        "required": ["title", "pace"],
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "savedItineraryId": {
+            "type": ["null", "string"],
+            "format": "uuid"
+          },
+          "travelStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "travelEndDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "pace": {
+            "type": "string"
+          },
+          "destinationSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "travellerIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "productTypeSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categorySlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tagSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "accessibilityConsiderations": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "dietaryConsiderations": {
+            "maxLength": 1000,
             "minLength": 0,
             "type": ["null", "string"]
           }
@@ -2046,6 +2738,15 @@
           }
         }
       },
+      "GenerateTravelPlanRequest": {
+        "type": "object",
+        "properties": {
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "HttpValidationProblemDetails": {
         "type": "object",
         "properties": {
@@ -2073,6 +2774,125 @@
               "items": {
                 "type": "string"
               }
+            }
+          }
+        }
+      },
+      "ItineraryDayResponse": {
+        "required": ["id", "dayNumber", "date", "title", "concurrencyToken", "items"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dayNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["integer", "string"],
+            "format": "int32"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "title": {
+            "type": "string"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItineraryItemResponse"
+            }
+          }
+        }
+      },
+      "ItineraryItemResponse": {
+        "required": [
+          "id",
+          "position",
+          "title",
+          "notes",
+          "durationMinutes",
+          "destinationSlug",
+          "productSlug",
+          "source",
+          "concurrencyToken"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["integer", "string"],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "notes": {
+            "type": ["null", "string"]
+          },
+          "durationMinutes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["null", "integer", "string"],
+            "format": "int32"
+          },
+          "destinationSlug": {
+            "type": "string"
+          },
+          "productSlug": {
+            "type": ["null", "string"]
+          },
+          "source": {
+            "type": "string"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ItineraryRevisionResponse": {
+        "required": [
+          "id",
+          "revisionNumber",
+          "ruleVersion",
+          "inputFingerprint",
+          "generatedAtUtc",
+          "days"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["integer", "string"],
+            "format": "int32"
+          },
+          "ruleVersion": {
+            "type": "string"
+          },
+          "inputFingerprint": {
+            "type": "string"
+          },
+          "generatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItineraryDayResponse"
             }
           }
         }
@@ -2217,6 +3037,21 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TravellerResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
+      "PagedResponseOfTravelPlanSummaryResponse": {
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelPlanSummaryResponse"
             }
           },
           "pagination": {
@@ -2480,6 +3315,26 @@
           }
         }
       },
+      "ReorderItineraryItemRequest": {
+        "type": "object",
+        "properties": {
+          "targetDayId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "maximum": 100,
+            "minimum": 1,
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["integer", "string"],
+            "format": "int32"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "SavedItineraryResponse": {
         "required": [
           "id",
@@ -2579,6 +3434,176 @@
           }
         }
       },
+      "TravelPlanInputResponse": {
+        "required": [
+          "destinationSlugs",
+          "travellerIds",
+          "interests",
+          "productTypeSlugs",
+          "categorySlugs",
+          "tagSlugs",
+          "accessibilityConsiderations",
+          "dietaryConsiderations"
+        ],
+        "type": "object",
+        "properties": {
+          "destinationSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "travellerIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "productTypeSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categorySlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tagSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "accessibilityConsiderations": {
+            "type": ["null", "string"]
+          },
+          "dietaryConsiderations": {
+            "type": ["null", "string"]
+          }
+        }
+      },
+      "TravelPlanResponse": {
+        "required": [
+          "id",
+          "savedItineraryId",
+          "title",
+          "travelStartDate",
+          "travelEndDate",
+          "pace",
+          "status",
+          "input",
+          "currentRevision",
+          "concurrencyToken",
+          "createdAtUtc",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "savedItineraryId": {
+            "type": ["null", "string"],
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "travelStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "travelEndDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "pace": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "input": {
+            "$ref": "#/components/schemas/TravelPlanInputResponse"
+          },
+          "currentRevision": {
+            "$ref": "#/components/schemas/ItineraryRevisionResponse"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TravelPlanSummaryResponse": {
+        "required": [
+          "id",
+          "title",
+          "travelStartDate",
+          "travelEndDate",
+          "pace",
+          "status",
+          "currentRevisionNumber",
+          "concurrencyToken",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "travelStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "travelEndDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "pace": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "currentRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["integer", "string"],
+            "format": "int32"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "UpdateCustomerProfileRequest": {
         "required": ["givenName", "familyName", "preferredLocale", "preferredContactMethod"],
         "type": "object",
@@ -2621,6 +3646,57 @@
           },
           "marketingConsent": {
             "type": "boolean"
+          }
+        }
+      },
+      "UpdateItineraryDayRequest": {
+        "required": ["title"],
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "UpdateItineraryItemRequest": {
+        "required": ["title", "destinationSlug"],
+        "type": "object",
+        "properties": {
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "notes": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "durationMinutes": {
+            "maximum": 1440,
+            "minimum": 1,
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["null", "integer", "string"],
+            "format": "int32"
+          },
+          "destinationSlug": {
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "type": "string"
+          },
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["null", "integer", "string"],
+            "format": "int32"
           }
         }
       },
@@ -2702,6 +3778,83 @@
           }
         }
       },
+      "UpdateTravelPlanInputRequest": {
+        "required": ["title", "pace"],
+        "type": "object",
+        "properties": {
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "savedItineraryId": {
+            "type": ["null", "string"],
+            "format": "uuid"
+          },
+          "travelStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "travelEndDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "pace": {
+            "type": "string"
+          },
+          "destinationSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "travellerIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "productTypeSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "categorySlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tagSlugs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "accessibilityConsiderations": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "dietaryConsiderations": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          }
+        }
+      },
       "UpdateWishlistEntryRequest": {
         "type": "object",
         "properties": {
@@ -2762,6 +3915,9 @@
     },
     {
       "name": "Customer records"
+    },
+    {
+      "name": "Travel planning"
     }
   ]
 }
