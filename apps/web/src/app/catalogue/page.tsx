@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 
+import { CatalogueFilters } from "@/components/catalogue-filters";
+import { PaginationNav } from "@/components/pagination-nav";
 import { ProductCard } from "@/components/product-card";
 import { Container } from "@/components/ui/container";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getCatalogueClient } from "@/lib/catalogue";
+import {
+  catalogueQueryRecord,
+  parseCatalogueSearchParams,
+  type SearchParameters,
+} from "@/lib/discovery-query";
 
 export const dynamic = "force-dynamic";
 
@@ -12,12 +19,31 @@ export const metadata: Metadata = {
   description: "Explore considered journeys, experiences, and stays across Sri Lanka.",
 };
 
-export default async function CataloguePage() {
+interface CataloguePageProps {
+  searchParams: Promise<SearchParameters>;
+}
+
+export default async function CataloguePage({ searchParams }: CataloguePageProps) {
+  const search = parseCatalogueSearchParams(await searchParams);
   const catalogue = await getCatalogueClient();
-  const [products, productTypes] = await Promise.all([
-    catalogue.getProducts({ pageNumber: 1, pageSize: 12 }),
-    catalogue.getProductTypes({ pageNumber: 1, pageSize: 20 }),
+  const [products, productTypes, categories, collections, destinations, tags] = await Promise.all([
+    catalogue.getProducts(search),
+    catalogue.getProductTypes({ pageSize: 100 }),
+    catalogue.getCategories({ pageSize: 100 }),
+    catalogue.getCollections({ pageSize: 100 }),
+    catalogue.getDestinations({ pageSize: 100 }),
+    catalogue.getTags({ pageSize: 100 }),
   ]);
+
+  const filterValues = {
+    query: search.query,
+    productType: search.productType,
+    category: search.category,
+    collection: search.collection,
+    destination: search.destination,
+    tag: search.tag,
+    sort: search.sort,
+  };
 
   return (
     <main id="main-content">
@@ -28,41 +54,54 @@ export default async function CataloguePage() {
             Find your way into Sri Lanka.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
-            A considered collection of journeys, stays, experiences, and services—designed to be
-            explored without hurry.
+            Search and filter considered journeys, stays, and experiences by place, perspective, and
+            pace.
           </p>
-          {productTypes.items.length > 0 ? (
-            <ul aria-label="Available product types" className="mt-8 flex flex-wrap gap-2">
-              {productTypes.items.map((productType) => (
-                <li
-                  className="rounded-full border border-white/25 px-4 py-2 text-sm text-white/78"
-                  key={productType.id}
-                >
-                  {productType.name}
-                </li>
-              ))}
-            </ul>
-          ) : null}
         </Container>
       </section>
-      <Container className="py-16 sm:py-24">
-        {products.items.length === 0 ? (
-          <EmptyState
-            description="The API connection is healthy and the catalogue is ready for the curated product data arriving in Phase 4."
-            title="The first journeys are being curated."
-          />
-        ) : (
-          <>
-            <p className="mb-8 text-sm text-ink-muted">
-              Showing {products.items.length} of {products.pagination.totalItems} journeys
+      <Container className="py-12 sm:py-20">
+        <CatalogueFilters
+          categories={categories.items}
+          collections={collections.items}
+          destinations={destinations.items}
+          productTypes={productTypes.items}
+          tags={tags.items}
+          values={filterValues}
+        />
+        <section aria-labelledby="catalogue-results" className="mt-14">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="eyebrow">Discovery results</p>
+              <h2 className="mt-3 text-4xl" id="catalogue-results">
+                {products.pagination.totalItems}{" "}
+                {Number(products.pagination.totalItems) === 1
+                  ? "place to begin"
+                  : "places to begin"}
+              </h2>
+            </div>
+            <p className="text-sm text-ink-muted">
+              Page {products.pagination.pageNumber} of{" "}
+              {Math.max(1, Number(products.pagination.totalPages))}
             </p>
+          </div>
+          {products.items.length === 0 ? (
+            <EmptyState
+              description="Try clearing one or more filters, changing the search phrase, or browsing all catalogue entries."
+              title="No journeys match these filters."
+            />
+          ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {products.items.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
-          </>
-        )}
+          )}
+          <PaginationNav
+            basePath="/catalogue"
+            pagination={products.pagination}
+            query={catalogueQueryRecord(search)}
+          />
+        </section>
       </Container>
     </main>
   );

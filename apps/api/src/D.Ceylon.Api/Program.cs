@@ -5,6 +5,7 @@ using D.Ceylon.Api.Endpoints;
 using D.Ceylon.Api.Infrastructure;
 using D.Ceylon.Api.Middleware;
 using D.Ceylon.Modules.Catalogue;
+using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -96,6 +97,26 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
+
+if (args.Contains("--seed-catalogue", StringComparer.Ordinal))
+{
+    if (!app.Environment.IsDevelopment() && !app.Environment.IsEnvironment("Testing"))
+    {
+        throw new InvalidOperationException(
+            "Catalogue development seed data may only be applied in Development or Testing.");
+    }
+
+    await using var scope = app.Services.CreateAsyncScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<CatalogueDevelopmentSeeder>();
+    var result = await seeder.SeedAsync(CancellationToken.None);
+    CatalogueSeedLogging.Completed(
+        app.Logger,
+        result.Changed,
+        result.CollectionCount,
+        result.DestinationCount,
+        result.ProductCount);
+    return;
+}
 
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<SecurityHeadersMiddleware>();

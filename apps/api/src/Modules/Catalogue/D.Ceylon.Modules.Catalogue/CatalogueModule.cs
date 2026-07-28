@@ -1,6 +1,8 @@
 using D.Ceylon.Modules.Catalogue.Application;
 using D.Ceylon.Modules.Catalogue.Contracts;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence;
+using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
+using D.Ceylon.Modules.Catalogue.Infrastructure.Search;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +39,8 @@ public static class CatalogueModule
                     })
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
         services.AddScoped<ICatalogueQueries, CatalogueQueries>();
+        services.AddScoped<ICatalogueSearchProvider, PostgreSqlCatalogueSearchProvider>();
+        services.AddScoped<CatalogueDevelopmentSeeder>();
         services
             .AddHealthChecks()
             .AddDbContextCheck<CatalogueDbContext>(

@@ -4,7 +4,7 @@ This workspace contains the server-side TypeScript client for the versioned ASP.
 public response types are derived from the committed OpenAPI v1 snapshot rather than handwritten
 domain models.
 
-Regenerate the contract while the Phase 2 API is running:
+Regenerate the contract while the API is running:
 
 ```bash
 curl --fail --silent --show-error \
@@ -15,3 +15,7 @@ npm run sdk:generate
 
 Review both the OpenAPI snapshot and generated TypeScript diff before committing an API contract
 change.
+
+The wrapper exposes typed read-only product search, taxonomy, collection, and destination
+operations. Query types are derived from the versioned contract; the package does not recreate
+persistence or domain models.

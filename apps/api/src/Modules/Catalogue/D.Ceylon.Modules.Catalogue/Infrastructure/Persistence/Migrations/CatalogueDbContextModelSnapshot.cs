@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 
 #nullable disable
 
@@ -84,11 +85,26 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at_utc");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
+                        .HasColumnName("description");
+
+                    b.Property<Guid?>("HeroMediaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("hero_media_id");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(160)
                         .HasColumnType("character varying(160)")
                         .HasColumnName("name");
+
+                    b.Property<string>("PublicationState")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("publication_state");
 
                     b.Property<string>("Slug")
                         .IsRequired()
@@ -107,8 +123,14 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("HeroMediaId")
+                        .HasDatabaseName("ix_destinations_hero_media_id");
+
                     b.HasIndex("Name")
                         .HasDatabaseName("ix_destinations_name");
+
+                    b.HasIndex("PublicationState")
+                        .HasDatabaseName("ix_destinations_publication_state");
 
                     b.HasIndex("Slug")
                         .IsUnique()
@@ -118,6 +140,62 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_destinations_updated_at_utc");
 
                     b.ToTable("destinations", "catalogue");
+                });
+
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.MediaAsset", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("AltText")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("alt_text");
+
+                    b.Property<string>("AssetKey")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("asset_key");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid")
+                        .HasColumnName("concurrency_token");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("integer")
+                        .HasColumnName("height");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("integer")
+                        .HasColumnName("width");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssetKey")
+                        .IsUnique()
+                        .HasDatabaseName("ux_media_assets_asset_key");
+
+                    b.HasIndex("UpdatedAtUtc")
+                        .HasDatabaseName("ix_media_assets_updated_at_utc");
+
+                    b.ToTable("media_assets", "catalogue", t =>
+                        {
+                            t.HasCheckConstraint("ck_media_assets_height", "height > 0");
+
+                            t.HasCheckConstraint("ck_media_assets_width", "width > 0");
+                        });
                 });
 
             modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.Product", b =>
@@ -142,6 +220,12 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                         .HasColumnName("currency")
                         .IsFixedLength();
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
+                        .HasColumnName("description");
+
                     b.Property<int?>("DurationMinutes")
                         .HasColumnType("integer")
                         .HasColumnName("duration_minutes");
@@ -161,6 +245,14 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)")
                         .HasColumnName("publication_state");
+
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasColumnName("search_vector")
+                        .HasAnnotation("Npgsql:TsVectorConfig", "english")
+                        .HasAnnotation("Npgsql:TsVectorProperties", new[] { "Name", "ShortDescription", "Description" });
 
                     b.Property<string>("ShortDescription")
                         .IsRequired()
@@ -194,12 +286,20 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                     b.HasIndex("PublicationState")
                         .HasDatabaseName("ix_products_publication_state");
 
+                    b.HasIndex("SearchVector")
+                        .HasDatabaseName("ix_products_search_vector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
+
                     b.HasIndex("Slug")
                         .IsUnique()
                         .HasDatabaseName("ux_products_slug");
 
                     b.HasIndex("UpdatedAtUtc")
                         .HasDatabaseName("ix_products_updated_at_utc");
+
+                    b.HasIndex("PublicationState", "Name")
+                        .HasDatabaseName("ix_products_publication_state_name");
 
                     b.ToTable("products", "catalogue", t =>
                         {
@@ -265,6 +365,52 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                     b.ToTable("product_destinations", "catalogue");
                 });
 
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.ProductMedia", b =>
+                {
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("product_id");
+
+                    b.Property<Guid>("MediaAssetId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("media_asset_id");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("sort_order");
+
+                    b.HasKey("ProductId", "MediaAssetId");
+
+                    b.HasIndex("MediaAssetId")
+                        .HasDatabaseName("ix_product_media_media_asset_id");
+
+                    b.HasIndex("ProductId", "SortOrder")
+                        .HasDatabaseName("ix_product_media_product_id_sort_order");
+
+                    b.ToTable("product_media", "catalogue", t =>
+                        {
+                            t.HasCheckConstraint("ck_product_media_sort_order", "sort_order >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.ProductTag", b =>
+                {
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("product_id");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tag_id");
+
+                    b.HasKey("ProductId", "TagId");
+
+                    b.HasIndex("TagId")
+                        .HasDatabaseName("ix_product_tags_tag_id");
+
+                    b.ToTable("product_tags", "catalogue");
+                });
+
             modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.ProductType", b =>
                 {
                     b.Property<Guid>("Id")
@@ -311,7 +457,7 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                     b.ToTable("product_types", "catalogue");
                 });
 
-            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.TravelCollectionEntry", b =>
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.Tag", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -345,7 +491,79 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
+                        .HasDatabaseName("ix_tags_name");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ux_tags_slug");
+
+                    b.HasIndex("UpdatedAtUtc")
+                        .HasDatabaseName("ix_tags_updated_at_utc");
+
+                    b.ToTable("tags", "catalogue");
+                });
+
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.TravelCollectionEntry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ConcurrencyToken")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid")
+                        .HasColumnName("concurrency_token");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
+                        .HasColumnName("description");
+
+                    b.Property<Guid?>("HeroMediaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("hero_media_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PublicationState")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("publication_state");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("slug");
+
+                    b.Property<string>("Summary")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("summary");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HeroMediaId")
+                        .HasDatabaseName("ix_collections_hero_media_id");
+
+                    b.HasIndex("Name")
                         .HasDatabaseName("ix_collections_name");
+
+                    b.HasIndex("PublicationState")
+                        .HasDatabaseName("ix_collections_publication_state");
 
                     b.HasIndex("Slug")
                         .IsUnique()
@@ -355,6 +573,16 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_collections_updated_at_utc");
 
                     b.ToTable("collections", "catalogue");
+                });
+
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.Destination", b =>
+                {
+                    b.HasOne("D.Ceylon.Modules.Catalogue.Domain.MediaAsset", "HeroMedia")
+                        .WithMany()
+                        .HasForeignKey("HeroMediaId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("HeroMedia");
                 });
 
             modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.Product", b =>
@@ -425,6 +653,54 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.ProductMedia", b =>
+                {
+                    b.HasOne("D.Ceylon.Modules.Catalogue.Domain.MediaAsset", "MediaAsset")
+                        .WithMany("ProductMedia")
+                        .HasForeignKey("MediaAssetId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("D.Ceylon.Modules.Catalogue.Domain.Product", "Product")
+                        .WithMany("ProductMedia")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MediaAsset");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.ProductTag", b =>
+                {
+                    b.HasOne("D.Ceylon.Modules.Catalogue.Domain.Product", "Product")
+                        .WithMany("ProductTags")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("D.Ceylon.Modules.Catalogue.Domain.Tag", "Tag")
+                        .WithMany("ProductTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.TravelCollectionEntry", b =>
+                {
+                    b.HasOne("D.Ceylon.Modules.Catalogue.Domain.MediaAsset", "HeroMedia")
+                        .WithMany()
+                        .HasForeignKey("HeroMediaId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("HeroMedia");
+                });
+
             modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.Category", b =>
                 {
                     b.Navigation("ProductCategories");
@@ -435,6 +711,11 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                     b.Navigation("ProductDestinations");
                 });
 
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.MediaAsset", b =>
+                {
+                    b.Navigation("ProductMedia");
+                });
+
             modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.Product", b =>
                 {
                     b.Navigation("ProductCategories");
@@ -442,11 +723,20 @@ namespace D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Migrations
                     b.Navigation("ProductCollections");
 
                     b.Navigation("ProductDestinations");
+
+                    b.Navigation("ProductMedia");
+
+                    b.Navigation("ProductTags");
                 });
 
             modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.ProductType", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.Tag", b =>
+                {
+                    b.Navigation("ProductTags");
                 });
 
             modelBuilder.Entity("D.Ceylon.Modules.Catalogue.Domain.TravelCollectionEntry", b =>

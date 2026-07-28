@@ -4,6 +4,42 @@ export type ClientOptions = {
   baseUrl: "http://127.0.0.1:8080/" | (string & {});
 };
 
+export type CollectionDetailResponse = {
+  id: string;
+  name: string;
+  slug: string;
+  summary: string;
+  description: string;
+  heroMedia: null | MediaMetadataResponse;
+  publishedProductCount: number | string;
+};
+
+export type CollectionSummaryResponse = {
+  id: string;
+  name: string;
+  slug: string;
+  summary: string;
+  heroMedia: null | MediaMetadataResponse;
+};
+
+export type DestinationDetailResponse = {
+  id: string;
+  name: string;
+  slug: string;
+  summary: string;
+  description: string;
+  heroMedia: null | MediaMetadataResponse;
+  publishedProductCount: number | string;
+};
+
+export type DestinationSummaryResponse = {
+  id: string;
+  name: string;
+  slug: string;
+  summary: string;
+  heroMedia: null | MediaMetadataResponse;
+};
+
 export type HttpValidationProblemDetails = {
   type?: null | string;
   title?: null | string;
@@ -15,10 +51,33 @@ export type HttpValidationProblemDetails = {
   };
 };
 
+export type MediaMetadataResponse = {
+  id: string;
+  assetKey: string;
+  altText: string;
+  width: number | string;
+  height: number | string;
+};
+
 export type NamedReferenceResponse = {
   id: string;
   name: string;
   slug: string;
+};
+
+export type PagedResponseOfCollectionSummaryResponse = {
+  items: Array<CollectionSummaryResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfDestinationSummaryResponse = {
+  items: Array<DestinationSummaryResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfNamedReferenceResponse = {
+  items: Array<NamedReferenceResponse>;
+  pagination: PaginationMetadata;
 };
 
 export type PagedResponseOfProductSummaryResponse = {
@@ -53,6 +112,7 @@ export type ProductDetailResponse = {
   name: string;
   slug: string;
   shortDescription: string;
+  description: string;
   productType: ProductTypeResponse;
   startingPrice: null | number | string;
   currency: string;
@@ -60,6 +120,8 @@ export type ProductDetailResponse = {
   categories: Array<NamedReferenceResponse>;
   collections: Array<NamedReferenceResponse>;
   destinations: Array<NamedReferenceResponse>;
+  tags: Array<NamedReferenceResponse>;
+  media: Array<MediaMetadataResponse>;
 };
 
 export type ProductSummaryResponse = {
@@ -71,6 +133,9 @@ export type ProductSummaryResponse = {
   startingPrice: null | number | string;
   currency: string;
   durationMinutes: null | number | string;
+  primaryMedia: null | MediaMetadataResponse;
+  collections: Array<NamedReferenceResponse>;
+  destinations: Array<NamedReferenceResponse>;
 };
 
 export type ProductTypeResponse = {
@@ -83,6 +148,17 @@ export type GetProductsV1Data = {
   body?: never;
   path?: never;
   query?: {
+    Query?: string;
+    ProductType?: string;
+    Category?: string;
+    Collection?: string;
+    Destination?: string;
+    Tag?: string;
+    MinimumPrice?: number | string;
+    MaximumPrice?: number | string;
+    MinimumDurationMinutes?: number | string;
+    MaximumDurationMinutes?: number | string;
+    Sort?: string;
     PageNumber?: number | string;
     PageSize?: number | string;
   };
@@ -120,7 +196,7 @@ export type GetProductBySlugV1Errors = {
   /**
    * Bad Request
    */
-  400: ProblemDetails;
+  400: HttpValidationProblemDetails;
   /**
    * Not Found
    */
@@ -167,3 +243,182 @@ export type GetProductTypesV1Responses = {
 
 export type GetProductTypesV1Response =
   GetProductTypesV1Responses[keyof GetProductTypesV1Responses];
+
+export type GetCategoriesV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/catalogue/categories";
+};
+
+export type GetCategoriesV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetCategoriesV1Error = GetCategoriesV1Errors[keyof GetCategoriesV1Errors];
+
+export type GetCategoriesV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfNamedReferenceResponse;
+};
+
+export type GetCategoriesV1Response = GetCategoriesV1Responses[keyof GetCategoriesV1Responses];
+
+export type GetTagsV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/catalogue/tags";
+};
+
+export type GetTagsV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetTagsV1Error = GetTagsV1Errors[keyof GetTagsV1Errors];
+
+export type GetTagsV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfNamedReferenceResponse;
+};
+
+export type GetTagsV1Response = GetTagsV1Responses[keyof GetTagsV1Responses];
+
+export type GetCollectionsV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/catalogue/collections";
+};
+
+export type GetCollectionsV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetCollectionsV1Error = GetCollectionsV1Errors[keyof GetCollectionsV1Errors];
+
+export type GetCollectionsV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfCollectionSummaryResponse;
+};
+
+export type GetCollectionsV1Response = GetCollectionsV1Responses[keyof GetCollectionsV1Responses];
+
+export type GetCollectionBySlugV1Data = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: "/api/v1/catalogue/collections/{slug}";
+};
+
+export type GetCollectionBySlugV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type GetCollectionBySlugV1Error =
+  GetCollectionBySlugV1Errors[keyof GetCollectionBySlugV1Errors];
+
+export type GetCollectionBySlugV1Responses = {
+  /**
+   * OK
+   */
+  200: CollectionDetailResponse;
+};
+
+export type GetCollectionBySlugV1Response =
+  GetCollectionBySlugV1Responses[keyof GetCollectionBySlugV1Responses];
+
+export type GetDestinationsV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/catalogue/destinations";
+};
+
+export type GetDestinationsV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetDestinationsV1Error = GetDestinationsV1Errors[keyof GetDestinationsV1Errors];
+
+export type GetDestinationsV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfDestinationSummaryResponse;
+};
+
+export type GetDestinationsV1Response =
+  GetDestinationsV1Responses[keyof GetDestinationsV1Responses];
+
+export type GetDestinationBySlugV1Data = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: "/api/v1/catalogue/destinations/{slug}";
+};
+
+export type GetDestinationBySlugV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type GetDestinationBySlugV1Error =
+  GetDestinationBySlugV1Errors[keyof GetDestinationBySlugV1Errors];
+
+export type GetDestinationBySlugV1Responses = {
+  /**
+   * OK
+   */
+  200: DestinationDetailResponse;
+};
+
+export type GetDestinationBySlugV1Response =
+  GetDestinationBySlugV1Responses[keyof GetDestinationBySlugV1Responses];

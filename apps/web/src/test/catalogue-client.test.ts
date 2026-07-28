@@ -26,18 +26,23 @@ describe("catalogue client", () => {
     );
     const client = createCatalogueClient({
       baseUrl: "https://api.example.test",
-      correlationId: "phase3-test",
+      correlationId: "phase4-test",
       fetch: request,
     });
 
-    await client.getProducts({ pageNumber: 2, pageSize: 6 });
+    await client.getProducts({
+      query: "railway",
+      collection: "flow",
+      pageNumber: 2,
+      pageSize: 6,
+    });
 
     expect(request).toHaveBeenCalledOnce();
     const [url, init] = request.mock.calls[0]!;
     expect(String(url)).toBe(
-      "https://api.example.test/api/v1/catalogue/products?pageNumber=2&pageSize=6",
+      "https://api.example.test/api/v1/catalogue/products?query=railway&collection=flow&pageNumber=2&pageSize=6",
     );
-    expect(new Headers(init?.headers).get("X-Correlation-ID")).toBe("phase3-test");
+    expect(new Headers(init?.headers).get("X-Correlation-ID")).toBe("phase4-test");
     expect(init?.cache).toBe("no-store");
   });
 });

@@ -19,6 +19,10 @@ public sealed class CatalogueDbContext(
 
     public DbSet<Destination> Destinations => Set<Destination>();
 
+    public DbSet<Tag> Tags => Set<Tag>();
+
+    public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);

@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence;
+using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -92,6 +93,8 @@ public sealed partial class ApiApplicationFactory : WebApplicationFactory<Progra
 
         using var database = new CatalogueDbContext(options, TimeProvider.System);
         database.Database.Migrate();
+        var seeder = new CatalogueDevelopmentSeeder(database);
+        seeder.SeedAsync(CancellationToken.None).GetAwaiter().GetResult();
     }
 
     private void DropDatabase()

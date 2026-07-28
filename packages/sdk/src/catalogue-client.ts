@@ -1,20 +1,44 @@
 import type {
+  GetCategoriesV1Responses,
+  GetCollectionBySlugV1Responses,
+  GetCollectionsV1Responses,
+  GetDestinationBySlugV1Responses,
+  GetDestinationsV1Responses,
   GetProductBySlugV1Responses,
-  GetProductsV1Data,
   GetProductsV1Responses,
   GetProductTypesV1Responses,
+  GetTagsV1Responses,
 } from "./generated";
 
 export type CataloguePage = GetProductsV1Responses[200];
 export type ProductSummary = CataloguePage["items"][number];
 export type ProductDetail = GetProductBySlugV1Responses[200];
 export type ProductType = GetProductTypesV1Responses[200]["items"][number];
-
-type ApiPaginationQuery = NonNullable<GetProductsV1Data["query"]>;
+export type CollectionPage = GetCollectionsV1Responses[200];
+export type CollectionSummary = CollectionPage["items"][number];
+export type CollectionDetail = GetCollectionBySlugV1Responses[200];
+export type DestinationPage = GetDestinationsV1Responses[200];
+export type DestinationSummary = DestinationPage["items"][number];
+export type DestinationDetail = GetDestinationBySlugV1Responses[200];
+export type NamedReference = GetCategoriesV1Responses[200]["items"][number];
 
 export interface CataloguePagination {
-  pageNumber?: Extract<ApiPaginationQuery["PageNumber"], number>;
-  pageSize?: Extract<ApiPaginationQuery["PageSize"], number>;
+  pageNumber?: number | undefined;
+  pageSize?: number | undefined;
+}
+
+export interface CatalogueSearch extends CataloguePagination {
+  query?: string | undefined;
+  productType?: string | undefined;
+  category?: string | undefined;
+  collection?: string | undefined;
+  destination?: string | undefined;
+  tag?: string | undefined;
+  minimumPrice?: number | undefined;
+  maximumPrice?: number | undefined;
+  minimumDurationMinutes?: number | undefined;
+  maximumDurationMinutes?: number | undefined;
+  sort?: "name" | "price-asc" | "price-desc" | "duration-asc" | undefined;
 }
 
 export interface CatalogueClientOptions {
@@ -24,9 +48,15 @@ export interface CatalogueClientOptions {
 }
 
 export interface CatalogueClient {
+  getCategories(query?: CataloguePagination): Promise<GetCategoriesV1Responses[200]>;
+  getCollection(slug: string): Promise<CollectionDetail>;
+  getCollections(query?: CataloguePagination): Promise<CollectionPage>;
+  getDestination(slug: string): Promise<DestinationDetail>;
+  getDestinations(query?: CataloguePagination): Promise<DestinationPage>;
   getProduct(slug: string): Promise<ProductDetail>;
-  getProducts(query?: CataloguePagination): Promise<CataloguePage>;
+  getProducts(query?: CatalogueSearch): Promise<CataloguePage>;
   getProductTypes(query?: CataloguePagination): Promise<GetProductTypesV1Responses[200]>;
+  getTags(query?: CataloguePagination): Promise<GetTagsV1Responses[200]>;
 }
 
 interface ProblemDetails {
@@ -36,6 +66,8 @@ interface ProblemDetails {
   title?: string;
   type?: string;
 }
+
+type QueryValue = number | string | undefined;
 
 export class ApiRequestError extends Error {
   public readonly correlationId: string | undefined;
@@ -53,11 +85,11 @@ export function createCatalogueClient(options: CatalogueClientOptions): Catalogu
   const request = options.fetch ?? globalThis.fetch;
   const baseUrl = normalizeBaseUrl(options.baseUrl);
 
-  async function get<T>(path: string, query?: Record<string, number | undefined>): Promise<T> {
+  async function get<T>(path: string, query?: Record<string, QueryValue>): Promise<T> {
     const url = new URL(path, baseUrl);
 
     for (const [key, value] of Object.entries(query ?? {})) {
-      if (value !== undefined) {
+      if (value !== undefined && value !== "") {
         url.searchParams.set(key, String(value));
       }
     }
@@ -83,19 +115,44 @@ export function createCatalogueClient(options: CatalogueClientOptions): Catalogu
     return (await response.json()) as T;
   }
 
+  const pagination = (query: CataloguePagination): Record<string, QueryValue> => ({
+    pageNumber: query.pageNumber,
+    pageSize: query.pageSize,
+  });
+
   return {
+    getCategories: (query = {}) =>
+      get<GetCategoriesV1Responses[200]>("/api/v1/catalogue/categories", pagination(query)),
+    getCollection: (slug) =>
+      get<CollectionDetail>(`/api/v1/catalogue/collections/${encodeURIComponent(slug)}`),
+    getCollections: (query = {}) =>
+      get<CollectionPage>("/api/v1/catalogue/collections", pagination(query)),
+    getDestination: (slug) =>
+      get<DestinationDetail>(`/api/v1/catalogue/destinations/${encodeURIComponent(slug)}`),
+    getDestinations: (query = {}) =>
+      get<DestinationPage>("/api/v1/catalogue/destinations", pagination(query)),
     getProduct: (slug) =>
       get<ProductDetail>(`/api/v1/catalogue/products/${encodeURIComponent(slug)}`),
     getProducts: (query = {}) =>
       get<CataloguePage>("/api/v1/catalogue/products", {
+        query: query.query,
+        productType: query.productType,
+        category: query.category,
+        collection: query.collection,
+        destination: query.destination,
+        tag: query.tag,
+        minimumPrice: query.minimumPrice,
+        maximumPrice: query.maximumPrice,
+        minimumDurationMinutes: query.minimumDurationMinutes,
+        maximumDurationMinutes: query.maximumDurationMinutes,
+        sort: query.sort,
         pageNumber: query.pageNumber,
         pageSize: query.pageSize,
       }),
     getProductTypes: (query = {}) =>
-      get<GetProductTypesV1Responses[200]>("/api/v1/catalogue/product-types", {
-        pageNumber: query.pageNumber,
-        pageSize: query.pageSize,
-      }),
+      get<GetProductTypesV1Responses[200]>("/api/v1/catalogue/product-types", pagination(query)),
+    getTags: (query = {}) =>
+      get<GetTagsV1Responses[200]>("/api/v1/catalogue/tags", pagination(query)),
   };
 }
 

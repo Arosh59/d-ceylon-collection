@@ -1,4 +1,5 @@
 using D.Ceylon.BuildingBlocks.Domain;
+using NpgsqlTypes;
 
 namespace D.Ceylon.Modules.Catalogue.Domain;
 
@@ -16,7 +17,8 @@ public sealed class Product : AuditableEntity
         string shortDescription,
         decimal? startingPrice,
         string currency,
-        int? durationMinutes = null)
+        int? durationMinutes = null,
+        string? description = null)
         : base(id)
     {
         if (productTypeId == Guid.Empty)
@@ -45,6 +47,10 @@ public sealed class Product : AuditableEntity
             shortDescription,
             500,
             nameof(shortDescription));
+        Description = CatalogueGuard.Required(
+            description ?? shortDescription,
+            4_000,
+            nameof(description));
         StartingPrice = startingPrice;
         Currency = CatalogueGuard.Currency(currency, nameof(currency));
         DurationMinutes = durationMinutes;
@@ -59,6 +65,8 @@ public sealed class Product : AuditableEntity
 
     public string ShortDescription { get; private set; } = string.Empty;
 
+    public string Description { get; private set; } = string.Empty;
+
     public decimal? StartingPrice { get; private set; }
 
     public string Currency { get; private set; } = string.Empty;
@@ -66,6 +74,8 @@ public sealed class Product : AuditableEntity
     public int? DurationMinutes { get; private set; }
 
     public PublicationState PublicationState { get; private set; }
+
+    public NpgsqlTsVector SearchVector { get; private set; } = null!;
 
     public ProductType ProductType { get; private set; } = null!;
 
@@ -75,4 +85,12 @@ public sealed class Product : AuditableEntity
         new List<ProductCollectionLink>();
 
     public ICollection<ProductDestination> ProductDestinations { get; } = new List<ProductDestination>();
+
+    public ICollection<ProductTag> ProductTags { get; } = new List<ProductTag>();
+
+    public ICollection<ProductMedia> ProductMedia { get; } = new List<ProductMedia>();
+
+    public void Publish() => PublicationState = PublicationState.Published;
+
+    public void Archive() => PublicationState = PublicationState.Archived;
 }

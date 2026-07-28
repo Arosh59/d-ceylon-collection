@@ -79,4 +79,25 @@ React Server Components call the API from the server boundary. API origins never
 enter the browser bundle, the web application does not access PostgreSQL or
 duplicate backend domain entities, and incoming safe correlation IDs are
 forwarded to API calls. Catalogue routes render loading, empty, error, not-found,
-and populated foundations; Phase 4 owns catalogue data and search behavior.
+and populated foundations.
+
+## Phase 4 implementation
+
+Catalogue discovery remains inside the explicit Catalogue module boundary. Its
+domain owns products, product types, categories, collections, destinations,
+tags, publication state, normalized relationships, and stable media metadata.
+The application query contract delegates product discovery to
+`ICatalogueSearchProvider`; the only implementation is PostgreSQL full-text
+search, so Algolia and Elasticsearch remain absent.
+
+Development seeding is an explicit, environment-guarded operation. It creates
+deterministic Root, Flow, Awaken, Breathe, and Rediscover collections plus
+representative published products and destinations. Media records contain
+stable placeholder keys, alternative text, and dimensions—no licensed image
+files, external map data, or direct browser database access.
+
+The public App Router pages consume only generated OpenAPI response types
+through the server-side SDK. Catalogue, collection, destination, experience,
+accommodation, and product pages are server-rendered and cover filtering,
+pagination, loading, empty, error, and not-found behavior. Authentication and
+all transactional commerce boundaries remain deferred.

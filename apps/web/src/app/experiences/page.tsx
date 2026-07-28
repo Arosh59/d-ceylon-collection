@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
-import { PlaceholderPage } from "@/components/ui/placeholder-page";
+import { ProductTypePage } from "@/components/product-type-page";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Experiences",
@@ -8,10 +10,11 @@ export const metadata: Metadata = {
 
 export default function ExperiencesPage() {
   return (
-    <PlaceholderPage
-      description="Meaningful encounters with culture, nature, food, craft, and adventure will be curated here."
-      eyebrow="Make it memorable"
-      title="Move beyond seeing. Begin experiencing."
+    <ProductTypePage
+      description="Small-scale, locally hosted encounters shaped by culture, landscape, food, and wellbeing."
+      eyebrow="Time well spent"
+      productType="experience"
+      title="Experiences that bring the island closer."
     />
   );
 }

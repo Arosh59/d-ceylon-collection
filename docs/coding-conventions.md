@@ -16,7 +16,7 @@
 - Keep server-only values out of browser bundles.
 - Use Framer Motion only as restrained progressive enhancement.
 
-The Phase 3 frontend uses Prettier, ESLint, strict TypeScript, Vitest, Testing
+The Phase 4 frontend uses Prettier, ESLint, strict TypeScript, Vitest, Testing
 Library, axe-core, and Playwright. Run the frontend gate from the repository
 root:
 

@@ -30,7 +30,35 @@ public sealed class ProductTests
         Assert.Equal("USD", product.Currency);
         Assert.Equal(4_320, product.DurationMinutes);
         Assert.Equal(PublicationState.Draft, product.PublicationState);
+        Assert.Equal(product.ShortDescription, product.Description);
         Assert.NotEqual(Guid.Empty, product.ConcurrencyToken);
+    }
+
+    [Fact]
+    public void ProductPublicationTransitionsRemainExplicit()
+    {
+        var product = new Product(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            "Test",
+            "test",
+            "Summary",
+            10,
+            "USD",
+            description: "A full description.");
+
+        product.Publish();
+        Assert.Equal(PublicationState.Published, product.PublicationState);
+
+        product.Archive();
+        Assert.Equal(PublicationState.Archived, product.PublicationState);
+    }
+
+    [Fact]
+    public void MediaMetadataRejectsInvalidDimensions()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => new MediaAsset(Guid.NewGuid(), "placeholder:test", "Test", 0, 1200));
     }
 
     [Theory]

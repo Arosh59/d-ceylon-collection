@@ -1,8 +1,10 @@
 import { ApiRequestError } from "@dceylon/sdk";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/ui/container";
+import { MediaPlaceholder } from "@/components/media-placeholder";
 import { getCatalogueClient } from "@/lib/catalogue";
 import { formatStartingPrice } from "@/lib/format-price";
 
@@ -30,9 +32,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
   });
 
   const references = [
-    { label: "Collections", values: product.collections },
-    { label: "Destinations", values: product.destinations },
-    { label: "Categories", values: product.categories },
+    { label: "Collections", values: product.collections, path: "/collections" },
+    { label: "Destinations", values: product.destinations, path: "/destinations" },
+    { label: "Categories", values: product.categories, path: undefined },
+    { label: "Tags", values: product.tags, path: undefined },
   ].filter((group) => group.values.length > 0);
 
   return (
@@ -46,23 +49,30 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </p>
         </Container>
       </section>
+      <Container className="-mt-8 relative z-10">
+        <MediaPlaceholder
+          className="aspect-[16/7] rounded-[1.75rem] shadow-soft"
+          media={product.media[0] ?? null}
+        />
+      </Container>
       <Container className="grid gap-12 py-16 sm:py-24 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <section aria-labelledby="journey-overview">
           <p className="eyebrow">Journey overview</p>
           <h2 className="mt-4 text-4xl" id="journey-overview">
             The shape of this experience
           </h2>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-ink-muted">
-            Detailed itinerary, inclusions, availability, and editorial storytelling will be added
-            with the Phase 4 catalogue implementation.
-          </p>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-ink-muted">{product.description}</p>
           {references.map((group) => (
             <div className="mt-9" key={group.label}>
               <h3 className="text-xl">{group.label}</h3>
               <ul className="mt-3 flex flex-wrap gap-2">
                 {group.values.map((value) => (
                   <li className="rounded-full bg-navy/6 px-4 py-2 text-sm" key={value.id}>
-                    {value.name}
+                    {group.path ? (
+                      <Link href={`${group.path}/${value.slug}`}>{value.name}</Link>
+                    ) : (
+                      value.name
+                    )}
                   </li>
                 ))}
               </ul>

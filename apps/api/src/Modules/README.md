@@ -5,8 +5,8 @@ application behavior, persistence mappings, contracts, and HTTP endpoints.
 Modules communicate through explicit contracts rather than reaching into one
 another's database sets or internal types.
 
-Phase 2 implements only the initial **Catalogue** module. The planned boundaries
-are:
+Phases 2 and 4 implement only the **Catalogue** module, including its internal
+PostgreSQL search-provider boundary. The planned later boundaries are:
 
 - Identity and Access
 - Organisations and Agents

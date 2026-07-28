@@ -9,7 +9,7 @@ A phase is complete only after its documented checks pass.
 | 1 | Local PostgreSQL, Redis, and Directus | Complete |
 | 2 | ASP.NET Core API and initial catalogue | Complete |
 | 3 | Public Next.js foundation | Complete |
-| 4 | Catalogue, destinations, search, and collection seeds | Not started |
+| 4 | Catalogue, destinations, search, and collection seeds | Complete |
 | 5 | Authentication, authorization, and portal foundations | Not started |
 | 6 | Profiles, travellers, wishlists, and saved itineraries | Not started |
 | 7 | Deterministic travel planner | Not started |
@@ -41,3 +41,13 @@ test type checks, zero-warning linting, unit and component tests, automated
 accessibility tests, production build and startup, live API contract and
 connectivity checks, correlation and security header checks, and desktop and
 mobile browser smoke tests.
+
+Phase 4 was verified with locked NuGet and npm installs, zero-advisory
+dependency audits, zero-warning backend and frontend builds, backend unit and
+PostgreSQL integration tests, reviewed migration application, no-pending-model
+validation, GIN and relationship index checks, deterministic idempotent
+development seeding, live full-text search/filter/pagination checks, OpenAPI
+snapshot regeneration and equality, health/readiness probes, frontend
+unit/component/accessibility tests, production startup, and desktop/mobile
+browser checks covering populated, loading, empty, error, not-found, list, and
+detail foundations.

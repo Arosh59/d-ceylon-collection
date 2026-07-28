@@ -54,3 +54,27 @@ Apply and inspect migrations with:
 API startup does not apply migrations automatically. Integration tests create
 and destroy an isolated PostgreSQL database and run the real migration against
 it.
+
+## Phase 4 catalogue discovery schema
+
+Migration `20260728040227_Phase4CatalogueDiscovery` adds:
+
+- product descriptions and an English generated `search_vector`;
+- a GIN full-text index plus publication/name and relationship indexes;
+- publication state, descriptions, and hero-media references for collections
+  and destinations;
+- tag and media-asset tables; and
+- normalized product-tag and ordered product-media relationships.
+
+Media assets store metadata and stable `placeholder:*` keys only. Apply the
+schema and deterministic Development-only catalogue data explicitly:
+
+```bash
+./scripts/api.sh migrate
+./scripts/api.sh seed
+./scripts/api.sh migrations-check
+```
+
+The seeder is idempotent and uses fixed identifiers. It creates five
+collections, six destinations, three product types, five categories, five tags,
+and ten published products. It never runs during normal API startup.

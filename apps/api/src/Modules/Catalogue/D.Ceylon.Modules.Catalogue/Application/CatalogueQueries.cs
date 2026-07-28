@@ -6,43 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace D.Ceylon.Modules.Catalogue.Application;
 
-internal sealed class CatalogueQueries(CatalogueDbContext database) : ICatalogueQueries
+internal sealed class CatalogueQueries(
+    CatalogueDbContext database,
+    ICatalogueSearchProvider searchProvider)
+    : ICatalogueQueries
 {
-    public async Task<PagedResponse<ProductSummaryResponse>> GetPublishedProductsAsync(
-        int pageNumber,
-        int pageSize,
-        CancellationToken cancellationToken)
-    {
-        var query = database.Products
-            .AsNoTracking()
-            .Where(product => product.PublicationState == PublicationState.Published);
-
-        var totalItems = await query.LongCountAsync(cancellationToken);
-        var items = await query
-            .OrderBy(product => product.Name)
-            .ThenBy(product => product.Id)
-            .Skip(checked((pageNumber - 1) * pageSize))
-            .Take(pageSize)
-            .Select(product => new ProductSummaryResponse(
-                product.Id,
-                product.Name,
-                product.Slug,
-                product.ShortDescription,
-                new ProductTypeResponse(
-                    product.ProductType.Id,
-                    product.ProductType.Name,
-                    product.ProductType.Slug),
-                product.StartingPrice,
-                product.Currency,
-                product.DurationMinutes))
-            .ToListAsync(cancellationToken);
-
-        return PagedResponse.Create(
-            items,
-            pageNumber,
-            pageSize,
-            totalItems);
-    }
+    public Task<PagedResponse<ProductSummaryResponse>> SearchPublishedProductsAsync(
+        CatalogueSearchCriteria criteria,
+        CancellationToken cancellationToken) =>
+        searchProvider.SearchAsync(criteria, cancellationToken);
 
     public Task<ProductDetailResponse?> GetPublishedProductAsync(
         string slug,
@@ -58,6 +30,7 @@ internal sealed class CatalogueQueries(CatalogueDbContext database) : ICatalogue
                 product.Name,
                 product.Slug,
                 product.ShortDescription,
+                product.Description,
                 new ProductTypeResponse(
                     product.ProductType.Id,
                     product.ProductType.Name,
@@ -85,31 +58,184 @@ internal sealed class CatalogueQueries(CatalogueDbContext database) : ICatalogue
                         item.Destination.Id,
                         item.Destination.Name,
                         item.Destination.Slug))
+                    .ToList(),
+                product.ProductTags
+                    .OrderBy(item => item.Tag.Name)
+                    .Select(item => new NamedReferenceResponse(
+                        item.Tag.Id,
+                        item.Tag.Name,
+                        item.Tag.Slug))
+                    .ToList(),
+                product.ProductMedia
+                    .OrderBy(item => item.SortOrder)
+                    .ThenBy(item => item.MediaAssetId)
+                    .Select(item => new MediaMetadataResponse(
+                        item.MediaAsset.Id,
+                        item.MediaAsset.AssetKey,
+                        item.MediaAsset.AltText,
+                        item.MediaAsset.Width,
+                        item.MediaAsset.Height))
                     .ToList()))
             .SingleOrDefaultAsync(cancellationToken);
 
-    public async Task<PagedResponse<ProductTypeResponse>> GetProductTypesAsync(
+    public Task<PagedResponse<ProductTypeResponse>> GetProductTypesAsync(
         int pageNumber,
         int pageSize,
-        CancellationToken cancellationToken)
-    {
-        var query = database.ProductTypes.AsNoTracking();
-        var totalItems = await query.LongCountAsync(cancellationToken);
-        var items = await query
-            .OrderBy(productType => productType.Name)
-            .ThenBy(productType => productType.Id)
-            .Skip(checked((pageNumber - 1) * pageSize))
-            .Take(pageSize)
-            .Select(productType => new ProductTypeResponse(
-                productType.Id,
-                productType.Name,
-                productType.Slug))
-            .ToListAsync(cancellationToken);
-
-        return PagedResponse.Create(
-            items,
+        CancellationToken cancellationToken) =>
+        PageAsync(
+            database.ProductTypes.AsNoTracking(),
             pageNumber,
             pageSize,
-            totalItems);
+            productType => new ProductTypeResponse(
+                productType.Id,
+                productType.Name,
+                productType.Slug),
+            cancellationToken);
+
+    public Task<PagedResponse<NamedReferenceResponse>> GetCategoriesAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken) =>
+        PageAsync(
+            database.Categories.AsNoTracking(),
+            pageNumber,
+            pageSize,
+            category => new NamedReferenceResponse(
+                category.Id,
+                category.Name,
+                category.Slug),
+            cancellationToken);
+
+    public Task<PagedResponse<NamedReferenceResponse>> GetTagsAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken) =>
+        PageAsync(
+            database.Tags.AsNoTracking(),
+            pageNumber,
+            pageSize,
+            tag => new NamedReferenceResponse(tag.Id, tag.Name, tag.Slug),
+            cancellationToken);
+
+    public Task<PagedResponse<CollectionSummaryResponse>> GetCollectionsAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken) =>
+        PageAsync(
+            database.Collections
+                .AsNoTracking()
+                .Where(item => item.PublicationState == PublicationState.Published),
+            pageNumber,
+            pageSize,
+            item => new CollectionSummaryResponse(
+                item.Id,
+                item.Name,
+                item.Slug,
+                item.Summary ?? string.Empty,
+                item.HeroMedia == null
+                    ? null
+                    : new MediaMetadataResponse(
+                        item.HeroMedia.Id,
+                        item.HeroMedia.AssetKey,
+                        item.HeroMedia.AltText,
+                        item.HeroMedia.Width,
+                        item.HeroMedia.Height)),
+            cancellationToken);
+
+    public Task<CollectionDetailResponse?> GetCollectionAsync(
+        string slug,
+        CancellationToken cancellationToken) =>
+        database.Collections
+            .AsNoTracking()
+            .Where(item =>
+                item.Slug == slug
+                && item.PublicationState == PublicationState.Published)
+            .Select(item => new CollectionDetailResponse(
+                item.Id,
+                item.Name,
+                item.Slug,
+                item.Summary ?? string.Empty,
+                item.Description ?? string.Empty,
+                item.HeroMedia == null
+                    ? null
+                    : new MediaMetadataResponse(
+                        item.HeroMedia.Id,
+                        item.HeroMedia.AssetKey,
+                        item.HeroMedia.AltText,
+                        item.HeroMedia.Width,
+                        item.HeroMedia.Height),
+                item.ProductCollections.Count(link =>
+                    link.Product.PublicationState == PublicationState.Published)))
+            .SingleOrDefaultAsync(cancellationToken);
+
+    public Task<PagedResponse<DestinationSummaryResponse>> GetDestinationsAsync(
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken) =>
+        PageAsync(
+            database.Destinations
+                .AsNoTracking()
+                .Where(item => item.PublicationState == PublicationState.Published),
+            pageNumber,
+            pageSize,
+            item => new DestinationSummaryResponse(
+                item.Id,
+                item.Name,
+                item.Slug,
+                item.Summary ?? string.Empty,
+                item.HeroMedia == null
+                    ? null
+                    : new MediaMetadataResponse(
+                        item.HeroMedia.Id,
+                        item.HeroMedia.AssetKey,
+                        item.HeroMedia.AltText,
+                        item.HeroMedia.Width,
+                        item.HeroMedia.Height)),
+            cancellationToken);
+
+    public Task<DestinationDetailResponse?> GetDestinationAsync(
+        string slug,
+        CancellationToken cancellationToken) =>
+        database.Destinations
+            .AsNoTracking()
+            .Where(item =>
+                item.Slug == slug
+                && item.PublicationState == PublicationState.Published)
+            .Select(item => new DestinationDetailResponse(
+                item.Id,
+                item.Name,
+                item.Slug,
+                item.Summary ?? string.Empty,
+                item.Description ?? string.Empty,
+                item.HeroMedia == null
+                    ? null
+                    : new MediaMetadataResponse(
+                        item.HeroMedia.Id,
+                        item.HeroMedia.AssetKey,
+                        item.HeroMedia.AltText,
+                        item.HeroMedia.Width,
+                        item.HeroMedia.Height),
+                item.ProductDestinations.Count(link =>
+                    link.Product.PublicationState == PublicationState.Published)))
+            .SingleOrDefaultAsync(cancellationToken);
+
+    private static async Task<PagedResponse<TResponse>> PageAsync<TEntity, TResponse>(
+        IQueryable<TEntity> query,
+        int pageNumber,
+        int pageSize,
+        System.Linq.Expressions.Expression<Func<TEntity, TResponse>> projection,
+        CancellationToken cancellationToken)
+        where TEntity : class
+    {
+        var totalItems = await query.LongCountAsync(cancellationToken);
+        var items = await query
+            .OrderBy(item => EF.Property<string>(item, "Name"))
+            .ThenBy(item => EF.Property<Guid>(item, "Id"))
+            .Skip(checked((pageNumber - 1) * pageSize))
+            .Take(pageSize)
+            .Select(projection)
+            .ToListAsync(cancellationToken);
+
+        return PagedResponse.Create(items, pageNumber, pageSize, totalItems);
     }
 }

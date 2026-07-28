@@ -9,11 +9,13 @@ future AI service.
 
 ## Status
 
-Phases 0 through 3 establish repository boundaries, engineering conventions,
+Phases 0 through 4 establish repository boundaries, engineering conventions,
 containerized local infrastructure, the ASP.NET Core modular API, and the public
-Next.js foundation with its generated catalogue SDK. Catalogue content,
-authentication, commerce workflows, and deployment resources remain in later
-phases.
+Next.js catalogue experience with its generated SDK. PostgreSQL-backed
+catalogue discovery, five curated collection seeds, destinations, filters,
+search, and responsive public detail foundations are complete. Authentication,
+commerce workflows, editorial integration, and deployment resources remain in
+later phases.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 

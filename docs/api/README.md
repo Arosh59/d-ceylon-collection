@@ -1,7 +1,7 @@
 # API Guide
 
-The primary API is an ASP.NET Core 10 modular monolith. Phase 2 implements the
-host, shared building blocks, and the initial Catalogue module.
+The primary API is an ASP.NET Core 10 modular monolith. Phases 2 and 4 implement
+the host, shared building blocks, and read-only Catalogue discovery module.
 
 ## Contract baseline
 
@@ -18,8 +18,15 @@ host, shared building blocks, and the initial Catalogue module.
 
 ## Versioning and contracts
 
-Version 1 routes use the `/api/v1` prefix. Phase 2 exposes read-only Catalogue
-DTOs only; Entity Framework entities never cross the HTTP boundary.
+Version 1 routes use the `/api/v1` prefix. The Catalogue API exposes DTOs only;
+Entity Framework entities never cross the HTTP boundary.
+
+Phase 4 discovery routes cover products, product types, categories, tags,
+collections, and destinations. Product discovery accepts validated `query`,
+`productType`, `category`, `collection`, `destination`, `tag`, price/duration
+range, sort, and pagination parameters. Text search uses the module's
+`ICatalogueSearchProvider` abstraction with a PostgreSQL `tsvector` and
+GIN-indexed implementation. External search services are not configured.
 
 Potentially large lists return:
 
@@ -63,6 +70,14 @@ API_BASE_URL=http://127.0.0.1:8080 npm run sdk:verify
 
 Refresh the snapshot only alongside a reviewed API contract change, then run
 `npm run sdk:generate` and inspect the generated type diff.
+
+Current read-only routes are:
+
+- `GET /api/v1/catalogue/products` and `/products/{slug}`;
+- `GET /api/v1/catalogue/product-types`;
+- `GET /api/v1/catalogue/categories` and `/tags`;
+- `GET /api/v1/catalogue/collections` and `/collections/{slug}`; and
+- `GET /api/v1/catalogue/destinations` and `/destinations/{slug}`.
 
 ## Development
 

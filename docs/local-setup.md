@@ -57,7 +57,7 @@ troubleshooting.
 
 ## Application status
 
-The Phase 2 ASP.NET Core API is runnable through a pinned SDK container; no host
+The Phase 4 ASP.NET Core API is runnable through a pinned SDK container; no host
 .NET installation is required:
 
 ```bash
@@ -65,6 +65,7 @@ The Phase 2 ASP.NET Core API is runnable through a pinned SDK container; no host
 ./scripts/api.sh build
 ./scripts/api.sh test
 ./scripts/api.sh migrate
+./scripts/api.sh seed
 ./scripts/api.sh run
 ```
 
@@ -84,7 +85,8 @@ Install the locked frontend dependencies from the repository root:
 npm ci
 ```
 
-Ensure the Phase 2 API is running, then start the public application:
+Ensure the migrated and seeded API is running, then start the public
+application:
 
 ```bash
 ./scripts/api.sh run

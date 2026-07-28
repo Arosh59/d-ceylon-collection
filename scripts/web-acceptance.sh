@@ -16,6 +16,7 @@ cleanup() {
     fi
 
     if [[ -n "${API_PROCESS_ID}" ]]; then
+        docker stop d-ceylon-api-dev >/dev/null 2>&1 || true
         kill "${API_PROCESS_ID}" >/dev/null 2>&1 || true
         wait "${API_PROCESS_ID}" >/dev/null 2>&1 || true
     fi
@@ -65,6 +66,8 @@ wait_for_url() {
 }
 
 ./scripts/local-infrastructure.sh verify
+./scripts/api.sh migrate
+./scripts/api.sh seed
 
 ./scripts/api.sh run >"${TEMP_DIRECTORY}/api.log" 2>&1 &
 API_PROCESS_ID=$!
@@ -73,7 +76,7 @@ wait_for_url "API" "${API_ORIGIN}/health/ready"
 API_BASE_URL="${API_ORIGIN}" npm run sdk:verify
 
 curl --fail --silent --show-error \
-    "${API_ORIGIN}/api/v1/catalogue/products?pageNumber=1&pageSize=1" >/dev/null
+    "${API_ORIGIN}/api/v1/catalogue/products?query=railway&collection=flow&pageSize=2" >/dev/null
 
 API_BASE_URL="${API_ORIGIN}" SITE_URL="${WEB_ORIGIN}" npm run build:web
 
@@ -86,4 +89,4 @@ wait_for_url "Web application" "${WEB_ORIGIN}"
 API_BASE_URL="${API_ORIGIN}" SITE_URL="${WEB_ORIGIN}" WEB_BASE_URL="${WEB_ORIGIN}" \
     npm run test:web:smoke
 
-echo "Phase 3 live API, production startup, and responsive smoke checks passed."
+echo "Phase 4 live catalogue, production startup, and responsive smoke checks passed."

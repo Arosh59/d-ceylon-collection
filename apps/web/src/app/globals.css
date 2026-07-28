@@ -94,6 +94,70 @@ summary {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
 }
 
+.media-placeholder {
+  align-items: flex-end;
+  background:
+    radial-gradient(circle at 74% 18%, rgba(225, 201, 142, 0.46), transparent 32%),
+    radial-gradient(circle at 20% 84%, rgba(67, 111, 105, 0.48), transparent 38%),
+    linear-gradient(145deg, #17365d, #0e2342 62%, #09172b);
+  color: rgba(255, 255, 255, 0.72);
+  display: flex;
+  font-size: 0.68rem;
+  font-weight: 700;
+  justify-content: flex-end;
+  letter-spacing: 0.18em;
+  overflow: hidden;
+  padding: 1.25rem;
+  text-transform: uppercase;
+}
+
+.filter-field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.filter-field > span {
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.filter-field input,
+.filter-field select {
+  background: var(--canvas);
+  border: 1px solid rgba(14, 35, 66, 0.18);
+  border-radius: 0.8rem;
+  color: var(--ink);
+  font: inherit;
+  min-height: 3rem;
+  padding: 0.65rem 0.85rem;
+  width: 100%;
+}
+
+.button-primary,
+.button-secondary {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.88rem;
+  font-weight: 700;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.75rem 1.2rem;
+  text-decoration: none;
+}
+
+.button-primary {
+  background: var(--navy);
+  border: 1px solid var(--navy);
+  color: white;
+}
+
+.button-secondary {
+  background: transparent;
+  border: 1px solid rgba(14, 35, 66, 0.2);
+  color: var(--navy);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

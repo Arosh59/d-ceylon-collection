@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
-import { PlaceholderPage } from "@/components/ui/placeholder-page";
+import { ProductTypePage } from "@/components/product-type-page";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Accommodation",
@@ -8,10 +10,11 @@ export const metadata: Metadata = {
 
 export default function AccommodationPage() {
   return (
-    <PlaceholderPage
-      description="Distinctive stays with a strong sense of place will become part of the connected catalogue."
+    <ProductTypePage
+      description="A considered set of smaller stays with a strong relationship to landscape, local hosting, and pace."
       eyebrow="Stay with intention"
-      title="Rest somewhere worth remembering."
+      productType="accommodation"
+      title="Places that make room for the journey."
     />
   );
 }

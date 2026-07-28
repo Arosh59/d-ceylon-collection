@@ -35,6 +35,7 @@ sdk_container() {
         --workdir "${api_directory}" \
         --env "ConnectionStrings__Postgres=${application_connection}" \
         --env "TestDatabase__AdminConnection=${admin_connection}" \
+        --env ASPNETCORE_ENVIRONMENT=Development \
         --env DOTNET_CLI_TELEMETRY_OPTOUT=1 \
         --env DOTNET_NOLOGO=1 \
         "${sdk_image}" \
@@ -64,8 +65,11 @@ Commands:
   test-integration   Run PostgreSQL-backed API integration tests
   test               Run all tests
   migration-add NAME Create a named EF Core migration
+  migration-remove   Remove the latest unapplied EF Core migration
   migrations-list    List EF Core migrations
+  migrations-check   Verify the EF Core model has no pending changes
   migrate            Apply EF Core migrations to the local application database
+  seed               Apply deterministic catalogue development seed data
   run                Run the API at the configured local API_PORT
 USAGE
 }
@@ -125,9 +129,24 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --output-dir Infrastructure/Persistence/Migrations
         ;;
+    migration-remove)
+        sdk_container tool restore
+        sdk_container ef migrations remove \
+            --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
+            --startup-project src/D.Ceylon.Api \
+            --force
+        ;;
     migrations-list)
         sdk_container tool restore
         sdk_container ef migrations list \
+            --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
+        ;;
+    migrations-check)
+        sdk_container tool restore
+        sdk_container ef migrations has-pending-model-changes \
             --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
             --startup-project src/D.Ceylon.Api \
             --no-build \
@@ -138,6 +157,13 @@ case "${command_name}" in
         sdk_container ef database update \
             --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
             --startup-project src/D.Ceylon.Api
+        ;;
+    seed)
+        sdk_container run \
+            --project src/D.Ceylon.Api \
+            --no-launch-profile \
+            -- \
+            --seed-catalogue
         ;;
     run)
         api_port="${API_PORT:-8080}"

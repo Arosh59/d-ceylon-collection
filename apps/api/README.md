@@ -1,7 +1,8 @@
 # D Ceylon Collection API
 
-The primary backend is an ASP.NET Core 10 modular monolith. Phase 2 implements
-the API host, shared building blocks, and the initial Catalogue module only.
+The primary backend is an ASP.NET Core 10 modular monolith. Phases 2 and 4
+implement the API host, shared building blocks, and read-only Catalogue
+discovery module only.
 
 ## Toolchain
 
@@ -60,7 +61,9 @@ Then:
 ./scripts/api.sh build
 ./scripts/api.sh test
 ./scripts/api.sh migrations-list
+./scripts/api.sh migrations-check
 ./scripts/api.sh migrate
+./scripts/api.sh seed
 ./scripts/api.sh run
 ```
 
@@ -79,9 +82,18 @@ credentials in project configuration.
 - `GET /api/v1/catalogue/products` — published product page
 - `GET /api/v1/catalogue/products/{slug}` — published product detail
 - `GET /api/v1/catalogue/product-types` — product-type page
+- `GET /api/v1/catalogue/categories` — category page
+- `GET /api/v1/catalogue/tags` — tag page
+- `GET /api/v1/catalogue/collections` and `/{slug}` — published collections
+- `GET /api/v1/catalogue/destinations` and `/{slug}` — published destinations
 
 List endpoints accept optional `pageNumber` and `pageSize` parameters. Page
 numbers range from 1 to 100,000 and page sizes from 1 to 100.
+
+Product lists additionally accept validated full-text `query`, product type,
+category, collection, destination, tag, price, duration, and sort filters.
+PostgreSQL generated `tsvector` search is hidden behind an explicit search
+provider interface.
 
 All responses include `X-Correlation-ID`, API security headers, and no Kestrel
 server header. Invalid input, missing resources, rate limits, concurrency
@@ -89,10 +101,10 @@ conflicts, and unexpected errors use Problem Details.
 
 ## Database
 
-The initial migration creates the `catalogue` schema with product types,
-products, categories, travel collections, destinations, and their product join
-tables. Important entities use UUID keys, UTC audit timestamps, and optimistic
-concurrency tokens.
+The migrations create the `catalogue` schema with product types, products,
+categories, travel collections, destinations, tags, media metadata, normalized
+product relationships, and a GIN-indexed search vector. Important entities use
+UUID keys, UTC audit timestamps, and optimistic concurrency tokens.
 
 Migrations are explicit; API startup never changes the database automatically.
 Create a future migration with:
@@ -102,6 +114,10 @@ Create a future migration with:
 ```
 
 Review generated SQL and model changes before applying it.
+
+`./scripts/api.sh seed` is guarded to Development and inserts deterministic,
+idempotent placeholder catalogue data. It does not apply migrations and never
+runs as part of ordinary startup.
 
 ## Tests
 

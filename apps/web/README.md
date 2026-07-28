@@ -1,8 +1,8 @@
 # Public Web Application
 
-`apps/web` is the accessible public Next.js App Router host for D Ceylon Collection. Phase 3
-establishes the visual and integration foundation only; catalogue data, filters, search,
-authentication, quote requests, and commerce workflows remain assigned to later phases.
+`apps/web` is the accessible public Next.js App Router host for D Ceylon Collection. Phases 3 and
+4 establish the visual foundation and public read-only catalogue discovery. Authentication, quote
+requests, administration, and commerce workflows remain assigned to later phases.
 
 ## Runtime and configuration
 
@@ -43,10 +43,11 @@ Chrome channel.
 ## Routes and states
 
 - `/` — premium homepage foundation and five collection perspectives;
-- `/catalogue` — live read-only API catalogue with populated or empty states;
-- `/catalogue/[slug]` — live product-detail foundation;
-- `/collections`, `/destinations`, `/experiences`, and `/accommodation` — accessible placeholders
-  for Phase 4;
+- `/catalogue` — searchable, filterable, paginated live catalogue;
+- `/catalogue/[slug]` — published product detail with relationships and media metadata;
+- `/collections` and `/collections/[slug]` — five collection perspectives and linked products;
+- `/destinations` and `/destinations/[slug]` — published places and linked products;
+- `/experiences` and `/accommodation` — typed product-type discovery;
 - `loading.tsx`, `error.tsx`, and `not-found.tsx` — explicit loading, recovery, and unknown-route
   experiences; and
 - `/robots.txt` and `/sitemap.xml` — metadata foundations.
@@ -69,3 +70,7 @@ npm run sdk:generate
 
 The first command fails when the committed snapshot differs semantically from the live versioned
 API. The second regenerates TypeScript types from the reviewed snapshot.
+
+All catalogue calls run at the server boundary. Filters use native GET form controls, pagination
+preserves active filters, and media placeholders render from stable API metadata without licensed
+image assets.
