@@ -13,7 +13,7 @@ only after its documented checks pass.
 | 5     | Authentication, authorization, and portal foundations  | Complete    |
 | 6     | Profiles, travellers, wishlists, and saved itineraries | Complete    |
 | 7     | Deterministic travel planner                           | Complete    |
-| 8     | Quote workflow                                         | Not started |
+| 8     | Quote workflow                                         | Complete    |
 | 9     | Booking, payments, invoices, and vouchers              | Not started |
 | 10    | Suppliers and operations                               | Not started |
 | 11    | Directus editorial integration                         | Not started |
@@ -70,3 +70,13 @@ integration tests, owner and cross-customer denial checks, traveller association
 optimistic-concurrency, and audit checks, live OpenAPI regeneration and equality, health/readiness
 probes, frontend unit/component/accessibility tests, and planner generation, draft review, edit,
 validation, forbidden, not-found, logout, and responsive browser flows on desktop and mobile.
+
+Phase 8 was verified with locked NuGet and npm restores, zero-advisory dependency audits, a
+reviewed Quotes and Pricing migration (AddQuoteWorkflow), no-pending-model checks, zero-warning
+API and web builds, 9 deterministic Pricing unit tests, 12 Quote lifecycle integration tests
+covering request, prepare, draft CRUD, send (immutable version), accept, decline, withdraw,
+revise, conflict, ownership denial, and concurrency checks; OpenAPI spec updated with full quote
+schema (including the previously missing AgentQuoteQueueResponse.concurrencyToken), SDK
+regenerated, TypeScript type check and ESLint pass with zero warnings, Prettier formatting clean,
+and customer/agent portal quote pages (list, detail, request, accept, decline, prepare, draft
+editor, send, revise, withdraw) verified. No booking, payment, or AI involvement in this phase.
