@@ -89,6 +89,13 @@ internal sealed class TestingTokenIssuer(
                 [AccessRoles.Customer],
                 Guid.Parse("10000000-0000-0000-0000-000000000001"),
                 null),
+            "customer-other" => new TestingIdentity(
+                "test-customer-other",
+                "Other Test Customer",
+                "other-customer@example.test",
+                [AccessRoles.Customer],
+                Guid.Parse("10000000-0000-0000-0000-000000000002"),
+                null),
             "agent" => new TestingIdentity(
                 "test-agent",
                 "Test Agent",
@@ -96,6 +103,13 @@ internal sealed class TestingTokenIssuer(
                 [AccessRoles.Agent],
                 null,
                 Guid.Parse("20000000-0000-0000-0000-000000000001")),
+            "agent-other" => new TestingIdentity(
+                "test-agent-other",
+                "Other Test Agent",
+                "other-agent@example.test",
+                [AccessRoles.Agent],
+                null,
+                Guid.Parse("20000000-0000-0000-0000-000000000002")),
             "staff" => new TestingIdentity(
                 "test-staff",
                 "Test Staff",
@@ -112,6 +126,6 @@ internal sealed class TestingTokenIssuer(
                 null),
             _ => throw new ArgumentOutOfRangeException(
                 nameof(persona),
-                "Supported testing personas are customer, agent, staff, and administrator."),
+                "Supported testing personas are customer, customer-other, agent, agent-other, staff, and administrator."),
         };
 }

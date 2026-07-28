@@ -10,6 +10,7 @@ using D.Ceylon.Modules.CustomersTravellers;
 using D.Ceylon.Modules.IdentityAccess;
 using D.Ceylon.Modules.ItinerariesTravelPlanning;
 using D.Ceylon.Modules.OrganisationsAgents;
+using D.Ceylon.Modules.Quotes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,7 @@ builder.Services.AddCustomersTravellersModule(builder.Configuration);
 builder.Services.AddIdentityAccessModule(builder.Configuration, builder.Environment);
 builder.Services.AddItinerariesTravelPlanningModule(builder.Configuration);
 builder.Services.AddOrganisationsAgentsModule(builder.Configuration);
+builder.Services.AddQuotesModule(builder.Configuration);
 builder.Services.AddSingleton<
     IAuthorizationMiddlewareResultHandler,
     AuthorizationProblemDetailsHandler>();
@@ -190,6 +192,7 @@ versionOne.MapCatalogueEndpoints();
 versionOne.MapAccessEndpoints(app.Environment);
 versionOne.MapCustomerEndpoints();
 versionOne.MapTravelPlanningEndpoints();
+versionOne.MapQuoteEndpoints();
 
 app.Run();
 

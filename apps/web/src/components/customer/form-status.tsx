@@ -7,9 +7,11 @@ import type { CustomerActionState } from "@/app/portal/customer/action-state";
 export function FormStatus({
   state,
   submitLabel = "Save",
+  hideSubmit = false,
 }: {
   state: CustomerActionState;
   submitLabel?: string;
+  hideSubmit?: boolean;
 }) {
   const { pending } = useFormStatus();
   const errors = Object.values(state.errors ?? {}).flat();
@@ -35,9 +37,11 @@ export function FormStatus({
           ) : null}
         </div>
       ) : null}
-      <button className="button-primary" disabled={pending} type="submit">
-        {pending ? "Saving…" : submitLabel}
-      </button>
+      {hideSubmit ? null : (
+        <button className="button-primary" disabled={pending} type="submit">
+          {pending ? "Saving…" : submitLabel}
+        </button>
+      )}
     </>
   );
 }

@@ -246,6 +246,31 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
         }
       },
+      "d.ceylon.modules.organisationsagents": {
+        "type": "Project",
+        "dependencies": {
+          "D.Ceylon.BuildingBlocks": "[1.0.0, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.10, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
+      "d.ceylon.modules.pricing": {
+        "type": "Project",
+        "dependencies": {
+          "D.Ceylon.BuildingBlocks": "[1.0.0, )"
+        }
+      },
+      "d.ceylon.modules.quotes": {
+        "type": "Project",
+        "dependencies": {
+          "D.Ceylon.BuildingBlocks": "[1.0.0, )",
+          "D.Ceylon.Modules.ItinerariesTravelPlanning": "[1.0.0, )",
+          "D.Ceylon.Modules.OrganisationsAgents": "[1.0.0, )",
+          "D.Ceylon.Modules.Pricing": "[1.0.0, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.10, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "CentralTransitive",
         "requested": "[10.0.10, )",

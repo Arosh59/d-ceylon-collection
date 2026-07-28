@@ -21,6 +21,12 @@
   <Folder Name="/src/Modules/OrganisationsAgents/">
     <Project Path="src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Pricing/">
+    <Project Path="src/Modules/Pricing/D.Ceylon.Modules.Pricing/D.Ceylon.Modules.Pricing.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Quotes/">
+    <Project Path="src/Modules/Quotes/D.Ceylon.Modules.Quotes/D.Ceylon.Modules.Quotes.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/D.Ceylon.Api.IntegrationTests/D.Ceylon.Api.IntegrationTests.csproj" />
     <Project Path="tests/D.Ceylon.Api.UnitTests/D.Ceylon.Api.UnitTests.csproj" />

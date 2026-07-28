@@ -4,7 +4,9 @@ using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
 using D.Ceylon.Modules.CustomersTravellers.Infrastructure.Persistence;
 using D.Ceylon.Modules.IdentityAccess.Infrastructure.Persistence;
 using D.Ceylon.Modules.ItinerariesTravelPlanning.Infrastructure.Persistence;
+using D.Ceylon.Modules.OrganisationsAgents.Domain;
 using D.Ceylon.Modules.OrganisationsAgents.Infrastructure.Persistence;
+using D.Ceylon.Modules.Quotes.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -131,6 +133,17 @@ public sealed partial class ApiApplicationFactory : WebApplicationFactory<Progra
         using var organisationDatabase =
             new OrganisationsAgentsDbContext(organisationOptions, TimeProvider.System);
         organisationDatabase.Database.Migrate();
+        organisationDatabase.Organisations.Add(
+            new Organisation(
+                Guid.Parse("20000000-0000-0000-0000-000000000001"),
+                "Test Agent Organisation",
+                "test-agent-organisation"));
+        organisationDatabase.Organisations.Add(
+            new Organisation(
+                Guid.Parse("20000000-0000-0000-0000-000000000002"),
+                "Other Test Agent Organisation",
+                "other-test-agent-organisation"));
+        organisationDatabase.SaveChanges();
 
         var customerOptions =
             new DbContextOptionsBuilder<CustomersTravellersDbContext>()
@@ -153,6 +166,15 @@ public sealed partial class ApiApplicationFactory : WebApplicationFactory<Progra
         using var itineraryDatabase =
             new ItinerariesTravelPlanningDbContext(itineraryOptions, TimeProvider.System);
         itineraryDatabase.Database.Migrate();
+
+        var quoteOptions = new DbContextOptionsBuilder<QuotesDbContext>()
+            .UseNpgsql(
+                ConnectionString,
+                postgres => postgres.MigrationsAssembly(
+                    typeof(QuotesDbContext).Assembly.FullName))
+            .Options;
+        using var quoteDatabase = new QuotesDbContext(quoteOptions, TimeProvider.System);
+        quoteDatabase.Database.Migrate();
     }
 
     private void DropDatabase()

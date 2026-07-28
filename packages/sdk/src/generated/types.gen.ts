@@ -4,6 +4,48 @@ export type ClientOptions = {
   baseUrl: "http://127.0.0.1:8080/" | (string & {});
 };
 
+export type AgentQuoteDraftResponse = {
+  currency: null | string;
+  assumptions: Array<string>;
+  inclusions: Array<string>;
+  exclusions: Array<string>;
+  terms: null | string;
+  internalNotes: null | string;
+  lines: Array<QuoteLineResponse>;
+  components: Array<QuotePriceComponentResponse>;
+  subtotal: null | MoneyResponse;
+  taxTotal: null | MoneyResponse;
+  adjustmentTotal: null | MoneyResponse;
+  grandTotal: null | MoneyResponse;
+};
+
+export type AgentQuoteQueueResponse = {
+  id: string;
+  itineraryTitle: string;
+  travelStartDate: string;
+  travelEndDate: string;
+  status: string;
+  isUnassigned: boolean;
+  currentVersionNumber: number | string;
+  currency: null | string;
+  grandTotal: null | number | string;
+  concurrencyToken: string;
+  updatedAtUtc: string;
+};
+
+export type AgentQuoteResponse = {
+  id: string;
+  status: string;
+  request: QuoteRequestResponse;
+  organisationId: string;
+  draft: AgentQuoteDraftResponse;
+  currentVersionId: null | string;
+  versions: Array<QuoteVersionResponse>;
+  concurrencyToken: string;
+  createdAtUtc: string;
+  updatedAtUtc: string;
+};
+
 export type CollectionDetailResponse = {
   id: string;
   name: string;
@@ -39,6 +81,12 @@ export type CreateItineraryItemRequest = {
   durationMinutes?: null | number | string;
   destinationSlug: string;
   position?: null | number | string;
+};
+
+export type CreateQuoteRequest = {
+  travelPlanId?: string;
+  itineraryRevisionId?: string;
+  customerNotes?: null | string;
 };
 
 export type CreateSavedItineraryRequest = {
@@ -100,6 +148,32 @@ export type CustomerProfileResponse = {
   preferredLocale: string;
   preferredContactMethod: string;
   marketingConsent: boolean;
+  concurrencyToken: string;
+  updatedAtUtc: string;
+};
+
+export type CustomerQuoteResponse = {
+  id: string;
+  status: string;
+  request: QuoteRequestResponse;
+  organisationId: null | string;
+  currentVersionId: null | string;
+  versions: Array<QuoteVersionResponse>;
+  concurrencyToken: string;
+  createdAtUtc: string;
+  updatedAtUtc: string;
+};
+
+export type CustomerQuoteSummaryResponse = {
+  id: string;
+  itineraryTitle: string;
+  travelStartDate: string;
+  travelEndDate: string;
+  status: string;
+  currentVersionNumber: number | string;
+  currency: null | string;
+  grandTotal: null | number | string;
+  expiresAtUtc: null | string;
   concurrencyToken: string;
   updatedAtUtc: string;
 };
@@ -175,14 +249,29 @@ export type MediaMetadataResponse = {
   height: number | string;
 };
 
+export type MoneyResponse = {
+  amount: number | string;
+  currency: string;
+};
+
 export type NamedReferenceResponse = {
   id: string;
   name: string;
   slug: string;
 };
 
+export type PagedResponseOfAgentQuoteQueueResponse = {
+  items: Array<AgentQuoteQueueResponse>;
+  pagination: PaginationMetadata;
+};
+
 export type PagedResponseOfCollectionSummaryResponse = {
   items: Array<CollectionSummaryResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfCustomerQuoteSummaryResponse = {
+  items: Array<CustomerQuoteSummaryResponse>;
   pagination: PaginationMetadata;
 };
 
@@ -240,6 +329,11 @@ export type PortalAccessResponse = {
   access: string;
 };
 
+export type PrepareAgentQuoteRequest = {
+  currency: string;
+  concurrencyToken?: string;
+};
+
 export type ProblemDetails = {
   type?: null | string;
   title?: null | string;
@@ -285,6 +379,78 @@ export type ProductTypeResponse = {
   slug: string;
 };
 
+export type QuoteConcurrencyRequest = {
+  concurrencyToken?: string;
+};
+
+export type QuoteLineInput = {
+  title: string;
+  description?: null | string;
+  quantity?: number | string;
+  unitAmount?: number | string;
+};
+
+export type QuoteLineResponse = {
+  id: string;
+  position: number | string;
+  title: string;
+  description: null | string;
+  quantity: number | string;
+  unitPrice: MoneyResponse;
+  lineTotal: MoneyResponse;
+};
+
+export type QuotePriceComponentInput = {
+  kind: string;
+  label: string;
+  amount?: number | string;
+};
+
+export type QuotePriceComponentResponse = {
+  id: string;
+  position: number | string;
+  kind: string;
+  label: string;
+  amount: MoneyResponse;
+};
+
+export type QuoteRequestResponse = {
+  id: string;
+  travelPlanId: string;
+  itineraryRevisionId: string;
+  itineraryRevisionNumber: number | string;
+  itineraryTitle: string;
+  travelStartDate: string;
+  travelEndDate: string;
+  ruleVersion: string;
+  itineraryFingerprint: string;
+  customerNotes: null | string;
+  requestedAtUtc: string;
+};
+
+export type QuoteTransitionRequest = {
+  versionId?: string;
+  concurrencyToken?: string;
+};
+
+export type QuoteVersionResponse = {
+  id: string;
+  versionNumber: number | string;
+  sentAtUtc: string;
+  expiresAtUtc: string;
+  currency: string;
+  subtotal: MoneyResponse;
+  taxTotal: MoneyResponse;
+  adjustmentTotal: MoneyResponse;
+  grandTotal: MoneyResponse;
+  assumptions: Array<string>;
+  inclusions: Array<string>;
+  exclusions: Array<string>;
+  terms: string;
+  lines: Array<QuoteLineResponse>;
+  components: Array<QuotePriceComponentResponse>;
+};
+
 export type ReorderItineraryItemRequest = {
   targetDayId?: string;
   position?: number | string;
@@ -301,6 +467,11 @@ export type SavedItineraryResponse = {
   isArchived: boolean;
   concurrencyToken: string;
   updatedAtUtc: string;
+};
+
+export type SendQuoteRequest = {
+  expiresAtUtc?: string;
+  concurrencyToken?: string;
 };
 
 export type TravellerResponse = {
@@ -352,6 +523,18 @@ export type TravelPlanSummaryResponse = {
   currentRevisionNumber: number | string;
   concurrencyToken: string;
   updatedAtUtc: string;
+};
+
+export type UpdateAgentQuoteDraftRequest = {
+  currency: string;
+  assumptions?: Array<string>;
+  inclusions?: Array<string>;
+  exclusions?: Array<string>;
+  terms: string;
+  internalNotes?: null | string;
+  lines?: Array<QuoteLineInput>;
+  components?: Array<QuotePriceComponentInput>;
+  concurrencyToken?: string;
 };
 
 export type UpdateCustomerProfileRequest = {
@@ -1746,3 +1929,444 @@ export type ReorderCustomerItineraryItemV1Responses = {
 
 export type ReorderCustomerItineraryItemV1Response =
   ReorderCustomerItineraryItemV1Responses[keyof ReorderCustomerItineraryItemV1Responses];
+
+export type GetCustomerQuotesV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/customer/quotes";
+};
+
+export type GetCustomerQuotesV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetCustomerQuotesV1Error = GetCustomerQuotesV1Errors[keyof GetCustomerQuotesV1Errors];
+
+export type GetCustomerQuotesV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfCustomerQuoteSummaryResponse;
+};
+
+export type GetCustomerQuotesV1Response =
+  GetCustomerQuotesV1Responses[keyof GetCustomerQuotesV1Responses];
+
+export type RequestCustomerQuoteV1Data = {
+  body: CreateQuoteRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/customer/quotes";
+};
+
+export type RequestCustomerQuoteV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type RequestCustomerQuoteV1Error =
+  RequestCustomerQuoteV1Errors[keyof RequestCustomerQuoteV1Errors];
+
+export type RequestCustomerQuoteV1Responses = {
+  /**
+   * Created
+   */
+  201: CustomerQuoteResponse;
+};
+
+export type RequestCustomerQuoteV1Response =
+  RequestCustomerQuoteV1Responses[keyof RequestCustomerQuoteV1Responses];
+
+export type GetCustomerQuoteV1Data = {
+  body?: never;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/quotes/{quoteId}";
+};
+
+export type GetCustomerQuoteV1Errors = {
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type GetCustomerQuoteV1Error = GetCustomerQuoteV1Errors[keyof GetCustomerQuoteV1Errors];
+
+export type GetCustomerQuoteV1Responses = {
+  /**
+   * OK
+   */
+  200: CustomerQuoteResponse;
+};
+
+export type GetCustomerQuoteV1Response =
+  GetCustomerQuoteV1Responses[keyof GetCustomerQuoteV1Responses];
+
+export type AcceptCustomerQuoteV1Data = {
+  body: QuoteTransitionRequest;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/quotes/{quoteId}/accept";
+};
+
+export type AcceptCustomerQuoteV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type AcceptCustomerQuoteV1Error =
+  AcceptCustomerQuoteV1Errors[keyof AcceptCustomerQuoteV1Errors];
+
+export type AcceptCustomerQuoteV1Responses = {
+  /**
+   * OK
+   */
+  200: CustomerQuoteResponse;
+};
+
+export type AcceptCustomerQuoteV1Response =
+  AcceptCustomerQuoteV1Responses[keyof AcceptCustomerQuoteV1Responses];
+
+export type DeclineCustomerQuoteV1Data = {
+  body: QuoteTransitionRequest;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/quotes/{quoteId}/decline";
+};
+
+export type DeclineCustomerQuoteV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type DeclineCustomerQuoteV1Error =
+  DeclineCustomerQuoteV1Errors[keyof DeclineCustomerQuoteV1Errors];
+
+export type DeclineCustomerQuoteV1Responses = {
+  /**
+   * OK
+   */
+  200: CustomerQuoteResponse;
+};
+
+export type DeclineCustomerQuoteV1Response =
+  DeclineCustomerQuoteV1Responses[keyof DeclineCustomerQuoteV1Responses];
+
+export type WithdrawCustomerQuoteV1Data = {
+  body: QuoteConcurrencyRequest;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/quotes/{quoteId}/withdraw";
+};
+
+export type WithdrawCustomerQuoteV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type WithdrawCustomerQuoteV1Error =
+  WithdrawCustomerQuoteV1Errors[keyof WithdrawCustomerQuoteV1Errors];
+
+export type WithdrawCustomerQuoteV1Responses = {
+  /**
+   * OK
+   */
+  200: CustomerQuoteResponse;
+};
+
+export type WithdrawCustomerQuoteV1Response =
+  WithdrawCustomerQuoteV1Responses[keyof WithdrawCustomerQuoteV1Responses];
+
+export type GetAgentQuoteQueueV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/agent/quotes";
+};
+
+export type GetAgentQuoteQueueV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetAgentQuoteQueueV1Error =
+  GetAgentQuoteQueueV1Errors[keyof GetAgentQuoteQueueV1Errors];
+
+export type GetAgentQuoteQueueV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfAgentQuoteQueueResponse;
+};
+
+export type GetAgentQuoteQueueV1Response =
+  GetAgentQuoteQueueV1Responses[keyof GetAgentQuoteQueueV1Responses];
+
+export type GetAgentQuoteV1Data = {
+  body?: never;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/agent/quotes/{quoteId}";
+};
+
+export type GetAgentQuoteV1Errors = {
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type GetAgentQuoteV1Error = GetAgentQuoteV1Errors[keyof GetAgentQuoteV1Errors];
+
+export type GetAgentQuoteV1Responses = {
+  /**
+   * OK
+   */
+  200: AgentQuoteResponse;
+};
+
+export type GetAgentQuoteV1Response = GetAgentQuoteV1Responses[keyof GetAgentQuoteV1Responses];
+
+export type PrepareAgentQuoteV1Data = {
+  body: PrepareAgentQuoteRequest;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/agent/quotes/{quoteId}/prepare";
+};
+
+export type PrepareAgentQuoteV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type PrepareAgentQuoteV1Error = PrepareAgentQuoteV1Errors[keyof PrepareAgentQuoteV1Errors];
+
+export type PrepareAgentQuoteV1Responses = {
+  /**
+   * OK
+   */
+  200: AgentQuoteResponse;
+};
+
+export type PrepareAgentQuoteV1Response =
+  PrepareAgentQuoteV1Responses[keyof PrepareAgentQuoteV1Responses];
+
+export type UpdateAgentQuoteDraftV1Data = {
+  body: UpdateAgentQuoteDraftRequest;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/agent/quotes/{quoteId}/draft";
+};
+
+export type UpdateAgentQuoteDraftV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type UpdateAgentQuoteDraftV1Error =
+  UpdateAgentQuoteDraftV1Errors[keyof UpdateAgentQuoteDraftV1Errors];
+
+export type UpdateAgentQuoteDraftV1Responses = {
+  /**
+   * OK
+   */
+  200: AgentQuoteResponse;
+};
+
+export type UpdateAgentQuoteDraftV1Response =
+  UpdateAgentQuoteDraftV1Responses[keyof UpdateAgentQuoteDraftV1Responses];
+
+export type SendAgentQuoteV1Data = {
+  body: SendQuoteRequest;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/agent/quotes/{quoteId}/send";
+};
+
+export type SendAgentQuoteV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type SendAgentQuoteV1Error = SendAgentQuoteV1Errors[keyof SendAgentQuoteV1Errors];
+
+export type SendAgentQuoteV1Responses = {
+  /**
+   * OK
+   */
+  200: AgentQuoteResponse;
+};
+
+export type SendAgentQuoteV1Response = SendAgentQuoteV1Responses[keyof SendAgentQuoteV1Responses];
+
+export type ReviseAgentQuoteV1Data = {
+  body: QuoteConcurrencyRequest;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/agent/quotes/{quoteId}/revise";
+};
+
+export type ReviseAgentQuoteV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type ReviseAgentQuoteV1Error = ReviseAgentQuoteV1Errors[keyof ReviseAgentQuoteV1Errors];
+
+export type ReviseAgentQuoteV1Responses = {
+  /**
+   * OK
+   */
+  200: AgentQuoteResponse;
+};
+
+export type ReviseAgentQuoteV1Response =
+  ReviseAgentQuoteV1Responses[keyof ReviseAgentQuoteV1Responses];
+
+export type WithdrawAgentQuoteV1Data = {
+  body: QuoteConcurrencyRequest;
+  path: {
+    quoteId: string;
+  };
+  query?: never;
+  url: "/api/v1/agent/quotes/{quoteId}/withdraw";
+};
+
+export type WithdrawAgentQuoteV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type WithdrawAgentQuoteV1Error =
+  WithdrawAgentQuoteV1Errors[keyof WithdrawAgentQuoteV1Errors];
+
+export type WithdrawAgentQuoteV1Responses = {
+  /**
+   * OK
+   */
+  200: AgentQuoteResponse;
+};
+
+export type WithdrawAgentQuoteV1Response =
+  WithdrawAgentQuoteV1Responses[keyof WithdrawAgentQuoteV1Responses];

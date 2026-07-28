@@ -7,6 +7,7 @@ import {
   NewItemForm,
   RegenerateDraft,
 } from "@/components/customer/itinerary-builder";
+import { QuoteRequestForm } from "@/components/quotes/quote-workflow";
 import { requirePortalAuthentication } from "@/lib/portal-auth";
 import { getTravelPlanningClient } from "@/lib/travel-planning";
 
@@ -72,6 +73,9 @@ export default async function TravelPlanDetailPage({
             </div>
           ) : null}
           <RegenerateDraft plan={plan} />
+        </div>
+        <div className="mt-8">
+          <QuoteRequestForm plan={plan} />
         </div>
         <ol className="mt-10 grid gap-7">
           {plan.currentRevision.days.map((day) => (

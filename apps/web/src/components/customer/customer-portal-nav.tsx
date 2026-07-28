@@ -7,6 +7,7 @@ const items = [
   ["Wishlist", "/portal/customer/wishlist"],
   ["Saved itineraries", "/portal/customer/saved-itineraries"],
   ["Travel planner", "/portal/customer/travel-plans"],
+  ["Quotes", "/portal/customer/quotes"],
 ] as const;
 
 export function CustomerPortalNav() {

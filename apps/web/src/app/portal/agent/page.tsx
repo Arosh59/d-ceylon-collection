@@ -1,4 +1,5 @@
 import { AccessRequestError } from "@dceylon/sdk";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { getAccessClient } from "@/lib/access";
@@ -27,9 +28,12 @@ export default async function AgentPortalPage() {
         <p className="eyebrow">Protected foundation</p>
         <h1 className="mt-3 text-5xl text-navy">Welcome, {displayName}</h1>
         <p className="mt-5 max-w-2xl text-lg text-ink-muted">
-          Your agent organisation boundary is verified. Quotes, bookings, payments, and
-          administration are intentionally outside Phase 5.
+          Your agent organisation boundary is verified. Prepare versioned itemized quotes while
+          bookings, payments, and administration remain intentionally unavailable.
         </p>
+        <Link className="button-primary mt-7 inline-block" href="/portal/agent/quotes">
+          Open organisation quote queue
+        </Link>
       </section>
     </main>
   );

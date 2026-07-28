@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using D.Ceylon.Modules.CustomersTravellers.Contracts;
 using D.Ceylon.Modules.ItinerariesTravelPlanning.Contracts;
+using D.Ceylon.Modules.Pricing;
+using D.Ceylon.Modules.Quotes.Contracts;
 
 namespace D.Ceylon.Api.Infrastructure;
 
@@ -21,15 +23,24 @@ internal sealed partial class GlobalExceptionHandler(
 
         var isConcurrencyConflict = exception is DbUpdateConcurrencyException;
         var isRecordConflict = exception is CustomerRecordConflictException
-            or TravelPlanConflictException;
-        var isMissingReference = exception is TravelPlanReferenceException;
+            or TravelPlanConflictException
+            or QuoteConflictException
+            or QuoteTransitionException;
+        var isMissingReference = exception is TravelPlanReferenceException
+            or QuoteReferenceException;
+        var isPricingValidation = exception is PricingValidationException;
         var statusCode = isConcurrencyConflict || isRecordConflict
             ? StatusCodes.Status409Conflict
             : isMissingReference
                 ? StatusCodes.Status404NotFound
-                : StatusCodes.Status500InternalServerError;
+                : isPricingValidation
+                    ? StatusCodes.Status400BadRequest
+                    : StatusCodes.Status500InternalServerError;
 
-        if (isConcurrencyConflict || isRecordConflict || isMissingReference)
+        if (isConcurrencyConflict
+            || isRecordConflict
+            || isMissingReference
+            || isPricingValidation)
         {
             LogRecordConflict(logger, exception, httpContext.Request.Path);
         }
@@ -46,17 +57,25 @@ internal sealed partial class GlobalExceptionHandler(
                 ? isConcurrencyConflict
                     ? "The record was changed by another request"
                     : "The request conflicts with an existing record"
-                : isMissingReference ? "Referenced record not found" : "An unexpected error occurred",
+                : isMissingReference
+                    ? "Referenced record not found"
+                    : isPricingValidation
+                        ? "The pricing input is invalid"
+                        : "An unexpected error occurred",
             Detail = isConcurrencyConflict || isRecordConflict
                 ? isConcurrencyConflict
                     ? "Reload the latest record and retry the operation."
                     : exception.Message
-                : isMissingReference ? exception.Message : "The request could not be completed.",
+                : isMissingReference || isPricingValidation
+                    ? exception.Message
+                    : "The request could not be completed.",
             Type = isConcurrencyConflict || isRecordConflict
                 ? "https://www.rfc-editor.org/rfc/rfc9110#name-409-conflict"
                 : isMissingReference
                     ? "https://www.rfc-editor.org/rfc/rfc9110#name-404-not-found"
-                    : "https://www.rfc-editor.org/rfc/rfc9110#name-500-internal-server-error",
+                    : isPricingValidation
+                        ? "https://www.rfc-editor.org/rfc/rfc9110#name-400-bad-request"
+                        : "https://www.rfc-editor.org/rfc/rfc9110#name-500-internal-server-error",
         };
 
         return await problemDetailsService.TryWriteAsync(

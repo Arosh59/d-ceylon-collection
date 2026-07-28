@@ -198,6 +198,34 @@ internal sealed class TravelPlanRecords(
         return ToResponse(entity);
     }
 
+    public async Task<QuoteItinerarySource?> GetQuoteSourceAsync(
+        Guid customerId,
+        Guid planId,
+        Guid revisionId,
+        CancellationToken cancellationToken)
+    {
+        var entity = await database.TravelPlans
+            .AsNoTracking()
+            .Where(plan => plan.CustomerId == customerId && plan.Id == planId)
+            .Include(plan => plan.Revisions)
+            .SingleOrDefaultAsync(cancellationToken);
+        if (entity is null) return null;
+        var revision = entity.Revisions.SingleOrDefault(candidate =>
+            candidate.Id == revisionId
+            && candidate.RevisionNumber == entity.CurrentRevisionNumber);
+        return revision is null
+            ? null
+            : new QuoteItinerarySource(
+                entity.Id,
+                revision.Id,
+                revision.RevisionNumber,
+                entity.Title,
+                entity.TravelStartDate,
+                entity.TravelEndDate,
+                revision.RuleVersion,
+                revision.InputFingerprint);
+    }
+
     private IQueryable<TravelPlan> OwnedPlan(Guid customerId, Guid planId, bool tracking)
     {
         var query = database.TravelPlans

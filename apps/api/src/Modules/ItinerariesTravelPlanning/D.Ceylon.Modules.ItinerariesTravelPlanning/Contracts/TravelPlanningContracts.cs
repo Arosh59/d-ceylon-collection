@@ -65,6 +65,16 @@ public sealed record TravelPlanResponse(
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset UpdatedAtUtc);
 
+public sealed record QuoteItinerarySource(
+    Guid TravelPlanId,
+    Guid ItineraryRevisionId,
+    int RevisionNumber,
+    string Title,
+    DateOnly TravelStartDate,
+    DateOnly TravelEndDate,
+    string RuleVersion,
+    string InputFingerprint);
+
 public abstract class TravelPlanInput : IValidatableObject
 {
     private static readonly HashSet<string> Paces =
@@ -299,6 +309,12 @@ public interface ITravelPlanRecords
         Guid planId,
         Guid itemId,
         ReorderItineraryItemRequest request,
+        CancellationToken cancellationToken);
+
+    Task<QuoteItinerarySource?> GetQuoteSourceAsync(
+        Guid customerId,
+        Guid planId,
+        Guid revisionId,
         CancellationToken cancellationToken);
 }
 

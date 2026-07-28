@@ -64,3 +64,19 @@ export {
   type UpdateItineraryItemRequest,
   type UpdateTravelPlanInputRequest,
 } from "./travel-planning-client";
+
+export {
+  QuoteApiError,
+  createQuoteClient,
+  type AgentQuote,
+  type AgentQuotePage,
+  type CreateQuoteRequest,
+  type CustomerQuote,
+  type CustomerQuotePage,
+  type PrepareAgentQuoteRequest,
+  type QuoteClient,
+  type QuoteClientOptions,
+  type QuotePagination,
+  type SendQuoteRequest,
+  type UpdateAgentQuoteDraftRequest,
+} from "./quote-client";

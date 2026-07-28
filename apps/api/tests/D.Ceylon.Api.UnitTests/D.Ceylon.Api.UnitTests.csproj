@@ -21,5 +21,7 @@
     <ProjectReference Include="..\..\src\Modules\CustomersTravellers\D.Ceylon.Modules.CustomersTravellers\D.Ceylon.Modules.CustomersTravellers.csproj" />
     <ProjectReference Include="..\..\src\Modules\IdentityAccess\D.Ceylon.Modules.IdentityAccess\D.Ceylon.Modules.IdentityAccess.csproj" />
     <ProjectReference Include="..\..\src\Modules\ItinerariesTravelPlanning\D.Ceylon.Modules.ItinerariesTravelPlanning\D.Ceylon.Modules.ItinerariesTravelPlanning.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Pricing\D.Ceylon.Modules.Pricing\D.Ceylon.Modules.Pricing.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Quotes\D.Ceylon.Modules.Quotes\D.Ceylon.Modules.Quotes.csproj" />
   </ItemGroup>
 </Project>

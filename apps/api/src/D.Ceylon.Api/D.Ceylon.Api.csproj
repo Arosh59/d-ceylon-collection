@@ -6,6 +6,7 @@
     <ProjectReference Include="..\Modules\IdentityAccess\D.Ceylon.Modules.IdentityAccess\D.Ceylon.Modules.IdentityAccess.csproj" />
     <ProjectReference Include="..\Modules\ItinerariesTravelPlanning\D.Ceylon.Modules.ItinerariesTravelPlanning\D.Ceylon.Modules.ItinerariesTravelPlanning.csproj" />
     <ProjectReference Include="..\Modules\OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents.csproj" />
+    <ProjectReference Include="..\Modules\Quotes\D.Ceylon.Modules.Quotes\D.Ceylon.Modules.Quotes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

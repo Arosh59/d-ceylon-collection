@@ -1,3 +1,5 @@
+using D.Ceylon.Modules.OrganisationsAgents.Application;
+using D.Ceylon.Modules.OrganisationsAgents.Contracts;
 using D.Ceylon.Modules.OrganisationsAgents.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +26,7 @@ public static class OrganisationsAgentsModule
         }
 
         services.TryAddSingleton(TimeProvider.System);
+        services.AddScoped<IOrganisationRecords, OrganisationRecords>();
         services.AddDbContext<OrganisationsAgentsDbContext>(options =>
             options.UseNpgsql(
                 connectionString,
