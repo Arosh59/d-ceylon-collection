@@ -62,3 +62,21 @@ their implementation phases.
 
 Database migrations remain an explicit operational action. Readiness checks
 database connectivity but application startup never changes the schema.
+
+## Phase 3 implementation
+
+The public web boundary uses:
+
+- `apps/web` for the Next.js App Router host, accessible page and state
+  components, server-only environment access, metadata, and request correlation;
+- `packages/sdk/openapi/v1.json` as the reviewed snapshot of the versioned API
+  contract;
+- generated TypeScript response types under `packages/sdk/src/generated`; and
+- a small fetch-based SDK wrapper that exposes only read-only catalogue
+  operations.
+
+React Server Components call the API from the server boundary. API origins never
+enter the browser bundle, the web application does not access PostgreSQL or
+duplicate backend domain entities, and incoming safe correlation IDs are
+forwarded to API calls. Catalogue routes render loading, empty, error, not-found,
+and populated foundations; Phase 4 owns catalogue data and search behavior.

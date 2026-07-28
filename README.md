@@ -9,16 +9,17 @@ future AI service.
 
 ## Status
 
-Phases 0 through 2 establish repository boundaries, engineering conventions,
-documentation, containerized local infrastructure, and the ASP.NET Core modular
-API with its initial Catalogue persistence and read-only endpoints. Frontend,
-authentication, commerce workflows, and deployment resources have not started.
+Phases 0 through 3 establish repository boundaries, engineering conventions,
+containerized local infrastructure, the ASP.NET Core modular API, and the public
+Next.js foundation with its generated catalogue SDK. Catalogue content,
+authentication, commerce workflows, and deployment resources remain in later
+phases.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 
 ## Planned architecture
 
-- `apps/web` — public Next.js App Router application
+- `apps/web` — accessible public Next.js App Router application
 - `apps/admin` — administration Next.js App Router application
 - `apps/api` — modular-monolith ASP.NET Core Web API
 - `apps/ai-service` — isolated future FastAPI service
@@ -36,8 +37,8 @@ See the [feature-status matrix](docs/features/status.md) for phase progress.
 The expected toolchain is:
 
 - Git
-- Node.js and npm
-- .NET SDK
+- Node.js 24 LTS and npm 11
+- .NET SDK, or Docker for the pinned SDK-container workflow
 - Docker with Docker Compose
 - Python 3
 - GitHub CLI (recommended for repository workflows)
@@ -48,8 +49,7 @@ implementation phase begins, after compatibility and deprecation checks.
 ## Getting started
 
 Review [local setup](docs/local-setup.md) to generate local credentials, run the
-infrastructure, apply migrations, and start the API. There is no frontend
-application yet.
+infrastructure, apply migrations, and start the API and public frontend.
 
 ## Documentation
 

@@ -52,8 +52,17 @@ return exception details.
 - `/health/live` checks process liveness.
 - `/health/ready` checks PostgreSQL through the Catalogue context.
 
-OpenAPI is available at `/openapi/v1.json`. The typed TypeScript SDK will be
-generated when the frontend integration begins.
+OpenAPI is available at `/openapi/v1.json`. The Phase 3 public application
+commits a reviewed snapshot at `packages/sdk/openapi/v1.json` and generates
+TypeScript response types from it. While the API is running, verify that
+snapshot with:
+
+```bash
+API_BASE_URL=http://127.0.0.1:8080 npm run sdk:verify
+```
+
+Refresh the snapshot only alongside a reviewed API contract change, then run
+`npm run sdk:generate` and inspect the generated type diff.
 
 ## Development
 

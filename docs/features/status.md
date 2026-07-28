@@ -8,7 +8,7 @@ A phase is complete only after its documented checks pass.
 | 0 | Repository and documentation baseline | Complete |
 | 1 | Local PostgreSQL, Redis, and Directus | Complete |
 | 2 | ASP.NET Core API and initial catalogue | Complete |
-| 3 | Public Next.js foundation | Not started |
+| 3 | Public Next.js foundation | Complete |
 | 4 | Catalogue, destinations, search, and collection seeds | Not started |
 | 5 | Authentication, authorization, and portal foundations | Not started |
 | 6 | Profiles, travellers, wishlists, and saved itineraries | Not started |
@@ -34,3 +34,10 @@ formatting check, zero-warning release build, unit and database-backed
 integration tests, applied migration discovery, API startup, OpenAPI document
 inspection, health and readiness probes, correlation and security header checks,
 and live rate-limit validation.
+
+Phase 3 was verified with a clean npm lockfile install, zero-advisory dependency
+audit, deterministic OpenAPI SDK generation, formatting, strict application and
+test type checks, zero-warning linting, unit and component tests, automated
+accessibility tests, production build and startup, live API contract and
+connectivity checks, correlation and security header checks, and desktop and
+mobile browser smoke tests.

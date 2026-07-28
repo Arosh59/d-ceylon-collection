@@ -16,6 +16,18 @@
 - Keep server-only values out of browser bundles.
 - Use Framer Motion only as restrained progressive enhancement.
 
+The Phase 3 frontend uses Prettier, ESLint, strict TypeScript, Vitest, Testing
+Library, axe-core, and Playwright. Run the frontend gate from the repository
+root:
+
+```bash
+npm run format:check
+npm run typecheck:web
+npm run lint:web
+npm run test:web
+npm run test:web:a11y
+```
+
 ## C#
 
 - Enable nullable reference types.
@@ -31,5 +43,5 @@
 - Do not grant AI tools authority to finalize prices, availability, bookings, or
   payments.
 
-Concrete formatter and linter commands will be added with each application
-scaffold.
+Each later application must add equivalent, application-specific commands when
+its scaffold is introduced.

@@ -1,0 +1,9 @@
+.next
+artifacts
+bin
+coverage
+node_modules
+obj
+packages/sdk/src/generated
+playwright-report
+test-results
