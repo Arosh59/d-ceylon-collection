@@ -54,7 +54,7 @@ reset behavior, direct Compose commands, and troubleshooting.
 
 ## Application status
 
-The Phase 5 ASP.NET Core API is runnable through a pinned SDK container; no host .NET installation
+The Phase 6 ASP.NET Core API is runnable through a pinned SDK container; no host .NET installation
 is required:
 
 ```bash

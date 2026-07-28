@@ -26,3 +26,26 @@ export {
   type ProductSummary,
   type ProductType,
 } from "./catalogue-client";
+
+export {
+  CustomerApiError,
+  createCustomerClient,
+  type CreateCustomerProfileRequest,
+  type CreateSavedItineraryRequest,
+  type CreateTravellerRequest,
+  type CreateWishlistEntryRequest,
+  type CustomerClient,
+  type CustomerClientOptions,
+  type CustomerPagination,
+  type CustomerProfile,
+  type SavedItinerary,
+  type SavedItineraryPage,
+  type Traveller,
+  type TravellerPage,
+  type UpdateCustomerProfileRequest,
+  type UpdateSavedItineraryRequest,
+  type UpdateTravellerRequest,
+  type UpdateWishlistEntryRequest,
+  type WishlistEntry,
+  type WishlistPage,
+} from "./customer-client";

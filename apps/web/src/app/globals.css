@@ -123,7 +123,8 @@ summary {
 }
 
 .filter-field input,
-.filter-field select {
+.filter-field select,
+.filter-field textarea {
   background: var(--canvas);
   border: 1px solid rgba(14, 35, 66, 0.18);
   border-radius: 0.8rem;
@@ -132,6 +133,15 @@ summary {
   min-height: 3rem;
   padding: 0.65rem 0.85rem;
   width: 100%;
+}
+
+.filter-field textarea {
+  resize: vertical;
+}
+
+.customer-form {
+  display: grid;
+  gap: 1.5rem;
 }
 
 .button-primary,

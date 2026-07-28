@@ -74,6 +74,8 @@ Commands:
                      Create an Identity and Access migration
   migration-add-organisations NAME
                      Create an Organisations and Agents migration
+  migration-add-customers NAME
+                     Create a Customers and Travellers migration
   migration-remove   Remove the latest unapplied EF Core migration
   migrations-list    List EF Core migrations
   migrations-check   Verify the EF Core model has no pending changes
@@ -164,6 +166,19 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --output-dir Infrastructure/Persistence/Migrations
         ;;
+    migration-add-customers)
+        migration_name="${2:-}"
+        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
+            echo "Migration names must start with a letter and contain only letters and numbers." >&2
+            exit 1
+        fi
+        sdk_container tool restore
+        sdk_container ef migrations add "${migration_name}" \
+            --context CustomersTravellersDbContext \
+            --project src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers \
+            --startup-project src/D.Ceylon.Api \
+            --output-dir Infrastructure/Persistence/Migrations
+        ;;
     migration-remove)
         sdk_container tool restore
         sdk_container ef migrations remove \
@@ -191,6 +206,12 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
+        sdk_container ef migrations list \
+            --context CustomersTravellersDbContext \
+            --project src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
         ;;
     migrations-check)
         sdk_container tool restore
@@ -212,6 +233,12 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
+        sdk_container ef migrations has-pending-model-changes \
+            --context CustomersTravellersDbContext \
+            --project src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
         ;;
     migrate)
         sdk_container tool restore
@@ -226,6 +253,10 @@ case "${command_name}" in
         sdk_container ef database update \
             --context OrganisationsAgentsDbContext \
             --project src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents \
+            --startup-project src/D.Ceylon.Api
+        sdk_container ef database update \
+            --context CustomersTravellersDbContext \
+            --project src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers \
             --startup-project src/D.Ceylon.Api
         ;;
     seed)

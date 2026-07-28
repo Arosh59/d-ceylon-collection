@@ -1,9 +1,9 @@
 # Public Web Application
 
 `apps/web` is the accessible public Next.js App Router host for D Ceylon Collection. Phases 3
-through 5 establish the visual foundation, public catalogue discovery, external OIDC session, and
-protected customer and agent portal boundaries. Profile, itinerary, quote, administration, and
-commerce workflows remain assigned to later phases.
+through 6 establish the visual foundation, public catalogue discovery, external OIDC session,
+protected customer and agent boundaries, and customer-owned profile, traveller, wishlist, and
+saved-itinerary foundations. Planning, quotes, administration, and commerce remain later phases.
 
 ## Runtime and configuration
 
@@ -56,7 +56,11 @@ Chrome channel.
 - `/experiences` and `/accommodation` — typed product-type discovery;
 - `/auth/sign-in`, `/auth/error`, `/auth/unauthorized`, and `/auth/forbidden` — accessible
   authentication states with validated same-origin redirects;
-- `/portal/customer` — protected customer ownership foundation;
+- `/portal/customer` — protected customer overview;
+- `/portal/customer/profile` — profile/contact preference create, read, update, and delete;
+- `/portal/customer/travellers` and child routes — paginated traveller list/detail/create/edit;
+- `/portal/customer/wishlist` — paginated catalogue shortlist with note editing;
+- `/portal/customer/saved-itineraries` and child routes — metadata-only list/detail/create/edit;
 - `/portal/agent` — protected agent organisation foundation;
 - `loading.tsx`, `error.tsx`, and `not-found.tsx` — explicit loading, recovery, and unknown-route
   experiences; and
@@ -81,8 +85,9 @@ npm run sdk:generate
 The first command fails when the committed snapshot differs semantically from the live versioned
 API. The second regenerates TypeScript types from the reviewed snapshot.
 
-All catalogue and protected access calls run at the server boundary. The encrypted, HTTP-only
+All catalogue and protected customer calls run at the server boundary. The encrypted, HTTP-only
 session retains the provider access token without adding it to the browser-visible session DTO.
-Protected calls use generated OpenAPI response types and preserve correlation IDs. Filters use
-native GET form controls, pagination preserves active filters, and media placeholders render from
-stable API metadata without licensed image assets.
+Server actions use generated OpenAPI request/response types, enforce the authenticated API boundary,
+surface validation/concurrency Problem Details, and preserve correlation IDs. Filters use native GET
+form controls, pagination preserves active filters, and media placeholders render from stable API
+metadata without licensed image assets.

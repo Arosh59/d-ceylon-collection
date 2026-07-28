@@ -11,7 +11,7 @@ only after its documented checks pass.
 | 3     | Public Next.js foundation                              | Complete    |
 | 4     | Catalogue, destinations, search, and collection seeds  | Complete    |
 | 5     | Authentication, authorization, and portal foundations  | Complete    |
-| 6     | Profiles, travellers, wishlists, and saved itineraries | Not started |
+| 6     | Profiles, travellers, wishlists, and saved itineraries | Complete    |
 | 7     | Deterministic travel planner                           | Not started |
 | 8     | Quote workflow                                         | Not started |
 | 9     | Booking, payments, invoices, and vouchers              | Not started |
@@ -54,3 +54,11 @@ deterministic isolated authentication fixtures, missing/invalid/expired token ch
 ownership denial tests, audit-event checks, OpenAPI regeneration and equality, health/readiness
 probes, security headers, authentication rate limiting, frontend unit/component/accessibility tests,
 and signed-out, customer, agent, forbidden, and logout browser flows on desktop and mobile.
+
+Phase 6 was verified with locked NuGet and npm installs, zero-advisory dependency audits, a reviewed
+Customers and Travellers migration, no-pending-model checks, index inspection, zero-warning API and
+web builds, backend unit and isolated PostgreSQL integration tests, customer-ownership and
+cross-customer denial checks, optimistic-concurrency and audit-event checks, OpenAPI regeneration
+and equality, health/readiness probes, frontend unit/component/accessibility tests, and
+profile/traveller/wishlist/saved-itinerary validation, conflict, forbidden, not-found, logout, and
+responsive browser flows on desktop and mobile.

@@ -1,8 +1,8 @@
 # D Ceylon Collection API
 
-The primary backend is an ASP.NET Core 10 modular monolith. Phases 2 through 5 implement the API
+The primary backend is an ASP.NET Core 10 modular monolith. Phases 2 through 6 implement the API
 host, Catalogue discovery, external authentication, authorization policy foundations, and the
-Identity and Access and Organisations and Agents module boundaries.
+Identity and Access, Organisations and Agents, and Customers and Travellers module boundaries.
 
 ## Toolchain
 
@@ -37,6 +37,7 @@ apps/api/
 │   ├── D.Ceylon.Api/
 │   └── Modules/
 │       ├── Catalogue/D.Ceylon.Modules.Catalogue/
+│       ├── CustomersTravellers/D.Ceylon.Modules.CustomersTravellers/
 │       ├── IdentityAccess/D.Ceylon.Modules.IdentityAccess/
 │       └── OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents/
 └── tests/
@@ -92,6 +93,10 @@ ephemeral SDK container. It does not install .NET or store credentials in projec
 - `GET /api/v1/access/customer/{customerId}` — customer policy and ownership
 - `GET /api/v1/access/agent/{organisationId}` — agent organisation boundary
 - `GET /api/v1/access/staff` and `/administrator` — privileged policy probes
+- `/api/v1/customer/profile` — customer-owned profile CRUD
+- `/api/v1/customer/travellers` and `/{travellerId}` — paginated traveller CRUD
+- `/api/v1/customer/wishlist` and `/{entryId}` — paginated wishlist CRUD
+- `/api/v1/customer/saved-itineraries` and `/{itineraryId}` — paginated saved-metadata CRUD
 
 List endpoints accept optional `pageNumber` and `pageSize` parameters. Page numbers range from 1 to
 100,000 and page sizes from 1 to 100.
@@ -117,6 +122,12 @@ role-permission grants, customer ownership, and security audit events. The `orga
 schema owns organisations, memberships, and agent records. Both migration sets include ownership,
 lookup, active-state, and audit indexes.
 
+Phase 6 adds the `customers_travellers` schema. It owns profile/contact preferences, traveller
+details, wishlist entries, and saved-itinerary metadata. Every table carries a customer ownership
+key and concurrency/audit values; indexes support owner-scoped lists and uniqueness. Accessibility,
+dietary, and emergency-contact values are optional and deliberately bounded. Passport documents,
+quotes, bookings, and generated itinerary content are absent.
+
 Migrations are explicit; API startup never changes the database automatically. Create a future
 migration with:
 
@@ -124,6 +135,7 @@ migration with:
 ./scripts/api.sh migration-add MigrationName
 ./scripts/api.sh migration-add-identity MigrationName
 ./scripts/api.sh migration-add-organisations MigrationName
+./scripts/api.sh migration-add-customers MigrationName
 ```
 
 Review generated SQL and model changes before applying it.
@@ -138,4 +150,5 @@ invariants. Integration tests create a random temporary PostgreSQL database owne
 least-privilege application role, apply the real migration, start the API through
 `WebApplicationFactory`, and drop the database afterward. Authentication tests use an HMAC issuer
 registered only in the Testing environment and cover missing/invalid/expired tokens, policies,
-cross-owner denial, indexes, and audit records.
+cross-owner denial, indexes, and audit records. Phase 6 tests also cover validation, customer-scoped
+CRUD, pagination, stale-write conflicts, sensitive-change audit events, and migration indexes.

@@ -737,6 +737,938 @@
           }
         }
       }
+    },
+    "/api/v1/customer/profile": {
+      "get": {
+        "tags": ["Customer records"],
+        "operationId": "GetCustomerProfileV1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customer records"],
+        "operationId": "CreateCustomerProfileV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCustomerProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Customer records"],
+        "operationId": "UpdateCustomerProfileV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCustomerProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Customer records"],
+        "operationId": "DeleteCustomerProfileV1",
+        "parameters": [
+          {
+            "name": "ConcurrencyToken",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/travellers": {
+      "get": {
+        "tags": ["Customer records"],
+        "operationId": "GetCustomerTravellersV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfTravellerResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customer records"],
+        "operationId": "CreateCustomerTravellerV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravellerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravellerResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/travellers/{travellerId}": {
+      "get": {
+        "tags": ["Customer records"],
+        "operationId": "GetCustomerTravellerV1",
+        "parameters": [
+          {
+            "name": "travellerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravellerResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Customer records"],
+        "operationId": "UpdateCustomerTravellerV1",
+        "parameters": [
+          {
+            "name": "travellerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravellerRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravellerResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Customer records"],
+        "operationId": "DeleteCustomerTravellerV1",
+        "parameters": [
+          {
+            "name": "travellerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ConcurrencyToken",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/wishlist": {
+      "get": {
+        "tags": ["Customer records"],
+        "operationId": "GetCustomerWishlistV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfWishlistEntryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customer records"],
+        "operationId": "CreateCustomerWishlistEntryV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWishlistEntryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WishlistEntryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/wishlist/{entryId}": {
+      "put": {
+        "tags": ["Customer records"],
+        "operationId": "UpdateCustomerWishlistEntryV1",
+        "parameters": [
+          {
+            "name": "entryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWishlistEntryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WishlistEntryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Customer records"],
+        "operationId": "DeleteCustomerWishlistEntryV1",
+        "parameters": [
+          {
+            "name": "entryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ConcurrencyToken",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/saved-itineraries": {
+      "get": {
+        "tags": ["Customer records"],
+        "operationId": "GetCustomerSavedItinerariesV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfSavedItineraryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customer records"],
+        "operationId": "CreateCustomerSavedItineraryV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSavedItineraryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedItineraryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/saved-itineraries/{itineraryId}": {
+      "get": {
+        "tags": ["Customer records"],
+        "operationId": "GetCustomerSavedItineraryV1",
+        "parameters": [
+          {
+            "name": "itineraryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedItineraryResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Customer records"],
+        "operationId": "UpdateCustomerSavedItineraryV1",
+        "parameters": [
+          {
+            "name": "itineraryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSavedItineraryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedItineraryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Customer records"],
+        "operationId": "DeleteCustomerSavedItineraryV1",
+        "parameters": [
+          {
+            "name": "itineraryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ConcurrencyToken",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -815,6 +1747,134 @@
           }
         }
       },
+      "CreateCustomerProfileRequest": {
+        "required": ["givenName", "familyName", "preferredLocale", "preferredContactMethod"],
+        "type": "object",
+        "properties": {
+          "givenName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "familyName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "contactEmail": {
+            "maxLength": 320,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "contactPhone": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "countryCode": {
+            "pattern": "^[A-Za-z]{2}$",
+            "type": ["null", "string"]
+          },
+          "preferredLocale": {
+            "pattern": "^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$",
+            "type": "string"
+          },
+          "preferredContactMethod": {
+            "pattern": "^(email|phone)$",
+            "type": "string"
+          },
+          "marketingConsent": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateSavedItineraryRequest": {
+        "required": ["title"],
+        "type": "object",
+        "properties": {
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "summary": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "travelStartDate": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "travelEndDate": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "primaryDestinationSlug": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "type": ["null", "string"]
+          }
+        }
+      },
+      "CreateTravellerRequest": {
+        "required": ["givenName", "familyName"],
+        "type": "object",
+        "properties": {
+          "givenName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "familyName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "accessibilityNeeds": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "dietaryNeeds": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "emergencyContactName": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "emergencyContactPhone": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": ["null", "string"]
+          }
+        }
+      },
+      "CreateWishlistEntryRequest": {
+        "required": ["productSlug"],
+        "type": "object",
+        "properties": {
+          "productSlug": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "type": "string"
+          },
+          "note": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": ["null", "string"]
+          }
+        }
+      },
       "CurrentAccessResponse": {
         "required": [
           "subject",
@@ -855,6 +1915,60 @@
           "organisationId": {
             "type": ["null", "string"],
             "format": "uuid"
+          }
+        }
+      },
+      "CustomerProfileResponse": {
+        "required": [
+          "id",
+          "givenName",
+          "familyName",
+          "contactEmail",
+          "contactPhone",
+          "countryCode",
+          "preferredLocale",
+          "preferredContactMethod",
+          "marketingConsent",
+          "concurrencyToken",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "givenName": {
+            "type": "string"
+          },
+          "familyName": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": ["null", "string"]
+          },
+          "contactPhone": {
+            "type": ["null", "string"]
+          },
+          "countryCode": {
+            "type": ["null", "string"]
+          },
+          "preferredLocale": {
+            "type": "string"
+          },
+          "preferredContactMethod": {
+            "type": "string"
+          },
+          "marketingConsent": {
+            "type": "boolean"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -1073,6 +2187,51 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ProductTypeResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
+      "PagedResponseOfSavedItineraryResponse": {
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SavedItineraryResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
+      "PagedResponseOfTravellerResponse": {
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravellerResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
+      "PagedResponseOfWishlistEntryResponse": {
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WishlistEntryResponse"
             }
           },
           "pagination": {
@@ -1320,6 +2479,277 @@
             "type": "string"
           }
         }
+      },
+      "SavedItineraryResponse": {
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "travelStartDate",
+          "travelEndDate",
+          "primaryDestinationSlug",
+          "isArchived",
+          "concurrencyToken",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": ["null", "string"]
+          },
+          "travelStartDate": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "travelEndDate": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "primaryDestinationSlug": {
+            "type": ["null", "string"]
+          },
+          "isArchived": {
+            "type": "boolean"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TravellerResponse": {
+        "required": [
+          "id",
+          "givenName",
+          "familyName",
+          "dateOfBirth",
+          "accessibilityNeeds",
+          "dietaryNeeds",
+          "emergencyContactName",
+          "emergencyContactPhone",
+          "concurrencyToken",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "givenName": {
+            "type": "string"
+          },
+          "familyName": {
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "accessibilityNeeds": {
+            "type": ["null", "string"]
+          },
+          "dietaryNeeds": {
+            "type": ["null", "string"]
+          },
+          "emergencyContactName": {
+            "type": ["null", "string"]
+          },
+          "emergencyContactPhone": {
+            "type": ["null", "string"]
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UpdateCustomerProfileRequest": {
+        "required": ["givenName", "familyName", "preferredLocale", "preferredContactMethod"],
+        "type": "object",
+        "properties": {
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "givenName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "familyName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "contactEmail": {
+            "maxLength": 320,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "contactPhone": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "countryCode": {
+            "pattern": "^[A-Za-z]{2}$",
+            "type": ["null", "string"]
+          },
+          "preferredLocale": {
+            "pattern": "^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$",
+            "type": "string"
+          },
+          "preferredContactMethod": {
+            "pattern": "^(email|phone)$",
+            "type": "string"
+          },
+          "marketingConsent": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateSavedItineraryRequest": {
+        "required": ["title"],
+        "type": "object",
+        "properties": {
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "summary": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "travelStartDate": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "travelEndDate": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "primaryDestinationSlug": {
+            "maxLength": 200,
+            "minLength": 0,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "type": ["null", "string"]
+          }
+        }
+      },
+      "UpdateTravellerRequest": {
+        "required": ["givenName", "familyName"],
+        "type": "object",
+        "properties": {
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "givenName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "familyName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "dateOfBirth": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "accessibilityNeeds": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "dietaryNeeds": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "emergencyContactName": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "emergencyContactPhone": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": ["null", "string"]
+          }
+        }
+      },
+      "UpdateWishlistEntryRequest": {
+        "type": "object",
+        "properties": {
+          "note": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "WishlistEntryResponse": {
+        "required": [
+          "id",
+          "productSlug",
+          "note",
+          "concurrencyToken",
+          "createdAtUtc",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productSlug": {
+            "type": "string"
+          },
+          "note": {
+            "type": ["null", "string"]
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       }
     }
   },
@@ -1329,6 +2759,9 @@
     },
     {
       "name": "Identity and Access"
+    },
+    {
+      "name": "Customer records"
     }
   ]
 }

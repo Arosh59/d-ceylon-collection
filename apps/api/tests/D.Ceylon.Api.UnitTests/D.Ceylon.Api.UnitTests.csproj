@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\BuildingBlocks\D.Ceylon.BuildingBlocks\D.Ceylon.BuildingBlocks.csproj" />
     <ProjectReference Include="..\..\src\Modules\Catalogue\D.Ceylon.Modules.Catalogue\D.Ceylon.Modules.Catalogue.csproj" />
+    <ProjectReference Include="..\..\src\Modules\CustomersTravellers\D.Ceylon.Modules.CustomersTravellers\D.Ceylon.Modules.CustomersTravellers.csproj" />
     <ProjectReference Include="..\..\src\Modules\IdentityAccess\D.Ceylon.Modules.IdentityAccess\D.Ceylon.Modules.IdentityAccess.csproj" />
   </ItemGroup>
 </Project>

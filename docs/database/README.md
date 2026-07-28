@@ -78,3 +78,17 @@ schema and deterministic Development-only catalogue data explicitly:
 The seeder is idempotent and uses fixed identifiers. It creates five
 collections, six destinations, three product types, five categories, five tags,
 and ten published products. It never runs during normal API startup.
+
+## Phase 6 customer records schema
+
+Migration `20260728054220_AddCustomerRecords` creates the `customers_travellers` schema with:
+
+- one profile/contact-preference record per customer;
+- owner-scoped traveller records with optional, bounded accessibility, dietary, and
+  emergency-contact fields;
+- owner/product-unique wishlist entries; and
+- owner-scoped saved-itinerary metadata with a travel-date check constraint.
+
+Owner/list, name, destination, created/updated, contact, and uniqueness indexes support protected
+queries. All mutable records carry UUID concurrency tokens and UTC audit timestamps. The schema does
+not store passport documents, generated plans, quotes, bookings, or payments.

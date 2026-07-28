@@ -1,13 +1,23 @@
-import type { CataloguePage } from "@dceylon/sdk";
 import Link from "next/link";
 
 interface PaginationNavProps {
+  ariaLabel?: string;
   basePath: string;
-  pagination: CataloguePage["pagination"];
+  pagination: {
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    pageNumber: number | string;
+    totalPages: number | string;
+  };
   query: Record<string, string | undefined>;
 }
 
-export function PaginationNav({ basePath, pagination, query }: PaginationNavProps) {
+export function PaginationNav({
+  ariaLabel = "Pagination",
+  basePath,
+  pagination,
+  query,
+}: PaginationNavProps) {
   if (Number(pagination.totalPages) <= 1) {
     return null;
   }
@@ -24,7 +34,7 @@ export function PaginationNav({ basePath, pagination, query }: PaginationNavProp
   };
 
   return (
-    <nav aria-label="Catalogue pagination" className="mt-12 flex items-center justify-between">
+    <nav aria-label={ariaLabel} className="mt-12 flex items-center justify-between">
       {pagination.hasPreviousPage ? (
         <Link className="button-secondary" href={link(Number(pagination.pageNumber) - 1)}>
           Previous page

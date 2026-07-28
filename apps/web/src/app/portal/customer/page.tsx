@@ -1,45 +1,81 @@
-import { AccessRequestError } from "@dceylon/sdk";
-import { redirect } from "next/navigation";
+import Link from "next/link";
 
-import { getAccessClient } from "@/lib/access";
+import { getCustomerClient } from "@/lib/customer";
 import { requirePortalAuthentication } from "@/lib/portal-auth";
+
+import { handleCustomerPageError } from "./page-error";
 
 export default async function CustomerPortalPage() {
   const authentication = await requirePortalAuthentication("customer", "/portal/customer");
-  const client = await getAccessClient(authentication.accessToken);
-  let displayName: string;
+  const client = await getCustomerClient(authentication.accessToken);
+  let summary: {
+    itineraries: number | string;
+    profile: boolean;
+    travellers: number | string;
+    wishlist: number | string;
+  };
 
   try {
-    const [current, portal] = await Promise.all([
-      client.getCurrent(),
-      client.getCustomerPortal(authentication.customerId!),
+    const [profile, travellers, wishlist, itineraries] = await Promise.all([
+      client.getProfile(),
+      client.getTravellers({ pageSize: 1 }),
+      client.getWishlist({ pageSize: 1 }),
+      client.getSavedItineraries({ pageSize: 1 }),
     ]);
-    displayName = current.displayName;
-    void portal;
+    summary = {
+      profile: profile !== null,
+      travellers: travellers.pagination.totalItems,
+      wishlist: wishlist.pagination.totalItems,
+      itineraries: itineraries.pagination.totalItems,
+    };
   } catch (error) {
-    handleAccessError(error);
-    throw error;
+    handleCustomerPageError(error, "/portal/customer");
   }
 
   return (
     <main className="min-h-[60vh] bg-canvas px-5 py-16" id="main-content">
-      <section className="mx-auto max-w-4xl rounded-3xl border border-navy/10 bg-white p-8 shadow-soft sm:p-12">
-        <p className="eyebrow">Protected foundation</p>
-        <h1 className="mt-3 text-5xl text-navy">Welcome, {displayName}</h1>
+      <section className="mx-auto max-w-5xl">
+        <p className="eyebrow">Your private travel space</p>
+        <h1 className="mt-3 text-5xl text-navy">Welcome, {authentication.displayName}</h1>
         <p className="mt-5 max-w-2xl text-lg text-ink-muted">
-          Your customer access is verified. Profile, traveller, wishlist, and itinerary features
-          begin in Phase 6 and are intentionally not available yet.
+          Keep the people and ideas for a future journey organised. Only your authenticated customer
+          account can access these records.
         </p>
+        <div className="mt-10 grid gap-5 sm:grid-cols-2">
+          <DashboardCard
+            detail={summary.profile ? "Profile created" : "Profile needs your details"}
+            href="/portal/customer/profile"
+            title="Profile"
+          />
+          <DashboardCard
+            detail={`${summary.travellers} saved`}
+            href="/portal/customer/travellers"
+            title="Travellers"
+          />
+          <DashboardCard
+            detail={`${summary.wishlist} saved`}
+            href="/portal/customer/wishlist"
+            title="Wishlist"
+          />
+          <DashboardCard
+            detail={`${summary.itineraries} saved`}
+            href="/portal/customer/saved-itineraries"
+            title="Itinerary foundations"
+          />
+        </div>
       </section>
     </main>
   );
 }
 
-function handleAccessError(error: unknown): void {
-  if (error instanceof AccessRequestError && error.status === 401) {
-    redirect("/auth/sign-in?callbackUrl=%2Fportal%2Fcustomer");
-  }
-  if (error instanceof AccessRequestError && error.status === 403) {
-    redirect("/auth/forbidden");
-  }
+function DashboardCard({ detail, href, title }: { detail: string; href: string; title: string }) {
+  return (
+    <Link
+      className="rounded-3xl border border-navy/10 bg-white p-7 shadow-soft transition-transform hover:-translate-y-1"
+      href={href}
+    >
+      <h2 className="text-3xl text-navy">{title}</h2>
+      <p className="mt-3 text-sm text-ink-muted">{detail}</p>
+    </Link>
+  );
 }

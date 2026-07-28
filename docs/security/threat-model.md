@@ -2,7 +2,7 @@
 
 ## Scope and status
 
-This model was reviewed for the Phase 5 authentication boundary. It must be revisited whenever
+This model was reviewed for the Phase 6 customer-data boundary. It must be revisited whenever
 payments, private documents, new external providers, or AI capabilities are introduced.
 
 ## Assets
@@ -76,6 +76,10 @@ authorization, transport protection, safe logging, and bounded timeouts and reso
 - Development and test token issuers cannot be enabled in Production.
 - Identity-provider secrets, signing keys, tokens, and test keys never enter source control or
   client-visible environment values.
+- Customer ownership comes only from validated claims and is included in every customer-record
+  query and mutation.
+- Sensitive traveller/contact values never appear in audit event payloads or structured logs.
+- Passport documents and numbers are not stored in Phase 6.
 
 ## Phase 5 authentication abuse cases
 
@@ -83,12 +87,23 @@ authorization, transport protection, safe logging, and bounded timeouts and reso
 | --------------------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Forged, wrong-issuer, or wrong-audience token | JWT signature, issuer, audience, lifetime, and required-claim validation        | Provider signing-key rotation monitoring                               |
 | Expired or missing token                      | Deny-by-default fallback policy and correlated 401 Problem Details              | Session-expiry support runbook                                         |
-| Customer accesses another customer            | Resource authorization handler compares validated customer ID                   | Continue ownership predicates on every Phase 6 query/mutation          |
+| Customer accesses another customer            | Resource handler plus owner predicates on every customer query and mutation      | Periodic authorization regression testing                             |
 | Agent crosses organisation boundary           | Agent policy plus server-side organisation resource handler                     | Explicit grant workflow if cross-organisation access is later required |
 | Open redirect during sign-in/logout           | Relative/same-origin redirect validation                                        | Provider redirect URI allow-list                                       |
 | Test authentication exposed outside tests     | Dual API/web environment gates, required random test keys, no OpenAPI route     | Never deploy Testing configurations to shared environments             |
 | Token/session disclosure                      | HTTP-only encrypted cookie, no bearer token in public session, no token logging | Managed secret store, TLS, cookie/key rotation                         |
 | Authentication endpoint abuse                 | Per-IP fixed-window test-auth rate limit                                        | Provider-side throttling, bot controls, alerting                       |
+
+## Phase 6 customer-data abuse cases
+
+| Abuse case                                    | Implemented control                                                       | Remaining operational control                             |
+| --------------------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Customer reads or mutates another owner       | Claim-derived owner predicate on every query/mutation; indistinct 404     | Periodic authorization regression testing                 |
+| Browser forges a customer identifier          | Customer IDs are absent from request DTOs and customer route parameters   | API gateway schema monitoring                             |
+| Concurrent edit silently overwrites changes   | Per-record concurrency tokens and correlated 409 Problem Details          | User-support conflict-resolution guidance                 |
+| Excess sensitive traveller data is collected  | Optional bounded fields, paired emergency contact, minimisation copy      | Retention, erasure, and support-access procedures          |
+| Sensitive values leak through diagnostics     | DTO boundaries and metadata-only audit writer                             | Production log redaction verification and access controls |
+| Deleted data remains indefinitely in backups  | Explicit record deletion endpoints                                        | Backup expiry and account-erasure schedule before go-live |
 
 ## Open questions
 

@@ -4,7 +4,7 @@ const baseURL = process.env.WEB_BASE_URL ?? "http://127.0.0.1:3000";
 
 export default defineConfig({
   testDir: "./tests/smoke",
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
   reporter: "list",
@@ -22,6 +22,7 @@ export default defineConfig({
     },
     {
       name: "mobile",
+      dependencies: ["desktop"],
       use: {
         ...devices["Pixel 7"],
       },

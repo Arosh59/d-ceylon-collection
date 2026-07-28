@@ -112,3 +112,18 @@ and keeps bearer tokens at the server boundary. Protected customer and agent lay
 session roles and then call the protected API through generated OpenAPI types, preserving
 correlation IDs. Testing personas are compiled into the normal applications but are registered only
 under explicit Testing runtime environments with separate test keys.
+
+## Phase 6 implementation
+
+Customers and Travellers is an explicit module with its own assembly, EF Core context,
+`customers_travellers` PostgreSQL schema, migration set, and readiness probe. It owns customer
+profile/contact preferences, traveller records, wishlist entries, and saved-itinerary metadata.
+Owner IDs are stable references to Identity and Access, never cross-context navigation properties.
+Every service query includes the authenticated customer owner predicate, and update/delete
+operations require optimistic-concurrency tokens.
+
+The customer portal remains server-rendered. It obtains authentication only at the server boundary,
+constructs the generated customer SDK with the private access token, and uses server actions for
+mutations. Validation, conflict, unauthorized, forbidden, not-found, loading, empty, and error
+states are explicit. Saved itineraries are metadata records only; route generation and itinerary
+building remain Phase 7.

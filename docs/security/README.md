@@ -19,6 +19,6 @@ considered complete.
 - dependency, static, secret, and container scanning in CI; and
 - documented retention, backup, restore, and incident practices.
 
-See the initial [threat model](threat-model.md) and root
+See the current [threat model](threat-model.md), [customer privacy guide](../privacy.md), and root
 [security policy](../../SECURITY.md). Control implementation evidence will be
 added alongside the relevant phase.

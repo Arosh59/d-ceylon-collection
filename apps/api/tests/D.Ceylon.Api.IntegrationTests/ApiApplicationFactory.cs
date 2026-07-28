@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
+using D.Ceylon.Modules.CustomersTravellers.Infrastructure.Persistence;
 using D.Ceylon.Modules.IdentityAccess.Infrastructure.Persistence;
 using D.Ceylon.Modules.OrganisationsAgents.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
@@ -129,6 +130,17 @@ public sealed partial class ApiApplicationFactory : WebApplicationFactory<Progra
         using var organisationDatabase =
             new OrganisationsAgentsDbContext(organisationOptions, TimeProvider.System);
         organisationDatabase.Database.Migrate();
+
+        var customerOptions =
+            new DbContextOptionsBuilder<CustomersTravellersDbContext>()
+                .UseNpgsql(
+                    ConnectionString,
+                    postgres => postgres.MigrationsAssembly(
+                        typeof(CustomersTravellersDbContext).Assembly.FullName))
+                .Options;
+        using var customerDatabase =
+            new CustomersTravellersDbContext(customerOptions, TimeProvider.System);
+        customerDatabase.Database.Migrate();
     }
 
     private void DropDatabase()

@@ -6,6 +6,7 @@ using D.Ceylon.Api.Infrastructure;
 using D.Ceylon.Api.Middleware;
 using D.Ceylon.Modules.Catalogue;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
+using D.Ceylon.Modules.CustomersTravellers;
 using D.Ceylon.Modules.IdentityAccess;
 using D.Ceylon.Modules.OrganisationsAgents;
 using Microsoft.AspNetCore.Authorization;
@@ -38,6 +39,7 @@ builder.Services.AddProblemDetails(options =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddOpenApi("v1");
 builder.Services.AddCatalogueModule(builder.Configuration);
+builder.Services.AddCustomersTravellersModule(builder.Configuration);
 builder.Services.AddIdentityAccessModule(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationsAgentsModule(builder.Configuration);
 builder.Services.AddSingleton<
@@ -184,6 +186,7 @@ app.MapHealthChecks(
 var versionOne = app.MapGroup("/api/v1");
 versionOne.MapCatalogueEndpoints();
 versionOne.MapAccessEndpoints(app.Environment);
+versionOne.MapCustomerEndpoints();
 
 app.Run();
 

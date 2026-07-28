@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using D.Ceylon.Modules.CustomersTravellers.Contracts;
 
 namespace D.Ceylon.Api.Infrastructure;
 
@@ -18,13 +19,14 @@ internal sealed partial class GlobalExceptionHandler(
         ArgumentNullException.ThrowIfNull(exception);
 
         var isConcurrencyConflict = exception is DbUpdateConcurrencyException;
-        var statusCode = isConcurrencyConflict
+        var isRecordConflict = exception is CustomerRecordConflictException;
+        var statusCode = isConcurrencyConflict || isRecordConflict
             ? StatusCodes.Status409Conflict
             : StatusCodes.Status500InternalServerError;
 
-        if (isConcurrencyConflict)
+        if (isConcurrencyConflict || isRecordConflict)
         {
-            LogConcurrencyConflict(logger, exception, httpContext.Request.Path);
+            LogRecordConflict(logger, exception, httpContext.Request.Path);
         }
         else
         {
@@ -35,13 +37,17 @@ internal sealed partial class GlobalExceptionHandler(
         var problem = new ProblemDetails
         {
             Status = statusCode,
-            Title = isConcurrencyConflict
-                ? "The record was changed by another request"
+            Title = isConcurrencyConflict || isRecordConflict
+                ? isConcurrencyConflict
+                    ? "The record was changed by another request"
+                    : "The request conflicts with an existing record"
                 : "An unexpected error occurred",
-            Detail = isConcurrencyConflict
-                ? "Reload the latest record and retry the operation."
+            Detail = isConcurrencyConflict || isRecordConflict
+                ? isConcurrencyConflict
+                    ? "Reload the latest record and retry the operation."
+                    : exception.Message
                 : "The request could not be completed.",
-            Type = isConcurrencyConflict
+            Type = isConcurrencyConflict || isRecordConflict
                 ? "https://www.rfc-editor.org/rfc/rfc9110#name-409-conflict"
                 : "https://www.rfc-editor.org/rfc/rfc9110#name-500-internal-server-error",
         };
@@ -57,8 +63,8 @@ internal sealed partial class GlobalExceptionHandler(
     [LoggerMessage(
         EventId = 1001,
         Level = LogLevel.Warning,
-        Message = "A database concurrency conflict occurred for {RequestPath}")]
-    private static partial void LogConcurrencyConflict(
+        Message = "A record conflict occurred for {RequestPath}")]
+    private static partial void LogRecordConflict(
         ILogger logger,
         Exception exception,
         string requestPath);

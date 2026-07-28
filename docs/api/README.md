@@ -1,6 +1,6 @@
 # API Guide
 
-The primary API is an ASP.NET Core 10 modular monolith. Phases 2 through 5 implement the host,
+The primary API is an ASP.NET Core 10 modular monolith. Phases 2 through 6 implement the host,
 Catalogue discovery, external JWT bearer validation, authorization policies, and ownership module
 foundations.
 
@@ -18,7 +18,7 @@ foundations.
 
 ## Versioning and contracts
 
-Version 1 routes use the `/api/v1` prefix. The Catalogue API exposes DTOs only; Entity Framework
+Version 1 routes use the `/api/v1` prefix. Catalogue and customer APIs expose DTOs only; Entity Framework
 entities never cross the HTTP boundary.
 
 Phase 4 discovery routes cover products, product types, categories, tags, collections, and
@@ -56,7 +56,7 @@ Invalid input, missing records, rate limits, concurrency conflicts, and unexpect
 - Security headers deny framing, sniffing, referrers, and active content.
 - Request bodies are capped at 10 MiB at the server boundary.
 - `/health/live` checks process liveness.
-- `/health/ready` checks PostgreSQL through all three module contexts.
+- `/health/ready` checks PostgreSQL through all four module contexts.
 
 OpenAPI is available at `/openapi/v1.json`. The Phase 3 public application commits a reviewed
 snapshot at `packages/sdk/openapi/v1.json` and generates TypeScript response types from it. While
@@ -70,7 +70,7 @@ Refresh the snapshot only alongside a reviewed API contract change, then run
 `API_BASE_URL=http://127.0.0.1:8080 npm run sdk:refresh`, `npm run sdk:generate`, and inspect the
 generated type diff.
 
-Current read-only routes are:
+Current discovery and access routes are:
 
 - `GET /api/v1/catalogue/products` and `/products/{slug}`;
 - `GET /api/v1/catalogue/product-types`;
@@ -81,6 +81,20 @@ Current read-only routes are:
 - `GET /api/v1/access/customer/{customerId}`;
 - `GET /api/v1/access/agent/{organisationId}`; and
 - `GET /api/v1/access/staff` and `/administrator`.
+
+Authenticated customer-owned routes are:
+
+- `GET`, `POST`, `PUT`, and `DELETE /api/v1/customer/profile`;
+- paginated `GET` and `POST /api/v1/customer/travellers`, plus
+  `GET`/`PUT`/`DELETE /travellers/{id}`;
+- paginated `GET` and `POST /api/v1/customer/wishlist`, plus
+  `PUT`/`DELETE /wishlist/{id}`; and
+- paginated `GET` and `POST /api/v1/customer/saved-itineraries`, plus
+  `GET`/`PUT`/`DELETE /saved-itineraries/{id}`.
+
+The authenticated customer ID comes only from validated claims. Browser-supplied customer IDs are
+never trusted, and an owner-filtered missing record returns a correlated 404 without disclosing
+whether another customer owns it.
 
 ## Development
 

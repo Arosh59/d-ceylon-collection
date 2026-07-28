@@ -9,13 +9,11 @@ future AI service.
 
 ## Status
 
-Phases 0 through 4 establish repository boundaries, engineering conventions,
-containerized local infrastructure, the ASP.NET Core modular API, and the public
-Next.js catalogue experience with its generated SDK. PostgreSQL-backed
-catalogue discovery, five curated collection seeds, destinations, filters,
-search, and responsive public detail foundations are complete. Authentication,
-commerce workflows, editorial integration, and deployment resources remain in
-later phases.
+Phases 0 through 6 establish repository boundaries, containerized local infrastructure, the
+ASP.NET Core modular API, public Next.js catalogue, generated SDK, authentication and authorization,
+and protected customer profile, traveller, wishlist, and saved-itinerary foundations. The
+deterministic travel planner, quotes, bookings, payments, administration, editorial integration,
+and deployment resources remain in later phases.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 
@@ -62,6 +60,7 @@ infrastructure, apply migrations, and start the API and public frontend.
 - [Authentication](docs/authentication.md)
 - [Security](docs/security/README.md)
 - [Threat model](docs/security/threat-model.md)
+- [Customer data and privacy](docs/privacy.md)
 - [Deployment](docs/deployment.md)
 - [Backup and restore](docs/backup-and-restore.md)
 - [Coding conventions](docs/coding-conventions.md)
