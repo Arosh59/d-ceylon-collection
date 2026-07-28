@@ -1,15 +1,17 @@
 # API Modules
 
-The API is deployed as a modular monolith. A module owns its domain model,
-application behavior, persistence mappings, contracts, and HTTP endpoints.
-Modules communicate through explicit contracts rather than reaching into one
-another's database sets or internal types.
+The API is deployed as a modular monolith. A module owns its domain model, application behavior,
+persistence mappings, contracts, and HTTP endpoints. Modules communicate through explicit contracts
+rather than reaching into one another's database sets or internal types.
 
-Phases 2 and 4 implement only the **Catalogue** module, including its internal
-PostgreSQL search-provider boundary. The planned later boundaries are:
+Phases 2 and 4 implement **Catalogue**, including its internal PostgreSQL search-provider boundary.
+Phase 5 adds **Identity and Access** and **Organisations and Agents**. Each owns a separate
+assembly, EF Core context, schema, migration set, and readiness check. Cross-module user and
+organisation references are stable identifiers rather than navigation into another module's
+DbContext.
 
-- Identity and Access
-- Organisations and Agents
+The planned later boundaries are:
+
 - Customers and Travellers
 - Destinations
 - Product Catalogue
@@ -31,5 +33,5 @@ PostgreSQL search-provider boundary. The planned later boundaries are:
 - Audit
 - AI Integration Gateway
 
-Directories and assemblies for later modules will be created only when their
-implementation phase begins.
+Directories and assemblies for later modules will be created only when their implementation phase
+begins.

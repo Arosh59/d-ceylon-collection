@@ -9,6 +9,12 @@
   <Folder Name="/src/Modules/Catalogue/">
     <Project Path="src/Modules/Catalogue/D.Ceylon.Modules.Catalogue/D.Ceylon.Modules.Catalogue.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/IdentityAccess/">
+    <Project Path="src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess/D.Ceylon.Modules.IdentityAccess.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/OrganisationsAgents/">
+    <Project Path="src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/D.Ceylon.Api.IntegrationTests/D.Ceylon.Api.IntegrationTests.csproj" />
     <Project Path="tests/D.Ceylon.Api.UnitTests/D.Ceylon.Api.UnitTests.csproj" />

@@ -1,6 +1,8 @@
 using System.Text.RegularExpressions;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
+using D.Ceylon.Modules.IdentityAccess.Infrastructure.Persistence;
+using D.Ceylon.Modules.OrganisationsAgents.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,11 @@ namespace D.Ceylon.Api.IntegrationTests;
 
 public sealed partial class ApiApplicationFactory : WebApplicationFactory<Program>
 {
+    public const string TestEndpointKey =
+        "phase5-integration-endpoint-key-0000000000000001";
+    public const string TestSigningKey =
+        "phase5-integration-signing-key-00000000000000001";
+
     private readonly string _adminConnectionString;
     private readonly string _databaseName;
     private bool _databaseDropped;
@@ -58,6 +65,12 @@ public sealed partial class ApiApplicationFactory : WebApplicationFactory<Progra
 
         builder.UseEnvironment("Testing");
         builder.UseSetting("ConnectionStrings:Postgres", ConnectionString);
+        builder.UseSetting(
+            "Authentication:Testing:Issuer",
+            "https://identity.test.dceylon.invalid");
+        builder.UseSetting("Authentication:Testing:Audience", "dceylon-api");
+        builder.UseSetting("Authentication:Testing:SigningKey", TestSigningKey);
+        builder.UseSetting("Authentication:Testing:EndpointKey", TestEndpointKey);
     }
 
     protected override void Dispose(bool disposing)
@@ -95,6 +108,27 @@ public sealed partial class ApiApplicationFactory : WebApplicationFactory<Progra
         database.Database.Migrate();
         var seeder = new CatalogueDevelopmentSeeder(database);
         seeder.SeedAsync(CancellationToken.None).GetAwaiter().GetResult();
+
+        var identityOptions = new DbContextOptionsBuilder<IdentityAccessDbContext>()
+            .UseNpgsql(
+                ConnectionString,
+                postgres => postgres.MigrationsAssembly(
+                    typeof(IdentityAccessDbContext).Assembly.FullName))
+            .Options;
+        using var identityDatabase =
+            new IdentityAccessDbContext(identityOptions, TimeProvider.System);
+        identityDatabase.Database.Migrate();
+
+        var organisationOptions =
+            new DbContextOptionsBuilder<OrganisationsAgentsDbContext>()
+                .UseNpgsql(
+                    ConnectionString,
+                    postgres => postgres.MigrationsAssembly(
+                        typeof(OrganisationsAgentsDbContext).Assembly.FullName))
+                .Options;
+        using var organisationDatabase =
+            new OrganisationsAgentsDbContext(organisationOptions, TimeProvider.System);
+        organisationDatabase.Database.Migrate();
     }
 
     private void DropDatabase()

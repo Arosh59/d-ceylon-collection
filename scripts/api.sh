@@ -7,6 +7,7 @@ repository_root="$(cd -- "${script_directory}/.." && pwd)"
 environment_file="${DCEYLON_ENV_FILE:-${repository_root}/.env}"
 sdk_image="mcr.microsoft.com/dotnet/sdk:10.0.302"
 api_directory="/workspace/apps/api"
+application_environment="${DCEYLON_ASPNETCORE_ENVIRONMENT:-Development}"
 
 if [[ ! -f "${environment_file}" ]]; then
     echo "Missing ${environment_file}." >&2
@@ -35,7 +36,11 @@ sdk_container() {
         --workdir "${api_directory}" \
         --env "ConnectionStrings__Postgres=${application_connection}" \
         --env "TestDatabase__AdminConnection=${admin_connection}" \
-        --env ASPNETCORE_ENVIRONMENT=Development \
+        --env "ASPNETCORE_ENVIRONMENT=${application_environment}" \
+        --env "Authentication__Testing__Issuer=${AUTH_TEST_ISSUER:-}" \
+        --env "Authentication__Testing__Audience=${AUTH_TEST_AUDIENCE:-}" \
+        --env "Authentication__Testing__SigningKey=${AUTH_TEST_SIGNING_KEY:-}" \
+        --env "Authentication__Testing__EndpointKey=${AUTH_TEST_ENDPOINT_KEY:-}" \
         --env DOTNET_CLI_TELEMETRY_OPTOUT=1 \
         --env DOTNET_NOLOGO=1 \
         "${sdk_image}" \
@@ -65,6 +70,10 @@ Commands:
   test-integration   Run PostgreSQL-backed API integration tests
   test               Run all tests
   migration-add NAME Create a named EF Core migration
+  migration-add-identity NAME
+                     Create an Identity and Access migration
+  migration-add-organisations NAME
+                     Create an Organisations and Agents migration
   migration-remove   Remove the latest unapplied EF Core migration
   migrations-list    List EF Core migrations
   migrations-check   Verify the EF Core model has no pending changes
@@ -129,6 +138,32 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --output-dir Infrastructure/Persistence/Migrations
         ;;
+    migration-add-identity)
+        migration_name="${2:-}"
+        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
+            echo "Migration names must start with a letter and contain only letters and numbers." >&2
+            exit 1
+        fi
+        sdk_container tool restore
+        sdk_container ef migrations add "${migration_name}" \
+            --context IdentityAccessDbContext \
+            --project src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess \
+            --startup-project src/D.Ceylon.Api \
+            --output-dir Infrastructure/Persistence/Migrations
+        ;;
+    migration-add-organisations)
+        migration_name="${2:-}"
+        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
+            echo "Migration names must start with a letter and contain only letters and numbers." >&2
+            exit 1
+        fi
+        sdk_container tool restore
+        sdk_container ef migrations add "${migration_name}" \
+            --context OrganisationsAgentsDbContext \
+            --project src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents \
+            --startup-project src/D.Ceylon.Api \
+            --output-dir Infrastructure/Persistence/Migrations
+        ;;
     migration-remove)
         sdk_container tool restore
         sdk_container ef migrations remove \
@@ -139,7 +174,20 @@ case "${command_name}" in
     migrations-list)
         sdk_container tool restore
         sdk_container ef migrations list \
+            --context CatalogueDbContext \
             --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
+        sdk_container ef migrations list \
+            --context IdentityAccessDbContext \
+            --project src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
+        sdk_container ef migrations list \
+            --context OrganisationsAgentsDbContext \
+            --project src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents \
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
@@ -147,7 +195,20 @@ case "${command_name}" in
     migrations-check)
         sdk_container tool restore
         sdk_container ef migrations has-pending-model-changes \
+            --context CatalogueDbContext \
             --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
+        sdk_container ef migrations has-pending-model-changes \
+            --context IdentityAccessDbContext \
+            --project src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
+        sdk_container ef migrations has-pending-model-changes \
+            --context OrganisationsAgentsDbContext \
+            --project src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents \
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
@@ -155,7 +216,16 @@ case "${command_name}" in
     migrate)
         sdk_container tool restore
         sdk_container ef database update \
+            --context CatalogueDbContext \
             --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
+            --startup-project src/D.Ceylon.Api
+        sdk_container ef database update \
+            --context IdentityAccessDbContext \
+            --project src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess \
+            --startup-project src/D.Ceylon.Api
+        sdk_container ef database update \
+            --context OrganisationsAgentsDbContext \
+            --project src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents \
             --startup-project src/D.Ceylon.Api
         ;;
     seed)
@@ -177,7 +247,11 @@ case "${command_name}" in
             --volume d-ceylon-dotnet-nuget:/root/.nuget/packages \
             --workdir "${api_directory}" \
             --env "ConnectionStrings__Postgres=${application_connection}" \
-            --env ASPNETCORE_ENVIRONMENT=Development \
+            --env "ASPNETCORE_ENVIRONMENT=${application_environment}" \
+            --env "Authentication__Testing__Issuer=${AUTH_TEST_ISSUER:-}" \
+            --env "Authentication__Testing__Audience=${AUTH_TEST_AUDIENCE:-}" \
+            --env "Authentication__Testing__SigningKey=${AUTH_TEST_SIGNING_KEY:-}" \
+            --env "Authentication__Testing__EndpointKey=${AUTH_TEST_ENDPOINT_KEY:-}" \
             --env DOTNET_CLI_TELEMETRY_OPTOUT=1 \
             --env DOTNET_NOLOGO=1 \
             "${sdk_image}" \

@@ -2,9 +2,8 @@
 
 ## Scope and status
 
-This initial Phase 0 model identifies system assets and intended trust
-boundaries. It must be revisited whenever authentication, payments, private
-documents, external providers, or AI capabilities are introduced.
+This model was reviewed for the Phase 5 authentication boundary. It must be revisited whenever
+payments, private documents, new external providers, or AI capabilities are introduced.
 
 ## Assets
 
@@ -41,42 +40,59 @@ documents, external providers, or AI capabilities are introduced.
 7. Application API to the isolated AI service.
 8. CI/CD systems to build artifacts, registries, secrets, and deployments.
 
-Data crossing a boundary requires authentication where applicable, server-side
-validation, explicit authorization, transport protection, safe logging, and
-bounded timeouts and resource use.
+Data crossing a boundary requires authentication where applicable, server-side validation, explicit
+authorization, transport protection, safe logging, and bounded timeouts and resource use.
 
 ## Threats and required mitigations
 
-| Threat | Example impact | Required mitigations |
-| --- | --- | --- |
-| Broken access control | Customer or agent reads another owner's records | Deny-by-default policies, ownership predicates, organisation scoping, authorization tests, audit events |
-| Credential or session compromise | Account takeover or privileged action | Managed identity abstraction, staff MFA, secure cookies, CSRF protection, rotation/revocation, lockout, anti-enumeration |
-| Injection and unsafe input | Data loss, code execution, or stored XSS | Server validation, EF parameterization, output encoding, CSP, safe file handling, dependency review |
-| Sensitive-data exposure | Passport, payment, token, or document disclosure | Data minimization, encryption, redacted logs, private storage, expiring signed links, retention and deletion controls |
-| Malicious uploads | Malware distribution or parser exploitation | Extension/MIME/size validation, quarantine, malware-scanning abstraction, private storage, access audit |
-| Payment or webhook replay | Duplicate charge, refund, or booking mutation | Signature validation, timestamp tolerance, idempotency keys, durable event records, reconciliation |
-| Quote/version tampering | Changed price after customer acceptance | Immutable sent versions, concurrency controls, complete change history, explicit approval records |
-| Denial of service and abuse | Service exhaustion or credential attacks | Rate limiting, bounded pagination, request limits, caching, timeouts, health signals, monitoring |
-| Supply-chain compromise | Malicious dependency or image reaches production | Lockfiles, reviewed updates, secret/dependency/static/container scans, signed or attributable artifacts |
-| Infrastructure or secret compromise | Unauthorized data or control-plane access | Managed identities, least privilege, private networking, secret manager, rotation, environment isolation |
-| AI prompt/tool abuse | Data leakage or unauthorized commercial action | No direct database access, authenticated allow-listed tools, scoped retrieval, injection defenses, human approval, audit |
-| Backup loss or corruption | Irrecoverable records or prolonged outage | Encrypted retained backups, isolated restore tests, integrity checks, documented RPO/RTO |
+| Threat                              | Example impact                                   | Required mitigations                                                                                                     |
+| ----------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| Broken access control               | Customer or agent reads another owner's records  | Deny-by-default policies, ownership predicates, organisation scoping, authorization tests, audit events                  |
+| Credential or session compromise    | Account takeover or privileged action            | Managed identity abstraction, staff MFA, secure cookies, CSRF protection, rotation/revocation, lockout, anti-enumeration |
+| Injection and unsafe input          | Data loss, code execution, or stored XSS         | Server validation, EF parameterization, output encoding, CSP, safe file handling, dependency review                      |
+| Sensitive-data exposure             | Passport, payment, token, or document disclosure | Data minimization, encryption, redacted logs, private storage, expiring signed links, retention and deletion controls    |
+| Malicious uploads                   | Malware distribution or parser exploitation      | Extension/MIME/size validation, quarantine, malware-scanning abstraction, private storage, access audit                  |
+| Payment or webhook replay           | Duplicate charge, refund, or booking mutation    | Signature validation, timestamp tolerance, idempotency keys, durable event records, reconciliation                       |
+| Quote/version tampering             | Changed price after customer acceptance          | Immutable sent versions, concurrency controls, complete change history, explicit approval records                        |
+| Denial of service and abuse         | Service exhaustion or credential attacks         | Rate limiting, bounded pagination, request limits, caching, timeouts, health signals, monitoring                         |
+| Supply-chain compromise             | Malicious dependency or image reaches production | Lockfiles, reviewed updates, secret/dependency/static/container scans, signed or attributable artifacts                  |
+| Infrastructure or secret compromise | Unauthorized data or control-plane access        | Managed identities, least privilege, private networking, secret manager, rotation, environment isolation                 |
+| AI prompt/tool abuse                | Data leakage or unauthorized commercial action   | No direct database access, authenticated allow-listed tools, scoped retrieval, injection defenses, human approval, audit |
+| Backup loss or corruption           | Irrecoverable records or prolonged outage        | Encrypted retained backups, isolated restore tests, integrity checks, documented RPO/RTO                                 |
 
 ## Security invariants
 
-- AI output cannot confirm availability, set a final price, create/cancel a
-  booking, or charge a payment method.
-- A booking originates only from an accepted quote or an explicitly authorized
-  administrative workflow.
+- AI output cannot confirm availability, set a final price, create/cancel a booking, or charge a
+  payment method.
+- A booking originates only from an accepted quote or an explicitly authorized administrative
+  workflow.
 - Sent quote versions are immutable.
 - Private documents never have public URLs.
 - Card numbers, CVV values, and raw payment credentials are never stored.
-- Customer and agent organisation ownership is enforced by the server, not
-  trusted from client filters.
+- Customer and agent organisation ownership is enforced by the server, not trusted from client
+  filters.
+- The API denies access by default; anonymous routes must be explicitly marked.
+- Browser session state never exposes the API bearer token through the public session response.
+- Development and test token issuers cannot be enabled in Production.
+- Identity-provider secrets, signing keys, tokens, and test keys never enter source control or
+  client-visible environment values.
+
+## Phase 5 authentication abuse cases
+
+| Abuse case                                    | Implemented control                                                             | Remaining operational control                                          |
+| --------------------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Forged, wrong-issuer, or wrong-audience token | JWT signature, issuer, audience, lifetime, and required-claim validation        | Provider signing-key rotation monitoring                               |
+| Expired or missing token                      | Deny-by-default fallback policy and correlated 401 Problem Details              | Session-expiry support runbook                                         |
+| Customer accesses another customer            | Resource authorization handler compares validated customer ID                   | Continue ownership predicates on every Phase 6 query/mutation          |
+| Agent crosses organisation boundary           | Agent policy plus server-side organisation resource handler                     | Explicit grant workflow if cross-organisation access is later required |
+| Open redirect during sign-in/logout           | Relative/same-origin redirect validation                                        | Provider redirect URI allow-list                                       |
+| Test authentication exposed outside tests     | Dual API/web environment gates, required random test keys, no OpenAPI route     | Never deploy Testing configurations to shared environments             |
+| Token/session disclosure                      | HTTP-only encrypted cookie, no bearer token in public session, no token logging | Managed secret store, TLS, cookie/key rotation                         |
+| Authentication endpoint abuse                 | Per-IP fixed-window test-auth rate limit                                        | Provider-side throttling, bot controls, alerting                       |
 
 ## Open questions
 
-- Managed identity provider and token/session model
+- Managed identity provider selection, staff MFA policy, and recovery operations
 - Azure topology, private-network boundaries, and key management
 - Payment and local-provider selection
 - Object storage and malware-scanning providers
@@ -86,5 +102,5 @@ bounded timeouts and resource use.
 
 ## Review triggers
 
-Review this model before each major phase, after material architecture changes,
-after a security incident, and at least annually once the platform is live.
+Review this model before each major phase, after material architecture changes, after a security
+incident, and at least annually once the platform is live.

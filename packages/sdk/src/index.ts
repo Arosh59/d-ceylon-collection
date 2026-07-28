@@ -1,4 +1,13 @@
 export {
+  AccessRequestError,
+  createAccessClient,
+  type AccessClient,
+  type AccessClientOptions,
+  type CurrentAccess,
+  type PortalAccess,
+} from "./access-client";
+
+export {
   ApiRequestError,
   createCatalogueClient,
   type CatalogueClient,

@@ -2,6 +2,8 @@
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\D.Ceylon.BuildingBlocks\D.Ceylon.BuildingBlocks.csproj" />
     <ProjectReference Include="..\Modules\Catalogue\D.Ceylon.Modules.Catalogue\D.Ceylon.Modules.Catalogue.csproj" />
+    <ProjectReference Include="..\Modules\IdentityAccess\D.Ceylon.Modules.IdentityAccess\D.Ceylon.Modules.IdentityAccess.csproj" />
+    <ProjectReference Include="..\Modules\OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents.csproj" />
   </ItemGroup>
 
   <ItemGroup>

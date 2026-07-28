@@ -16,6 +16,7 @@ internal static partial class CatalogueEndpoints
         var catalogue = versionGroup
             .MapGroup("/catalogue")
             .WithTags("Catalogue")
+            .AllowAnonymous()
             .RequireRateLimiting(RateLimitPolicyNames.Public);
 
         catalogue

@@ -1,8 +1,9 @@
 # Public Web Application
 
-`apps/web` is the accessible public Next.js App Router host for D Ceylon Collection. Phases 3 and
-4 establish the visual foundation and public read-only catalogue discovery. Authentication, quote
-requests, administration, and commerce workflows remain assigned to later phases.
+`apps/web` is the accessible public Next.js App Router host for D Ceylon Collection. Phases 3
+through 5 establish the visual foundation, public catalogue discovery, external OIDC session, and
+protected customer and agent portal boundaries. Profile, itinerary, quote, administration, and
+commerce workflows remain assigned to later phases.
 
 ## Runtime and configuration
 
@@ -16,10 +17,15 @@ npm ci
 The server requires:
 
 - `API_BASE_URL` — server-only origin of the ASP.NET Core API; and
-- `SITE_URL` — canonical public origin used by metadata, robots, and sitemap generation.
+- `SITE_URL` — canonical public origin used by metadata, robots, and sitemap generation;
+- `APP_ENVIRONMENT` — `Development`, `Production`, or isolated `Testing`;
+- `AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, and `AUTH_SCOPE` — external OIDC
+  integration; and
+- `AUTH_SECRET` — at least 32 random characters for encrypted session state.
 
 Copy `apps/web/.env.example` to `apps/web/.env.local` for normal local development. Real environment
-files are ignored. Neither value is exposed through a `NEXT_PUBLIC_*` variable.
+files are ignored. None of these values is exposed through a `NEXT_PUBLIC_*` variable. Production
+requires an HTTPS issuer. `AUTH_TEST_ENDPOINT_KEY` is accepted only in `Testing`.
 
 ## Commands
 
@@ -48,6 +54,10 @@ Chrome channel.
 - `/collections` and `/collections/[slug]` — five collection perspectives and linked products;
 - `/destinations` and `/destinations/[slug]` — published places and linked products;
 - `/experiences` and `/accommodation` — typed product-type discovery;
+- `/auth/sign-in`, `/auth/error`, `/auth/unauthorized`, and `/auth/forbidden` — accessible
+  authentication states with validated same-origin redirects;
+- `/portal/customer` — protected customer ownership foundation;
+- `/portal/agent` — protected agent organisation foundation;
 - `loading.tsx`, `error.tsx`, and `not-found.tsx` — explicit loading, recovery, and unknown-route
   experiences; and
 - `/robots.txt` and `/sitemap.xml` — metadata foundations.
@@ -71,6 +81,8 @@ npm run sdk:generate
 The first command fails when the committed snapshot differs semantically from the live versioned
 API. The second regenerates TypeScript types from the reviewed snapshot.
 
-All catalogue calls run at the server boundary. Filters use native GET form controls, pagination
-preserves active filters, and media placeholders render from stable API metadata without licensed
-image assets.
+All catalogue and protected access calls run at the server boundary. The encrypted, HTTP-only
+session retains the provider access token without adding it to the browser-visible session DTO.
+Protected calls use generated OpenAPI response types and preserve correlation IDs. Filters use
+native GET form controls, pagination preserves active filters, and media placeholders render from
+stable API metadata without licensed image assets.

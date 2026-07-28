@@ -22,6 +22,16 @@ export type CollectionSummaryResponse = {
   heroMedia: null | MediaMetadataResponse;
 };
 
+export type CurrentAccessResponse = {
+  subject: string;
+  displayName: string;
+  email: null | string;
+  roles: Array<string>;
+  permissions: Array<string>;
+  customerId: null | string;
+  organisationId: null | string;
+};
+
 export type DestinationDetailResponse = {
   id: string;
   name: string;
@@ -97,6 +107,11 @@ export type PaginationMetadata = {
   totalPages: number | string;
   hasPreviousPage: boolean;
   hasNextPage: boolean;
+};
+
+export type PortalAccessResponse = {
+  portal: string;
+  access: string;
 };
 
 export type ProblemDetails = {
@@ -422,3 +437,125 @@ export type GetDestinationBySlugV1Responses = {
 
 export type GetDestinationBySlugV1Response =
   GetDestinationBySlugV1Responses[keyof GetDestinationBySlugV1Responses];
+
+export type GetCurrentAccessV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/access/me";
+};
+
+export type GetCurrentAccessV1Errors = {
+  /**
+   * Unauthorized
+   */
+  401: ProblemDetails;
+};
+
+export type GetCurrentAccessV1Error = GetCurrentAccessV1Errors[keyof GetCurrentAccessV1Errors];
+
+export type GetCurrentAccessV1Responses = {
+  /**
+   * OK
+   */
+  200: CurrentAccessResponse;
+};
+
+export type GetCurrentAccessV1Response =
+  GetCurrentAccessV1Responses[keyof GetCurrentAccessV1Responses];
+
+export type GetCustomerPortalV1Data = {
+  body?: never;
+  path: {
+    customerId: string;
+  };
+  query?: never;
+  url: "/api/v1/access/customer/{customerId}";
+};
+
+export type GetCustomerPortalV1Errors = {
+  /**
+   * Unauthorized
+   */
+  401: ProblemDetails;
+  /**
+   * Forbidden
+   */
+  403: ProblemDetails;
+};
+
+export type GetCustomerPortalV1Error = GetCustomerPortalV1Errors[keyof GetCustomerPortalV1Errors];
+
+export type GetCustomerPortalV1Responses = {
+  /**
+   * OK
+   */
+  200: PortalAccessResponse;
+};
+
+export type GetCustomerPortalV1Response =
+  GetCustomerPortalV1Responses[keyof GetCustomerPortalV1Responses];
+
+export type GetAgentPortalV1Data = {
+  body?: never;
+  path: {
+    organisationId: string;
+  };
+  query?: never;
+  url: "/api/v1/access/agent/{organisationId}";
+};
+
+export type GetAgentPortalV1Errors = {
+  /**
+   * Unauthorized
+   */
+  401: ProblemDetails;
+  /**
+   * Forbidden
+   */
+  403: ProblemDetails;
+};
+
+export type GetAgentPortalV1Error = GetAgentPortalV1Errors[keyof GetAgentPortalV1Errors];
+
+export type GetAgentPortalV1Responses = {
+  /**
+   * OK
+   */
+  200: PortalAccessResponse;
+};
+
+export type GetAgentPortalV1Response = GetAgentPortalV1Responses[keyof GetAgentPortalV1Responses];
+
+export type GetStaffPortalV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/access/staff";
+};
+
+export type GetStaffPortalV1Responses = {
+  /**
+   * OK
+   */
+  200: PortalAccessResponse;
+};
+
+export type GetStaffPortalV1Response = GetStaffPortalV1Responses[keyof GetStaffPortalV1Responses];
+
+export type GetAdministratorPortalV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/access/administrator";
+};
+
+export type GetAdministratorPortalV1Responses = {
+  /**
+   * OK
+   */
+  200: PortalAccessResponse;
+};
+
+export type GetAdministratorPortalV1Response =
+  GetAdministratorPortalV1Responses[keyof GetAdministratorPortalV1Responses];

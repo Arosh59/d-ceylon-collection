@@ -8,6 +8,7 @@ const navigation = [
   { href: "/experiences", label: "Experiences" },
   { href: "/accommodation", label: "Stay" },
   { href: "/catalogue", label: "Explore" },
+  { href: "/auth/sign-in", label: "Sign in" },
 ] as const;
 
 function Brand() {

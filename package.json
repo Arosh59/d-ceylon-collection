@@ -27,6 +27,7 @@
     "format:check": "prettier --check --ignore-unknown apps/web packages/sdk package.json package-lock.json",
     "lint:web": "npm run lint --workspace=@dceylon/web",
     "sdk:generate": "npm run generate --workspace=@dceylon/sdk",
+    "sdk:refresh": "node scripts/refresh-openapi.mjs",
     "sdk:verify": "node scripts/verify-web-api-contract.mjs",
     "test:web": "npm run test --workspace=@dceylon/web",
     "test:web:a11y": "npm run test:a11y --workspace=@dceylon/web",

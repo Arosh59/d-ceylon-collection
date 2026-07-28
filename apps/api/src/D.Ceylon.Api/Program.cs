@@ -6,6 +6,10 @@ using D.Ceylon.Api.Infrastructure;
 using D.Ceylon.Api.Middleware;
 using D.Ceylon.Modules.Catalogue;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
+using D.Ceylon.Modules.IdentityAccess;
+using D.Ceylon.Modules.OrganisationsAgents;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -34,6 +38,11 @@ builder.Services.AddProblemDetails(options =>
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddOpenApi("v1");
 builder.Services.AddCatalogueModule(builder.Configuration);
+builder.Services.AddIdentityAccessModule(builder.Configuration, builder.Environment);
+builder.Services.AddOrganisationsAgentsModule(builder.Configuration);
+builder.Services.AddSingleton<
+    IAuthorizationMiddlewareResultHandler,
+    AuthorizationProblemDetailsHandler>();
 builder.Services
     .AddHealthChecks()
     .AddCheck(
@@ -43,6 +52,24 @@ builder.Services
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy(
+        RateLimitPolicyNames.Authentication,
+        httpContext =>
+        {
+            var partitionKey =
+                httpContext.Connection.RemoteIpAddress?.ToString()
+                ?? IPAddress.None.ToString();
+
+            return RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey,
+                _ => new FixedWindowRateLimiterOptions
+                {
+                    AutoReplenishment = true,
+                    PermitLimit = 10,
+                    QueueLimit = 0,
+                    Window = TimeSpan.FromMinutes(1),
+                });
+        });
     options.AddPolicy(
         RateLimitPolicyNames.Public,
         httpContext =>
@@ -122,8 +149,10 @@ app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseExceptionHandler();
 app.UseRateLimiter();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapOpenApi("/openapi/{documentName}.json");
+app.MapOpenApi("/openapi/{documentName}.json").AllowAnonymous();
 app.MapGet(
         "/",
         () => TypedResults.Ok(
@@ -132,7 +161,8 @@ app.MapGet(
                 service = "D Ceylon Collection API",
                 version = "v1",
             }))
-    .ExcludeFromDescription();
+    .ExcludeFromDescription()
+    .AllowAnonymous();
 
 app.MapHealthChecks(
     "/health/live",
@@ -140,17 +170,20 @@ app.MapHealthChecks(
     {
         Predicate = registration => registration.Tags.Contains("live"),
         ResponseWriter = HealthResponseWriter.WriteAsync,
-    });
+    })
+    .AllowAnonymous();
 app.MapHealthChecks(
     "/health/ready",
     new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
     {
         Predicate = registration => registration.Tags.Contains("ready"),
         ResponseWriter = HealthResponseWriter.WriteAsync,
-    });
+    })
+    .AllowAnonymous();
 
 var versionOne = app.MapGroup("/api/v1");
 versionOne.MapCatalogueEndpoints();
+versionOne.MapAccessEndpoints(app.Environment);
 
 app.Run();
 
