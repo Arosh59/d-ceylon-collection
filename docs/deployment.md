@@ -1,5 +1,9 @@
 # Deployment Guide
 
+See [production readiness](production-readiness.md) for release gates and the Azure-compatible
+managed-container environment baseline. Deployments must consume secrets from a managed secret
+store, never from repository configuration.
+
 Azure-compatible deployment configuration is planned for the production
 hardening phase.
 

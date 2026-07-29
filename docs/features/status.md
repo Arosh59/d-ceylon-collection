@@ -15,12 +15,12 @@ only after its documented checks pass.
 | 7     | Deterministic travel planner                           | Complete    |
 | 8     | Quote workflow                                         | Complete    |
 | 9     | Booking, payments, invoices, and vouchers              | Complete    |
-| 10    | Suppliers and operations                               | Not started |
-| 11    | Directus editorial integration                         | Not started |
-| 12    | Accessible interactive Sri Lanka map                   | Not started |
-| 13    | Administration application                             | Not started |
-| 14    | AI gateway and isolated FastAPI skeleton               | Not started |
-| 15    | Production hardening and release readiness             | Not started |
+| 10    | Suppliers and operations                               | In progress |
+| 11    | Directus editorial integration                         | In progress |
+| 12    | Accessible interactive Sri Lanka map                   | In progress |
+| 13    | Administration application                             | In progress |
+| 14    | AI gateway and isolated FastAPI skeleton               | In progress |
+| 15    | Production hardening and release readiness             | In progress |
 
 Phase 0 is marked complete only after repository structure and documentation validation pass.
 
@@ -92,3 +92,22 @@ and a zero-vulnerability production npm audit. The generated SDK, strict TypeScr
 desktop/mobile browser flows passed. Customer flows cover accepted immutable quote to booking and
 server-priced idempotent payment instruction; agent views are organisation-scoped. Supplier
 operations, payment capture, card storage, live availability, and administration remain excluded.
+
+Phase 10 is in progress. Its initial supplier and booking-operations boundary has a reviewed
+`InitialSupplierOperations` migration, a staff-only versioned API, stable Booking contract lookup,
+auditing, readiness coverage, generated SDK types, and a protected server-side operations portal.
+The current verification includes locked NuGet restore, clean NuGet/npm audits, zero-warning API
+build, 63 unit tests, 30 isolated PostgreSQL integration tests, no-pending-model checks, local
+migration application, OpenAPI equality, strict TypeScript, lint, 42 frontend tests, and a
+production web build. Supplier self-service, administration, Directus, live availability, and
+payment capture are explicitly excluded.
+
+Phases 11–15 now have verified implementation foundations: a configuration-driven, read-only
+Directus Editorial module with Journal and promotion contracts; an accessible abstract destination
+map with a complete non-map fallback; a separately hosted, administrator-only Next.js application;
+an isolated FastAPI draft gateway that rejects database configuration and has no commercial write
+tools; and locked-install CI, Dependabot, Azure-compatible managed-environment baseline, and a
+release checklist. They remain in progress until external Directus schema/roles, approved GeoJSON
+and media, administrator role provisioning, backend-to-AI gateway deployment, payment/supplier
+certification, Azure/Key Vault configuration, performance testing, backup/restore exercise, and
+formal security/release approval are complete.

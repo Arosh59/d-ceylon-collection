@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: dceylon-ai-service
+Version: 0.0.0
+Summary: Isolated, draft-only AI gateway skeleton for D Ceylon Collection
+Requires-Python: >=3.11
+Requires-Dist: fastapi==0.139.2
+Requires-Dist: uvicorn==0.51.0

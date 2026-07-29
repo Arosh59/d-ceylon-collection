@@ -5,10 +5,12 @@
     <ProjectReference Include="..\Modules\Payments\D.Ceylon.Modules.Payments\D.Ceylon.Modules.Payments.csproj" />
     <ProjectReference Include="..\Modules\Catalogue\D.Ceylon.Modules.Catalogue\D.Ceylon.Modules.Catalogue.csproj" />
     <ProjectReference Include="..\Modules\CustomersTravellers\D.Ceylon.Modules.CustomersTravellers\D.Ceylon.Modules.CustomersTravellers.csproj" />
+    <ProjectReference Include="..\Modules\Editorial\D.Ceylon.Modules.Editorial\D.Ceylon.Modules.Editorial.csproj" />
     <ProjectReference Include="..\Modules\IdentityAccess\D.Ceylon.Modules.IdentityAccess\D.Ceylon.Modules.IdentityAccess.csproj" />
     <ProjectReference Include="..\Modules\ItinerariesTravelPlanning\D.Ceylon.Modules.ItinerariesTravelPlanning\D.Ceylon.Modules.ItinerariesTravelPlanning.csproj" />
     <ProjectReference Include="..\Modules\OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents.csproj" />
     <ProjectReference Include="..\Modules\Quotes\D.Ceylon.Modules.Quotes\D.Ceylon.Modules.Quotes.csproj" />
+    <ProjectReference Include="..\Modules\SupplierOperations\D.Ceylon.Modules.SupplierOperations\D.Ceylon.Modules.SupplierOperations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

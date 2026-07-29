@@ -81,7 +81,8 @@ Commands:
   migration-add-quotes NAME
   migration-add-bookings NAME
   migration-add-payments NAME
-                     Create a Quotes migration
+  migration-add-supplier-operations NAME
+                     Create a Supplier and Operations migration
   migration-remove   Remove the latest unapplied EF Core migration
   migrations-list    List EF Core migrations
   migrations-check   Verify the EF Core model has no pending changes
@@ -237,6 +238,19 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --output-dir Infrastructure/Persistence/Migrations
         ;;
+    migration-add-supplier-operations)
+        migration_name="${2:-}"
+        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
+            echo "Migration names must start with a letter and contain only letters and numbers." >&2
+            exit 1
+        fi
+        sdk_container tool restore
+        sdk_container ef migrations add "${migration_name}" \
+            --context SupplierOperationsDbContext \
+            --project src/Modules/SupplierOperations/D.Ceylon.Modules.SupplierOperations \
+            --startup-project src/D.Ceylon.Api \
+            --output-dir Infrastructure/Migrations
+        ;;
     migration-remove)
         sdk_container tool restore
         sdk_container ef migrations remove \
@@ -294,6 +308,12 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
+        sdk_container ef migrations list \
+            --context SupplierOperationsDbContext \
+            --project src/Modules/SupplierOperations/D.Ceylon.Modules.SupplierOperations \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
         ;;
     migrations-check)
         sdk_container tool restore
@@ -345,6 +365,12 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
+        sdk_container ef migrations has-pending-model-changes \
+            --context SupplierOperationsDbContext \
+            --project src/Modules/SupplierOperations/D.Ceylon.Modules.SupplierOperations \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
         ;;
     migrate)
         sdk_container tool restore
@@ -379,6 +405,10 @@ case "${command_name}" in
         sdk_container ef database update \
             --context PaymentsDbContext \
             --project src/Modules/Payments/D.Ceylon.Modules.Payments \
+            --startup-project src/D.Ceylon.Api
+        sdk_container ef database update \
+            --context SupplierOperationsDbContext \
+            --project src/Modules/SupplierOperations/D.Ceylon.Modules.SupplierOperations \
             --startup-project src/D.Ceylon.Api
         ;;
     seed)

@@ -59,7 +59,7 @@ export async function getPortalAuthentication(): Promise<PortalAuthentication | 
 }
 
 export async function requirePortalAuthentication(
-  role: "agent" | "customer",
+  role: "agent" | "customer" | "staff",
   callbackUrl: string,
 ): Promise<PortalAuthentication> {
   const authentication = await getPortalAuthentication();

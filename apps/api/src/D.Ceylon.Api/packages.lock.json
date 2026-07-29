@@ -295,6 +295,12 @@
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
         }
       },
+      "d.ceylon.modules.editorial": {
+        "type": "Project",
+        "dependencies": {
+          "D.Ceylon.BuildingBlocks": "[1.0.0, )"
+        }
+      },
       "d.ceylon.modules.identityaccess": {
         "type": "Project",
         "dependencies": {
@@ -345,6 +351,15 @@
           "D.Ceylon.Modules.ItinerariesTravelPlanning": "[1.0.0, )",
           "D.Ceylon.Modules.OrganisationsAgents": "[1.0.0, )",
           "D.Ceylon.Modules.Pricing": "[1.0.0, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.10, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
+      "d.ceylon.modules.supplieroperations": {
+        "type": "Project",
+        "dependencies": {
+          "D.Ceylon.BuildingBlocks": "[1.0.0, )",
+          "D.Ceylon.Modules.Bookings": "[1.0.0, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.10, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
         }

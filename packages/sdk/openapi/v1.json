@@ -1670,6 +1670,147 @@
         }
       }
     },
+    "/api/v1/editorial/journal": {
+      "get": {
+        "tags": ["Editorial"],
+        "operationId": "GetJournalArticlesV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 100000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfJournalArticleSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/editorial/journal/{slug}": {
+      "get": {
+        "tags": ["Editorial"],
+        "operationId": "GetJournalArticleBySlugV1",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JournalArticleDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/editorial/promotions": {
+      "get": {
+        "tags": ["Editorial"],
+        "operationId": "GetPromotionsV1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromotionResponse"
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/customer/travel-plans": {
       "get": {
         "tags": ["Travel planning"],
@@ -3568,6 +3709,202 @@
           }
         }
       }
+    },
+    "/api/v1/operations/suppliers": {
+      "get": {
+        "tags": ["Supplier operations"],
+        "operationId": "GetOperationSuppliersV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfSupplierResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Supplier operations"],
+        "operationId": "CreateOperationSupplierV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSupplierRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/operations/tasks": {
+      "get": {
+        "tags": ["Supplier operations"],
+        "operationId": "GetBookingOperationTasksV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfOperationTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Supplier operations"],
+        "operationId": "CreateBookingOperationTaskV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOperationTaskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4202,6 +4539,34 @@
           }
         }
       },
+      "CreateOperationTaskRequest": {
+        "required": ["title"],
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierId": {
+            "type": ["null", "string"],
+            "format": "uuid"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "dueDate": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "notes": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          }
+        }
+      },
       "CreatePaymentRequest": {
         "required": ["kind", "gateway", "idempotencyKey"],
         "type": "object",
@@ -4267,6 +4632,32 @@
             "maxLength": 200,
             "minLength": 0,
             "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "type": ["null", "string"]
+          }
+        }
+      },
+      "CreateSupplierRequest": {
+        "required": ["name", "category"],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "category": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": "string"
+          },
+          "contactName": {
+            "maxLength": 120,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "contactEmail": {
+            "maxLength": 320,
+            "minLength": 0,
             "type": ["null", "string"]
           }
         }
@@ -4916,6 +5307,53 @@
           }
         }
       },
+      "JournalArticleDetail": {
+        "required": ["slug", "title", "summary", "content", "heroImageUrl", "publishedAtUtc"],
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": ["null", "string"]
+          },
+          "content": {
+            "type": "string"
+          },
+          "heroImageUrl": {
+            "type": ["null", "string"]
+          },
+          "publishedAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          }
+        }
+      },
+      "JournalArticleSummary": {
+        "required": ["slug", "title", "summary", "heroImageUrl", "publishedAtUtc"],
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": ["null", "string"]
+          },
+          "heroImageUrl": {
+            "type": ["null", "string"]
+          },
+          "publishedAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          }
+        }
+      },
       "MediaMetadataResponse": {
         "required": ["id", "assetKey", "altText", "width", "height"],
         "type": "object",
@@ -4969,6 +5407,50 @@
           },
           "slug": {
             "type": "string"
+          }
+        }
+      },
+      "OperationTaskResponse": {
+        "required": [
+          "id",
+          "bookingId",
+          "supplierId",
+          "title",
+          "status",
+          "dueDate",
+          "notes",
+          "concurrencyToken"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierId": {
+            "type": ["null", "string"],
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": ["null", "string"],
+            "format": "date"
+          },
+          "notes": {
+            "type": ["null", "string"]
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -5047,6 +5529,21 @@
           }
         }
       },
+      "PagedResponseOfJournalArticleSummary": {
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JournalArticleSummary"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
       "PagedResponseOfNamedReferenceResponse": {
         "required": ["items", "pagination"],
         "type": "object",
@@ -5055,6 +5552,21 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/NamedReferenceResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
+      "PagedResponseOfOperationTaskResponse": {
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OperationTaskResponse"
             }
           },
           "pagination": {
@@ -5115,6 +5627,21 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SavedItineraryResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
+      "PagedResponseOfSupplierResponse": {
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplierResponse"
             }
           },
           "pagination": {
@@ -5619,6 +6146,30 @@
           }
         }
       },
+      "PromotionResponse": {
+        "required": ["id", "title", "summary", "callToActionLabel", "callToActionUrl", "imageUrl"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": ["null", "string"]
+          },
+          "callToActionLabel": {
+            "type": ["null", "string"]
+          },
+          "callToActionUrl": {
+            "type": ["null", "string"]
+          },
+          "imageUrl": {
+            "type": ["null", "string"]
+          }
+        }
+      },
       "QuoteConcurrencyRequest": {
         "type": "object",
         "properties": {
@@ -6000,6 +6551,43 @@
           "expiresAtUtc": {
             "type": "string",
             "format": "date-time"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "SupplierResponse": {
+        "required": [
+          "id",
+          "name",
+          "category",
+          "contactName",
+          "contactEmail",
+          "status",
+          "concurrencyToken"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "contactName": {
+            "type": ["null", "string"]
+          },
+          "contactEmail": {
+            "type": ["null", "string"]
+          },
+          "status": {
+            "type": "string"
           },
           "concurrencyToken": {
             "type": "string",
@@ -6653,6 +7241,9 @@
       "name": "Customer records"
     },
     {
+      "name": "Editorial"
+    },
+    {
       "name": "Travel planning"
     },
     {
@@ -6669,6 +7260,9 @@
     },
     {
       "name": "Customer payments"
+    },
+    {
+      "name": "Supplier operations"
     }
   ]
 }

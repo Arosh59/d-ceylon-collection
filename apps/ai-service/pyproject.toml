@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=80.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dceylon-ai-service"
+version = "0.0.0"
+description = "Isolated, draft-only AI gateway skeleton for D Ceylon Collection"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi==0.139.2",
+  "uvicorn==0.51.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

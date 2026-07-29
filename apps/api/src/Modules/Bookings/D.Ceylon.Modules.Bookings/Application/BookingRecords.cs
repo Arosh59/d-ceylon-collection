@@ -11,7 +11,7 @@ namespace D.Ceylon.Modules.Bookings.Application;
 internal sealed class BookingRecords(
     BookingsDbContext database,
     IQuoteBookingSources quoteSources)
-    : IBookingRecords, IBookingPaymentSources
+    : IBookingRecords, IBookingPaymentSources, IBookingOperationsSources
 {
     public async Task<PagedResponse<BookingSummaryResponse>> GetCustomerBookingsAsync(
         Guid customerId,
@@ -207,6 +207,14 @@ internal sealed class BookingRecords(
             .SingleOrDefaultAsync(cancellationToken);
         return booking;
     }
+
+    public async Task<BookingOperationsSource?> GetOperationsSourceAsync(
+        Guid bookingId,
+        CancellationToken cancellationToken) =>
+        await database.Bookings.AsNoTracking()
+            .Where(item => item.Id == bookingId)
+            .Select(item => new BookingOperationsSource(item.Id, item.Status))
+            .SingleOrDefaultAsync(cancellationToken);
 
     // ─── Helpers ─────────────────────────────────────────────────────────────
 

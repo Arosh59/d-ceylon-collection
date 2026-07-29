@@ -1,0 +1,55 @@
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24.11.0
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run typecheck:web
+      - run: npm run typecheck:admin
+      - run: npm run lint:web
+      - run: npm run lint:admin
+      - run: npm run test:web
+      - run: npm run test:web:a11y
+      - run: npm audit --audit-level=high
+      - run: APP_ENVIRONMENT=Development AUTH_ISSUER=http://127.0.0.1:8080 AUTH_CLIENT_ID=dceylon-web-ci AUTH_CLIENT_SECRET=ci-client-secret AUTH_SCOPE='openid profile email dceylon.api' AUTH_SECRET=ci-session-secret-0123456789abcd API_BASE_URL=http://127.0.0.1:8080 SITE_URL=http://127.0.0.1:3000 npm run build:web
+      - run: APP_ENVIRONMENT=Development AUTH_ISSUER=http://127.0.0.1:8080 AUTH_CLIENT_ID=dceylon-admin-ci AUTH_CLIENT_SECRET=ci-client-secret AUTH_SECRET=ci-session-secret-0123456789abcd npm run build:admin
+
+  ai-service:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+      - run: python -m pip install ./apps/ai-service
+      - run: PYTHONPATH=apps/ai-service/src python -m unittest discover -s apps/ai-service/tests -v
+
+  api:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - run: ./scripts/create-local-env.sh
+      - run: ./scripts/local-infrastructure.sh up
+      - run: ./scripts/api.sh restore-locked
+      - run: ./scripts/api.sh audit
+      - run: ./scripts/api.sh format-check
+      - run: ./scripts/api.sh build
+      - run: ./scripts/api.sh migrations-check
+      - run: ./scripts/api.sh test
+      - if: always()
+        run: ./scripts/local-infrastructure.sh down

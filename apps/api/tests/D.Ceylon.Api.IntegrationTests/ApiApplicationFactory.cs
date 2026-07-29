@@ -9,6 +9,7 @@ using D.Ceylon.Modules.OrganisationsAgents.Domain;
 using D.Ceylon.Modules.OrganisationsAgents.Infrastructure.Persistence;
 using D.Ceylon.Modules.Payments.Infrastructure.Persistence;
 using D.Ceylon.Modules.Quotes.Infrastructure.Persistence;
+using D.Ceylon.Modules.SupplierOperations.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -195,6 +196,17 @@ public sealed partial class ApiApplicationFactory : WebApplicationFactory<Progra
             .Options;
         using var paymentDatabase = new PaymentsDbContext(paymentOptions, TimeProvider.System);
         paymentDatabase.Database.Migrate();
+
+        var supplierOperationsOptions = new DbContextOptionsBuilder<SupplierOperationsDbContext>()
+            .UseNpgsql(
+                ConnectionString,
+                postgres => postgres.MigrationsAssembly(
+                    typeof(SupplierOperationsDbContext).Assembly.FullName))
+            .Options;
+        using var supplierOperationsDatabase = new SupplierOperationsDbContext(
+            supplierOperationsOptions,
+            TimeProvider.System);
+        supplierOperationsDatabase.Database.Migrate();
     }
 
     private void DropDatabase()

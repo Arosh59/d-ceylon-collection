@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using D.Ceylon.Modules.Bookings.Contracts;
 using D.Ceylon.Modules.CustomersTravellers.Contracts;
+using D.Ceylon.Modules.Editorial.Contracts;
 using D.Ceylon.Modules.ItinerariesTravelPlanning.Contracts;
 using D.Ceylon.Modules.Payments.Contracts;
 using D.Ceylon.Modules.Pricing;
 using D.Ceylon.Modules.Quotes.Contracts;
+using D.Ceylon.Modules.SupplierOperations.Contracts;
 
 namespace D.Ceylon.Api.Infrastructure;
 
@@ -31,24 +33,30 @@ internal sealed partial class GlobalExceptionHandler(
             or BookingConflictException
             or BookingTransitionException
             or PaymentConflictException
-            or PaymentTransitionException;
+            or PaymentTransitionException
+            or SupplierOperationsConflictException;
         var isMissingReference = exception is TravelPlanReferenceException
             or QuoteReferenceException
             or BookingNotFoundException
-            or PaymentNotFoundException;
+            or PaymentNotFoundException
+            or SupplierOperationsNotFoundException;
         var isPricingValidation = exception is PricingValidationException;
+        var isDependencyUnavailable = exception is EditorialUnavailableException;
         var statusCode = isConcurrencyConflict || isRecordConflict
             ? StatusCodes.Status409Conflict
             : isMissingReference
                 ? StatusCodes.Status404NotFound
                 : isPricingValidation
                     ? StatusCodes.Status400BadRequest
-                    : StatusCodes.Status500InternalServerError;
+                    : isDependencyUnavailable
+                        ? StatusCodes.Status503ServiceUnavailable
+                        : StatusCodes.Status500InternalServerError;
 
         if (isConcurrencyConflict
             || isRecordConflict
             || isMissingReference
-            || isPricingValidation)
+            || isPricingValidation
+            || isDependencyUnavailable)
         {
             LogRecordConflict(logger, exception, httpContext.Request.Path);
         }
@@ -69,20 +77,26 @@ internal sealed partial class GlobalExceptionHandler(
                     ? "Referenced record not found"
                     : isPricingValidation
                         ? "The pricing input is invalid"
-                        : "An unexpected error occurred",
+                        : isDependencyUnavailable
+                            ? "Editorial content is temporarily unavailable"
+                            : "An unexpected error occurred",
             Detail = isConcurrencyConflict || isRecordConflict
                 ? isConcurrencyConflict
                     ? "Reload the latest record and retry the operation."
                     : exception.Message
                 : isMissingReference || isPricingValidation
                     ? exception.Message
-                    : "The request could not be completed.",
+                    : isDependencyUnavailable
+                        ? exception.Message
+                        : "The request could not be completed.",
             Type = isConcurrencyConflict || isRecordConflict
                 ? "https://www.rfc-editor.org/rfc/rfc9110#name-409-conflict"
                 : isMissingReference
                     ? "https://www.rfc-editor.org/rfc/rfc9110#name-404-not-found"
-                    : isPricingValidation
-                        ? "https://www.rfc-editor.org/rfc/rfc9110#name-400-bad-request"
+                : isPricingValidation
+                    ? "https://www.rfc-editor.org/rfc/rfc9110#name-400-bad-request"
+                    : isDependencyUnavailable
+                        ? "https://www.rfc-editor.org/rfc/rfc9110#name-503-service-unavailable"
                         : "https://www.rfc-editor.org/rfc/rfc9110#name-500-internal-server-error",
         };
 

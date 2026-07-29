@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0e2342;
+  --color-gold: #c8a45d;
+  --color-canvas: #f7f8fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-navy);
+  font-family: Arial, sans-serif;
+}
+a {
+  color: inherit;
+}
+:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 3px;
+}

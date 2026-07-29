@@ -23,5 +23,6 @@
     <ProjectReference Include="..\..\src\Modules\OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents\D.Ceylon.Modules.OrganisationsAgents.csproj" />
     <ProjectReference Include="..\..\src\Modules\Payments\D.Ceylon.Modules.Payments\D.Ceylon.Modules.Payments.csproj" />
     <ProjectReference Include="..\..\src\Modules\Quotes\D.Ceylon.Modules.Quotes\D.Ceylon.Modules.Quotes.csproj" />
+    <ProjectReference Include="..\..\src\Modules\SupplierOperations\D.Ceylon.Modules.SupplierOperations\D.Ceylon.Modules.SupplierOperations.csproj" />
   </ItemGroup>
 </Project>

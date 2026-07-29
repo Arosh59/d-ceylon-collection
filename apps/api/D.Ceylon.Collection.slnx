@@ -18,6 +18,9 @@
   <Folder Name="/src/Modules/CustomersTravellers/">
     <Project Path="src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers/D.Ceylon.Modules.CustomersTravellers.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/Editorial/">
+    <Project Path="src/Modules/Editorial/D.Ceylon.Modules.Editorial/D.Ceylon.Modules.Editorial.csproj" />
+  </Folder>
   <Folder Name="/src/Modules/OrganisationsAgents/">
     <Project Path="src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents.csproj" />
   </Folder>
@@ -29,6 +32,9 @@
   </Folder>
   <Folder Name="/src/Modules/Pricing/">
     <Project Path="src/Modules/Pricing/D.Ceylon.Modules.Pricing/D.Ceylon.Modules.Pricing.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/SupplierOperations/">
+    <Project Path="src/Modules/SupplierOperations/D.Ceylon.Modules.SupplierOperations/D.Ceylon.Modules.SupplierOperations.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Quotes/">
     <Project Path="src/Modules/Quotes/D.Ceylon.Modules.Quotes/D.Ceylon.Modules.Quotes.csproj" />

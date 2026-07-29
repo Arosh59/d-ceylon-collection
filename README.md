@@ -8,11 +8,11 @@ local infrastructure, and an isolated future AI service.
 
 ## Status
 
-Phases 0 through 9 establish repository boundaries, containerized local infrastructure, the ASP.NET
-Core modular API, public Next.js catalogue, generated SDK, authentication and authorization,
-protected customer records, and the deterministic customer travel planner and draft-itinerary
-builder, immutable quote workflow, and booking/payment-instruction foundations. Supplier operations,
-administration, editorial integration, and deployment resources remain in later phases.
+The repository now includes the modular API, public and administration Next.js hosts, generated
+SDK, protected customer/agent/operations foundations, Directus editorial boundary and Journal,
+accessible destination-map foundation, and an isolated draft-only FastAPI gateway. Production
+deployment remains gated on external identity, Directus, payment, supplier, Azure, and operational
+approvals described in the release checklist.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 
@@ -61,6 +61,9 @@ apply migrations, and start the API and public frontend.
 - [Threat model](docs/security/threat-model.md)
 - [Customer data and privacy](docs/privacy.md)
 - [Planner rules and limitations](docs/planner-limitations.md)
+- [Supplier and operations foundation](docs/supplier-operations.md)
+- [Interactive map guidance](docs/interactive-map.md)
+- [Production readiness](docs/production-readiness.md)
 - [Deployment](docs/deployment.md)
 - [Backup and restore](docs/backup-and-restore.md)
 - [Coding conventions](docs/coding-conventions.md)

@@ -95,3 +95,26 @@ export {
   type Payment,
   type PaymentPage,
 } from "./booking-client";
+
+export {
+  EditorialApiError,
+  createEditorialClient,
+  type EditorialClient,
+  type EditorialClientOptions,
+  type EditorialPagination,
+  type JournalArticle,
+  type JournalPage,
+  type Promotion,
+} from "./editorial-client";
+
+export {
+  OperationsApiError,
+  createOperationsClient,
+  type BookingOperationTask,
+  type BookingOperationTaskPage,
+  type OperationSupplier,
+  type OperationSupplierPage,
+  type OperationsClient,
+  type OperationsClientOptions,
+  type OperationsPagination,
+} from "./operations-client";

@@ -8,11 +8,13 @@ using D.Ceylon.Modules.Bookings;
 using D.Ceylon.Modules.Catalogue;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
 using D.Ceylon.Modules.CustomersTravellers;
+using D.Ceylon.Modules.Editorial;
 using D.Ceylon.Modules.IdentityAccess;
 using D.Ceylon.Modules.ItinerariesTravelPlanning;
 using D.Ceylon.Modules.OrganisationsAgents;
 using D.Ceylon.Modules.Payments;
 using D.Ceylon.Modules.Quotes;
+using D.Ceylon.Modules.SupplierOperations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Mvc;
@@ -44,12 +46,14 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddOpenApi("v1");
 builder.Services.AddCatalogueModule(builder.Configuration);
 builder.Services.AddCustomersTravellersModule(builder.Configuration);
+builder.Services.AddEditorialModule(builder.Configuration);
 builder.Services.AddIdentityAccessModule(builder.Configuration, builder.Environment);
 builder.Services.AddItinerariesTravelPlanningModule(builder.Configuration);
 builder.Services.AddOrganisationsAgentsModule(builder.Configuration);
 builder.Services.AddQuotesModule(builder.Configuration);
 builder.Services.AddBookingsModule(builder.Configuration);
 builder.Services.AddPaymentsModule(builder.Configuration);
+builder.Services.AddSupplierOperationsModule(builder.Configuration);
 builder.Services.AddSingleton<
     IAuthorizationMiddlewareResultHandler,
     AuthorizationProblemDetailsHandler>();
@@ -195,10 +199,12 @@ var versionOne = app.MapGroup("/api/v1");
 versionOne.MapCatalogueEndpoints();
 versionOne.MapAccessEndpoints(app.Environment);
 versionOne.MapCustomerEndpoints();
+versionOne.MapEditorialEndpoints();
 versionOne.MapTravelPlanningEndpoints();
 versionOne.MapQuoteEndpoints();
 versionOne.MapBookingEndpoints();
 versionOne.MapPaymentEndpoints();
+versionOne.MapSupplierOperationsEndpoints();
 
 app.Run();
 

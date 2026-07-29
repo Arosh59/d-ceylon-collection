@@ -4,6 +4,7 @@ import { DiscoveryCard } from "@/components/discovery-card";
 import { Container } from "@/components/ui/container";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getCatalogueClient } from "@/lib/catalogue";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,12 @@ export default async function DestinationsPage() {
         </Container>
       </section>
       <Container className="py-16 sm:py-24">
+        <Link
+          className="mb-8 inline-block font-semibold text-navy underline decoration-gold"
+          href="/destinations/map"
+        >
+          Explore the accessible Sri Lanka map
+        </Link>
         {destinations.items.length === 0 ? (
           <EmptyState
             description="Published destinations will appear here when they are ready."

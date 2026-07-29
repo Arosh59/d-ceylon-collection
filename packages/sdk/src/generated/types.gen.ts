@@ -146,6 +146,14 @@ export type CreateItineraryItemRequest = {
   position?: null | number | string;
 };
 
+export type CreateOperationTaskRequest = {
+  bookingId?: string;
+  supplierId?: null | string;
+  title: string;
+  dueDate?: null | string;
+  notes?: null | string;
+};
+
 export type CreatePaymentRequest = {
   kind: string;
   gateway: string;
@@ -164,6 +172,13 @@ export type CreateSavedItineraryRequest = {
   travelStartDate?: null | string;
   travelEndDate?: null | string;
   primaryDestinationSlug?: null | string;
+};
+
+export type CreateSupplierRequest = {
+  name: string;
+  category: string;
+  contactName?: null | string;
+  contactEmail?: null | string;
 };
 
 export type CreateTravellerRequest = {
@@ -326,6 +341,23 @@ export type ItineraryRevisionResponse = {
   days: Array<ItineraryDayResponse>;
 };
 
+export type JournalArticleDetail = {
+  slug: string;
+  title: string;
+  summary: null | string;
+  content: string;
+  heroImageUrl: null | string;
+  publishedAtUtc: null | string;
+};
+
+export type JournalArticleSummary = {
+  slug: string;
+  title: string;
+  summary: null | string;
+  heroImageUrl: null | string;
+  publishedAtUtc: null | string;
+};
+
 export type MediaMetadataResponse = {
   id: string;
   assetKey: string;
@@ -343,6 +375,17 @@ export type NamedReferenceResponse = {
   id: string;
   name: string;
   slug: string;
+};
+
+export type OperationTaskResponse = {
+  id: string;
+  bookingId: string;
+  supplierId: null | string;
+  title: string;
+  status: string;
+  dueDate: null | string;
+  notes: null | string;
+  concurrencyToken: string;
 };
 
 export type PagedResponseOfAgentQuoteQueueResponse = {
@@ -370,8 +413,18 @@ export type PagedResponseOfDestinationSummaryResponse = {
   pagination: PaginationMetadata;
 };
 
+export type PagedResponseOfJournalArticleSummary = {
+  items: Array<JournalArticleSummary>;
+  pagination: PaginationMetadata;
+};
+
 export type PagedResponseOfNamedReferenceResponse = {
   items: Array<NamedReferenceResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfOperationTaskResponse = {
+  items: Array<OperationTaskResponse>;
   pagination: PaginationMetadata;
 };
 
@@ -392,6 +445,11 @@ export type PagedResponseOfProductTypeResponse = {
 
 export type PagedResponseOfSavedItineraryResponse = {
   items: Array<SavedItineraryResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfSupplierResponse = {
+  items: Array<SupplierResponse>;
   pagination: PaginationMetadata;
 };
 
@@ -520,6 +578,15 @@ export type ProductTypeResponse = {
   slug: string;
 };
 
+export type PromotionResponse = {
+  id: string;
+  title: string;
+  summary: null | string;
+  callToActionLabel: null | string;
+  callToActionUrl: null | string;
+  imageUrl: null | string;
+};
+
 export type QuoteConcurrencyRequest = {
   concurrencyToken?: string;
 };
@@ -622,6 +689,16 @@ export type SavedItineraryResponse = {
 export type SendQuoteRequest = {
   expiresAtUtc?: string;
   concurrencyToken?: string;
+};
+
+export type SupplierResponse = {
+  id: string;
+  name: string;
+  category: string;
+  contactName: null | string;
+  contactEmail: null | string;
+  status: string;
+  concurrencyToken: string;
 };
 
 export type TravellerResponse = {
@@ -1778,6 +1855,98 @@ export type UpdateCustomerSavedItineraryV1Responses = {
 export type UpdateCustomerSavedItineraryV1Response =
   UpdateCustomerSavedItineraryV1Responses[keyof UpdateCustomerSavedItineraryV1Responses];
 
+export type GetJournalArticlesV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/editorial/journal";
+};
+
+export type GetJournalArticlesV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Service Unavailable
+   */
+  503: ProblemDetails;
+};
+
+export type GetJournalArticlesV1Error =
+  GetJournalArticlesV1Errors[keyof GetJournalArticlesV1Errors];
+
+export type GetJournalArticlesV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfJournalArticleSummary;
+};
+
+export type GetJournalArticlesV1Response =
+  GetJournalArticlesV1Responses[keyof GetJournalArticlesV1Responses];
+
+export type GetJournalArticleBySlugV1Data = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query?: never;
+  url: "/api/v1/editorial/journal/{slug}";
+};
+
+export type GetJournalArticleBySlugV1Errors = {
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Service Unavailable
+   */
+  503: ProblemDetails;
+};
+
+export type GetJournalArticleBySlugV1Error =
+  GetJournalArticleBySlugV1Errors[keyof GetJournalArticleBySlugV1Errors];
+
+export type GetJournalArticleBySlugV1Responses = {
+  /**
+   * OK
+   */
+  200: JournalArticleDetail;
+};
+
+export type GetJournalArticleBySlugV1Response =
+  GetJournalArticleBySlugV1Responses[keyof GetJournalArticleBySlugV1Responses];
+
+export type GetPromotionsV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/editorial/promotions";
+};
+
+export type GetPromotionsV1Errors = {
+  /**
+   * Service Unavailable
+   */
+  503: ProblemDetails;
+};
+
+export type GetPromotionsV1Error = GetPromotionsV1Errors[keyof GetPromotionsV1Errors];
+
+export type GetPromotionsV1Responses = {
+  /**
+   * OK
+   */
+  200: Array<PromotionResponse>;
+};
+
+export type GetPromotionsV1Response = GetPromotionsV1Responses[keyof GetPromotionsV1Responses];
+
 export type GetCustomerTravelPlansV1Data = {
   body?: never;
   path?: never;
@@ -2850,3 +3019,125 @@ export type GetCustomerPaymentV1Responses = {
 
 export type GetCustomerPaymentV1Response =
   GetCustomerPaymentV1Responses[keyof GetCustomerPaymentV1Responses];
+
+export type GetOperationSuppliersV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/operations/suppliers";
+};
+
+export type GetOperationSuppliersV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetOperationSuppliersV1Error =
+  GetOperationSuppliersV1Errors[keyof GetOperationSuppliersV1Errors];
+
+export type GetOperationSuppliersV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfSupplierResponse;
+};
+
+export type GetOperationSuppliersV1Response =
+  GetOperationSuppliersV1Responses[keyof GetOperationSuppliersV1Responses];
+
+export type CreateOperationSupplierV1Data = {
+  body: CreateSupplierRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/operations/suppliers";
+};
+
+export type CreateOperationSupplierV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type CreateOperationSupplierV1Error =
+  CreateOperationSupplierV1Errors[keyof CreateOperationSupplierV1Errors];
+
+export type CreateOperationSupplierV1Responses = {
+  /**
+   * Created
+   */
+  201: SupplierResponse;
+};
+
+export type CreateOperationSupplierV1Response =
+  CreateOperationSupplierV1Responses[keyof CreateOperationSupplierV1Responses];
+
+export type GetBookingOperationTasksV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/operations/tasks";
+};
+
+export type GetBookingOperationTasksV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetBookingOperationTasksV1Error =
+  GetBookingOperationTasksV1Errors[keyof GetBookingOperationTasksV1Errors];
+
+export type GetBookingOperationTasksV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfOperationTaskResponse;
+};
+
+export type GetBookingOperationTasksV1Response =
+  GetBookingOperationTasksV1Responses[keyof GetBookingOperationTasksV1Responses];
+
+export type CreateBookingOperationTaskV1Data = {
+  body: CreateOperationTaskRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/operations/tasks";
+};
+
+export type CreateBookingOperationTaskV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type CreateBookingOperationTaskV1Error =
+  CreateBookingOperationTaskV1Errors[keyof CreateBookingOperationTaskV1Errors];
+
+export type CreateBookingOperationTaskV1Responses = {
+  /**
+   * Created
+   */
+  201: OperationTaskResponse;
+};
+
+export type CreateBookingOperationTaskV1Response =
+  CreateBookingOperationTaskV1Responses[keyof CreateBookingOperationTaskV1Responses];

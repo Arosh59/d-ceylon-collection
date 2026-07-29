@@ -211,6 +211,15 @@
       "d.ceylon.buildingblocks": {
         "type": "Project"
       },
+      "d.ceylon.modules.bookings": {
+        "type": "Project",
+        "dependencies": {
+          "D.Ceylon.BuildingBlocks": "[1.0.0, )",
+          "D.Ceylon.Modules.Quotes": "[1.0.0, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.10, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
       "d.ceylon.modules.catalogue": {
         "type": "Project",
         "dependencies": {
@@ -250,6 +259,16 @@
         "type": "Project",
         "dependencies": {
           "D.Ceylon.BuildingBlocks": "[1.0.0, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.10, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
+        }
+      },
+      "d.ceylon.modules.payments": {
+        "type": "Project",
+        "dependencies": {
+          "D.Ceylon.BuildingBlocks": "[1.0.0, )",
+          "D.Ceylon.Modules.Bookings": "[1.0.0, )",
+          "D.Ceylon.Modules.Pricing": "[1.0.0, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.10, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )"
         }

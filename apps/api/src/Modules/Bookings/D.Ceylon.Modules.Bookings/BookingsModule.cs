@@ -30,6 +30,7 @@ public static class BookingsModule
 
         services.AddScoped<IBookingRecords, BookingRecords>();
         services.AddScoped<IBookingPaymentSources, BookingRecords>();
+        services.AddScoped<IBookingOperationsSources, BookingRecords>();
         services.AddSingleton<IPdfGenerator, PlaceholderPdfGenerator>();
 
         services.AddHealthChecks().AddDbContextCheck<BookingsDbContext>(

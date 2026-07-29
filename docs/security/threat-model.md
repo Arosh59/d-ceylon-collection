@@ -15,6 +15,7 @@ whenever payments, private documents, new external providers, or AI capabilities
 - private documents and expiring access links;
 - supplier and operations records;
 - authentication credentials, sessions, tokens, signing keys, and secrets;
+- AI gateway secrets and the minimum approved travel context passed through the AI boundary;
 - audit events, logs, backups, and recovery material; and
 - approved editorial content, prompts, tool results, and AI conversations.
 

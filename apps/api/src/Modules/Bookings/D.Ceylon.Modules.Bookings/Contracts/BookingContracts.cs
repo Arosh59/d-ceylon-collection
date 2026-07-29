@@ -103,6 +103,8 @@ public sealed record BookingPaymentSource(
     decimal PaidAmount,
     string Status);
 
+public sealed record BookingOperationsSource(Guid BookingId, string Status);
+
 // ─── Requests ────────────────────────────────────────────────────────────────
 
 public sealed record CreateBookingRequest : IValidatableObject
@@ -198,6 +200,11 @@ public interface IBookingPaymentSources
         Guid customerId,
         Guid bookingId,
         CancellationToken cancellationToken);
+}
+
+public interface IBookingOperationsSources
+{
+    Task<BookingOperationsSource?> GetOperationsSourceAsync(Guid bookingId, CancellationToken cancellationToken);
 }
 
 // ─── PDF abstraction ──────────────────────────────────────────────────────────
