@@ -14,7 +14,7 @@ only after its documented checks pass.
 | 6     | Profiles, travellers, wishlists, and saved itineraries | Complete    |
 | 7     | Deterministic travel planner                           | Complete    |
 | 8     | Quote workflow                                         | Complete    |
-| 9     | Booking, payments, invoices, and vouchers              | Not started |
+| 9     | Booking, payments, invoices, and vouchers              | Complete    |
 | 10    | Suppliers and operations                               | Not started |
 | 11    | Directus editorial integration                         | Not started |
 | 12    | Accessible interactive Sri Lanka map                   | Not started |
@@ -83,3 +83,12 @@ editor, send, revise, withdraw) verified. The acceptance harness seeds determini
 organisations and the responsive browser suite covers customer request, agent claim/draft/send,
 customer acceptance, both portal-forbidden paths, and logout. No booking, payment, or AI involvement
 in this phase.
+
+Phase 9 was verified with locked restores, zero-warning API build, 63 backend unit tests and 28
+isolated PostgreSQL integration tests, reviewed `AddBookingWorkflow` and `AddPaymentWorkflow`
+migrations, no-pending-model and index checks, live OpenAPI regeneration/equality, readiness checks,
+and a zero-vulnerability production npm audit. The generated SDK, strict TypeScript check, lint,
+41 frontend unit/component tests, 20 accessibility tests, production build, and authenticated
+desktop/mobile browser flows passed. Customer flows cover accepted immutable quote to booking and
+server-priced idempotent payment instruction; agent views are organisation-scoped. Supplier
+operations, payment capture, card storage, live availability, and administration remain excluded.

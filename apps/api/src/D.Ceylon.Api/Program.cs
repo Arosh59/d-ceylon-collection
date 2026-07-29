@@ -4,12 +4,14 @@ using System.Threading.RateLimiting;
 using D.Ceylon.Api.Endpoints;
 using D.Ceylon.Api.Infrastructure;
 using D.Ceylon.Api.Middleware;
+using D.Ceylon.Modules.Bookings;
 using D.Ceylon.Modules.Catalogue;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
 using D.Ceylon.Modules.CustomersTravellers;
 using D.Ceylon.Modules.IdentityAccess;
 using D.Ceylon.Modules.ItinerariesTravelPlanning;
 using D.Ceylon.Modules.OrganisationsAgents;
+using D.Ceylon.Modules.Payments;
 using D.Ceylon.Modules.Quotes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Policy;
@@ -46,6 +48,8 @@ builder.Services.AddIdentityAccessModule(builder.Configuration, builder.Environm
 builder.Services.AddItinerariesTravelPlanningModule(builder.Configuration);
 builder.Services.AddOrganisationsAgentsModule(builder.Configuration);
 builder.Services.AddQuotesModule(builder.Configuration);
+builder.Services.AddBookingsModule(builder.Configuration);
+builder.Services.AddPaymentsModule(builder.Configuration);
 builder.Services.AddSingleton<
     IAuthorizationMiddlewareResultHandler,
     AuthorizationProblemDetailsHandler>();
@@ -193,6 +197,8 @@ versionOne.MapAccessEndpoints(app.Environment);
 versionOne.MapCustomerEndpoints();
 versionOne.MapTravelPlanningEndpoints();
 versionOne.MapQuoteEndpoints();
+versionOne.MapBookingEndpoints();
+versionOne.MapPaymentEndpoints();
 
 app.Run();
 

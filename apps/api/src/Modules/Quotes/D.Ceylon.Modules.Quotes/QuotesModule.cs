@@ -29,6 +29,7 @@ public static class QuotesModule
             }));
         services.AddScoped<IPriceCalculator, PriceCalculator>();
         services.AddScoped<IQuoteRecords, QuoteRecords>();
+        services.AddScoped<IQuoteBookingSources, QuoteRecords>();
         services.AddHealthChecks().AddDbContextCheck<QuotesDbContext>(
             "quotes-database",
             failureStatus: HealthStatus.Unhealthy,

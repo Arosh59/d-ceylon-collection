@@ -11,6 +11,7 @@ import {
 } from "@/app/portal/agent/quote-actions";
 import { initialCustomerActionState } from "@/app/portal/customer/action-state";
 import { customerQuoteTransition, requestQuote } from "@/app/portal/customer/quote-actions";
+import { createBooking, createPayment } from "@/app/portal/customer/booking-actions";
 import { FormStatus } from "@/components/customer/form-status";
 
 export function QuoteRequestForm({ plan }: { plan: TravelPlan }) {
@@ -74,6 +75,62 @@ export function CustomerQuoteActions({ quote }: { quote: CustomerQuote }) {
         </div>
       </fieldset>
       <FormStatus hideSubmit state={state} />
+    </form>
+  );
+}
+
+export function CreateBookingForm({ quote }: { quote: CustomerQuote }) {
+  const [state, action] = useActionState(createBooking, initialCustomerActionState);
+  const version = quote.versions.find((candidate) => candidate.id === quote.currentVersionId);
+  if (quote.status !== "accepted" || !version) return null;
+  return (
+    <form action={action} className="customer-form rounded-2xl border border-gold/30 bg-white p-6">
+      <input name="quoteId" type="hidden" value={quote.id} />
+      <input name="quoteVersionId" type="hidden" value={version.id} />
+      <p className="font-bold text-navy">Create booking record</p>
+      <p className="mt-2 text-sm leading-6 text-ink-muted">
+        This copies the accepted immutable quote version into a booking record. It does not confirm
+        supplier availability or process a payment.
+      </p>
+      <label className="filter-field mt-4">
+        <span>Booking notes (optional)</span>
+        <textarea maxLength={2000} name="customerNotes" rows={3} />
+      </label>
+      <FormStatus state={state} submitLabel="Create booking record" />
+    </form>
+  );
+}
+
+export function CreatePaymentForm({ bookingId }: { bookingId: string }) {
+  const [state, action] = useActionState(createPayment, initialCustomerActionState);
+  return (
+    <form action={action} className="customer-form rounded-2xl border border-gold/30 bg-white p-6">
+      <input name="bookingId" type="hidden" value={bookingId} />
+      <p className="font-bold text-navy">Create payment instruction</p>
+      <p className="mt-2 text-sm leading-6 text-ink-muted">
+        No card details are collected here. This creates a server-priced, idempotent payment intent;
+        it is not payment confirmation.
+      </p>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <label className="filter-field">
+          <span>Payment type</span>
+          <select defaultValue="payment-link" name="kind">
+            <option value="payment-link">Payment link</option>
+            <option value="manual-transfer">Manual transfer</option>
+            <option value="deposit">Deposit</option>
+            <option value="balance">Balance</option>
+          </select>
+        </label>
+        <label className="filter-field">
+          <span>Provider</span>
+          <select defaultValue="stripe" name="gateway">
+            <option value="stripe">Stripe (placeholder)</option>
+            <option value="local">Local provider (placeholder)</option>
+            <option value="manual">Manual transfer</option>
+          </select>
+        </label>
+      </div>
+      <FormStatus state={state} submitLabel="Create payment instruction" />
     </form>
   );
 }

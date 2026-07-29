@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using D.Ceylon.Modules.Bookings.Contracts;
 using D.Ceylon.Modules.CustomersTravellers.Contracts;
 using D.Ceylon.Modules.ItinerariesTravelPlanning.Contracts;
+using D.Ceylon.Modules.Payments.Contracts;
 using D.Ceylon.Modules.Pricing;
 using D.Ceylon.Modules.Quotes.Contracts;
 
@@ -25,9 +27,15 @@ internal sealed partial class GlobalExceptionHandler(
         var isRecordConflict = exception is CustomerRecordConflictException
             or TravelPlanConflictException
             or QuoteConflictException
-            or QuoteTransitionException;
+            or QuoteTransitionException
+            or BookingConflictException
+            or BookingTransitionException
+            or PaymentConflictException
+            or PaymentTransitionException;
         var isMissingReference = exception is TravelPlanReferenceException
-            or QuoteReferenceException;
+            or QuoteReferenceException
+            or BookingNotFoundException
+            or PaymentNotFoundException;
         var isPricingValidation = exception is PricingValidationException;
         var statusCode = isConcurrencyConflict || isRecordConflict
             ? StatusCodes.Status409Conflict

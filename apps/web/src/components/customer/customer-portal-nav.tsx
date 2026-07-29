@@ -8,6 +8,7 @@ const items = [
   ["Saved itineraries", "/portal/customer/saved-itineraries"],
   ["Travel planner", "/portal/customer/travel-plans"],
   ["Quotes", "/portal/customer/quotes"],
+  ["Bookings", "/portal/customer/bookings"],
 ] as const;
 
 export function CustomerPortalNav() {

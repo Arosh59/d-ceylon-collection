@@ -80,3 +80,18 @@ export {
   type SendQuoteRequest,
   type UpdateAgentQuoteDraftRequest,
 } from "./quote-client";
+
+export {
+  BookingApiError,
+  createBookingClient,
+  type AgentBookingPage,
+  type Booking,
+  type BookingClient,
+  type BookingClientOptions,
+  type BookingPagination,
+  type CreateBookingRequest,
+  type CreatePaymentRequest,
+  type CustomerBookingPage,
+  type Payment,
+  type PaymentPage,
+} from "./booking-client";

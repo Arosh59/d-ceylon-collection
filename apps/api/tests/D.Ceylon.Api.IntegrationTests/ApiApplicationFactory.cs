@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using D.Ceylon.Modules.Bookings.Infrastructure.Persistence;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence;
 using D.Ceylon.Modules.Catalogue.Infrastructure.Persistence.Seeding;
 using D.Ceylon.Modules.CustomersTravellers.Infrastructure.Persistence;
@@ -6,6 +7,7 @@ using D.Ceylon.Modules.IdentityAccess.Infrastructure.Persistence;
 using D.Ceylon.Modules.ItinerariesTravelPlanning.Infrastructure.Persistence;
 using D.Ceylon.Modules.OrganisationsAgents.Domain;
 using D.Ceylon.Modules.OrganisationsAgents.Infrastructure.Persistence;
+using D.Ceylon.Modules.Payments.Infrastructure.Persistence;
 using D.Ceylon.Modules.Quotes.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -175,6 +177,24 @@ public sealed partial class ApiApplicationFactory : WebApplicationFactory<Progra
             .Options;
         using var quoteDatabase = new QuotesDbContext(quoteOptions, TimeProvider.System);
         quoteDatabase.Database.Migrate();
+
+        var bookingOptions = new DbContextOptionsBuilder<BookingsDbContext>()
+            .UseNpgsql(
+                ConnectionString,
+                postgres => postgres.MigrationsAssembly(
+                    typeof(BookingsDbContext).Assembly.FullName))
+            .Options;
+        using var bookingDatabase = new BookingsDbContext(bookingOptions, TimeProvider.System);
+        bookingDatabase.Database.Migrate();
+
+        var paymentOptions = new DbContextOptionsBuilder<PaymentsDbContext>()
+            .UseNpgsql(
+                ConnectionString,
+                postgres => postgres.MigrationsAssembly(
+                    typeof(PaymentsDbContext).Assembly.FullName))
+            .Options;
+        using var paymentDatabase = new PaymentsDbContext(paymentOptions, TimeProvider.System);
+        paymentDatabase.Database.Migrate();
     }
 
     private void DropDatabase()

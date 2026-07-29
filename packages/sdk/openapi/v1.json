@@ -3046,6 +3046,528 @@
           }
         }
       }
+    },
+    "/api/v1/customer/bookings": {
+      "get": {
+        "tags": ["Customer bookings"],
+        "operationId": "GetCustomerBookingsV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfBookingSummaryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customer bookings"],
+        "operationId": "CreateCustomerBookingV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/bookings/{bookingId}": {
+      "get": {
+        "tags": ["Customer bookings"],
+        "operationId": "GetCustomerBookingV1",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/bookings/{bookingId}/vouchers/{voucherId}": {
+      "get": {
+        "tags": ["Customer bookings"],
+        "operationId": "GetCustomerVoucherV1",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "voucherId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoucherResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/bookings/{bookingId}/request-cancellation": {
+      "post": {
+        "tags": ["Customer bookings"],
+        "operationId": "RequestBookingCancellationV1",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CancelBookingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/bookings": {
+      "get": {
+        "tags": ["Agent bookings"],
+        "operationId": "GetAgentBookingsV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfBookingSummaryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/bookings/{bookingId}": {
+      "get": {
+        "tags": ["Agent bookings"],
+        "operationId": "GetAgentBookingV1",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/bookings/{bookingId}/payments": {
+      "get": {
+        "tags": ["Customer payments"],
+        "operationId": "GetCustomerPaymentsV1",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": ["integer", "string"],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfPaymentSummaryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customer payments"],
+        "operationId": "CreateCustomerPaymentV1",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/payments/{paymentId}": {
+      "get": {
+        "tags": ["Customer payments"],
+        "operationId": "GetCustomerPaymentV1",
+        "parameters": [
+          {
+            "name": "paymentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3264,6 +3786,257 @@
           }
         }
       },
+      "BookingItemResponse": {
+        "required": [
+          "id",
+          "position",
+          "title",
+          "description",
+          "quantity",
+          "unitAmount",
+          "lineTotal",
+          "currency"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": ["integer", "string"],
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": ["null", "string"]
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "unitAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "lineTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      },
+      "BookingResponse": {
+        "required": [
+          "id",
+          "bookingReference",
+          "quoteId",
+          "quoteVersionId",
+          "customerId",
+          "organisationId",
+          "itineraryTitle",
+          "travelStartDate",
+          "travelEndDate",
+          "status",
+          "currency",
+          "totalAmount",
+          "paidAmount",
+          "customerNotes",
+          "confirmedAtUtc",
+          "cancelledAtUtc",
+          "cancellationReason",
+          "items",
+          "invoices",
+          "vouchers",
+          "concurrencyToken",
+          "createdAtUtc",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bookingReference": {
+            "type": "string"
+          },
+          "quoteId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quoteVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organisationId": {
+            "type": ["null", "string"],
+            "format": "uuid"
+          },
+          "itineraryTitle": {
+            "type": "string"
+          },
+          "travelStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "travelEndDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "totalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "paidAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "customerNotes": {
+            "type": ["null", "string"]
+          },
+          "confirmedAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "cancelledAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "cancellationReason": {
+            "type": ["null", "string"]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingItemResponse"
+            }
+          },
+          "invoices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceResponse"
+            }
+          },
+          "vouchers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VoucherResponse"
+            }
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BookingSummaryResponse": {
+        "required": [
+          "id",
+          "bookingReference",
+          "itineraryTitle",
+          "travelStartDate",
+          "travelEndDate",
+          "status",
+          "currency",
+          "totalAmount",
+          "paidAmount",
+          "confirmedAtUtc",
+          "concurrencyToken",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bookingReference": {
+            "type": "string"
+          },
+          "itineraryTitle": {
+            "type": "string"
+          },
+          "travelStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "travelEndDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "totalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "paidAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "confirmedAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CancelBookingRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": ["null", "string"]
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "CollectionDetailResponse": {
         "required": [
           "id",
@@ -3338,6 +4111,24 @@
           }
         }
       },
+      "CreateBookingRequest": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quoteVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerNotes": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": ["null", "string"]
+          }
+        }
+      },
       "CreateCustomerProfileRequest": {
         "required": ["givenName", "familyName", "preferredLocale", "preferredContactMethod"],
         "type": "object",
@@ -3408,6 +4199,27 @@
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": ["null", "integer", "string"],
             "format": "int32"
+          }
+        }
+      },
+      "CreatePaymentRequest": {
+        "required": ["kind", "gateway", "idempotencyKey"],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "gateway": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "maxLength": 64,
+            "minLength": 0,
+            "type": "string"
           }
         }
       },
@@ -3913,6 +4725,78 @@
           }
         }
       },
+      "InvoiceResponse": {
+        "required": [
+          "id",
+          "invoiceNumber",
+          "status",
+          "currency",
+          "subtotal",
+          "taxTotal",
+          "adjustmentTotal",
+          "grandTotal",
+          "issuedAtUtc",
+          "dueAtUtc",
+          "paidAtUtc",
+          "hasDocument",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "invoiceNumber": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "subtotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "taxTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "adjustmentTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "grandTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "issuedAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "dueAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "paidAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "hasDocument": {
+            "type": "boolean"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "ItineraryDayResponse": {
         "required": ["id", "dayNumber", "date", "title", "concurrencyToken", "items"],
         "type": "object",
@@ -4103,6 +4987,21 @@
           }
         }
       },
+      "PagedResponseOfBookingSummaryResponse": {
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingSummaryResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
       "PagedResponseOfCollectionSummaryResponse": {
         "required": ["items", "pagination"],
         "type": "object",
@@ -4156,6 +5055,21 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/NamedReferenceResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
+      "PagedResponseOfPaymentSummaryResponse": {
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentSummaryResponse"
             }
           },
           "pagination": {
@@ -4288,6 +5202,202 @@
             "type": "boolean"
           },
           "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PaymentResponse": {
+        "required": [
+          "id",
+          "bookingId",
+          "customerId",
+          "kind",
+          "gateway",
+          "status",
+          "currency",
+          "amount",
+          "reconciliationStatus",
+          "hasPaymentLink",
+          "paymentLinkExpiresAtUtc",
+          "capturedAtUtc",
+          "failedReason",
+          "transactions",
+          "refunds",
+          "concurrencyToken",
+          "createdAtUtc",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "gateway": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "reconciliationStatus": {
+            "type": "string"
+          },
+          "hasPaymentLink": {
+            "type": "boolean"
+          },
+          "paymentLinkExpiresAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "capturedAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "failedReason": {
+            "type": ["null", "string"]
+          },
+          "transactions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentTransactionResponse"
+            }
+          },
+          "refunds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RefundResponse"
+            }
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PaymentSummaryResponse": {
+        "required": [
+          "id",
+          "bookingId",
+          "kind",
+          "gateway",
+          "status",
+          "currency",
+          "amount",
+          "reconciliationStatus",
+          "capturedAtUtc",
+          "concurrencyToken",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string"
+          },
+          "gateway": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "reconciliationStatus": {
+            "type": "string"
+          },
+          "capturedAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PaymentTransactionResponse": {
+        "required": [
+          "id",
+          "gateway",
+          "gatewayReference",
+          "eventType",
+          "amount",
+          "currency",
+          "occurredAtUtc",
+          "webhookSignatureVerified"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "gateway": {
+            "type": "string"
+          },
+          "gatewayReference": {
+            "type": "string"
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "occurredAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "webhookSignatureVerified": {
             "type": "boolean"
           }
         }
@@ -4785,6 +5895,34 @@
             "items": {
               "$ref": "#/components/schemas/QuotePriceComponentResponse"
             }
+          }
+        }
+      },
+      "RefundResponse": {
+        "required": ["id", "amount", "currency", "reason", "status", "createdAtUtc"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": ["number", "string"],
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "reason": {
+            "type": ["null", "string"]
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -5410,6 +6548,63 @@
           }
         }
       },
+      "VoucherResponse": {
+        "required": [
+          "id",
+          "voucherCode",
+          "title",
+          "description",
+          "validFrom",
+          "validUntil",
+          "status",
+          "redeemedAtUtc",
+          "issuedAtUtc",
+          "hasDocument",
+          "concurrencyToken"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "voucherCode": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": ["null", "string"]
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "validUntil": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string"
+          },
+          "redeemedAtUtc": {
+            "type": ["null", "string"],
+            "format": "date-time"
+          },
+          "issuedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hasDocument": {
+            "type": "boolean"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "WishlistEntryResponse": {
         "required": [
           "id",
@@ -5465,6 +6660,15 @@
     },
     {
       "name": "Agent quotes"
+    },
+    {
+      "name": "Customer bookings"
+    },
+    {
+      "name": "Agent bookings"
+    },
+    {
+      "name": "Customer payments"
     }
   ]
 }

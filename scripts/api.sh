@@ -79,6 +79,8 @@ Commands:
   migration-add-itineraries NAME
                      Create an Itineraries and Travel Planning migration
   migration-add-quotes NAME
+  migration-add-bookings NAME
+  migration-add-payments NAME
                      Create a Quotes migration
   migration-remove   Remove the latest unapplied EF Core migration
   migrations-list    List EF Core migrations
@@ -209,6 +211,32 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --output-dir Infrastructure/Persistence/Migrations
         ;;
+    migration-add-bookings)
+        migration_name="${2:-}"
+        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
+            echo "Migration names must start with a letter and contain only letters and numbers." >&2
+            exit 1
+        fi
+        sdk_container tool restore
+        sdk_container ef migrations add "${migration_name}" \
+            --context BookingsDbContext \
+            --project src/Modules/Bookings/D.Ceylon.Modules.Bookings \
+            --startup-project src/D.Ceylon.Api \
+            --output-dir Infrastructure/Persistence/Migrations
+        ;;
+    migration-add-payments)
+        migration_name="${2:-}"
+        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
+            echo "Migration names must start with a letter and contain only letters and numbers." >&2
+            exit 1
+        fi
+        sdk_container tool restore
+        sdk_container ef migrations add "${migration_name}" \
+            --context PaymentsDbContext \
+            --project src/Modules/Payments/D.Ceylon.Modules.Payments \
+            --startup-project src/D.Ceylon.Api \
+            --output-dir Infrastructure/Persistence/Migrations
+        ;;
     migration-remove)
         sdk_container tool restore
         sdk_container ef migrations remove \
@@ -254,6 +282,18 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
+        sdk_container ef migrations list \
+            --context BookingsDbContext \
+            --project src/Modules/Bookings/D.Ceylon.Modules.Bookings \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
+        sdk_container ef migrations list \
+            --context PaymentsDbContext \
+            --project src/Modules/Payments/D.Ceylon.Modules.Payments \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
         ;;
     migrations-check)
         sdk_container tool restore
@@ -293,6 +333,18 @@ case "${command_name}" in
             --startup-project src/D.Ceylon.Api \
             --no-build \
             --configuration Release
+        sdk_container ef migrations has-pending-model-changes \
+            --context BookingsDbContext \
+            --project src/Modules/Bookings/D.Ceylon.Modules.Bookings \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
+        sdk_container ef migrations has-pending-model-changes \
+            --context PaymentsDbContext \
+            --project src/Modules/Payments/D.Ceylon.Modules.Payments \
+            --startup-project src/D.Ceylon.Api \
+            --no-build \
+            --configuration Release
         ;;
     migrate)
         sdk_container tool restore
@@ -319,6 +371,14 @@ case "${command_name}" in
         sdk_container ef database update \
             --context QuotesDbContext \
             --project src/Modules/Quotes/D.Ceylon.Modules.Quotes \
+            --startup-project src/D.Ceylon.Api
+        sdk_container ef database update \
+            --context BookingsDbContext \
+            --project src/Modules/Bookings/D.Ceylon.Modules.Bookings \
+            --startup-project src/D.Ceylon.Api
+        sdk_container ef database update \
+            --context PaymentsDbContext \
+            --project src/Modules/Payments/D.Ceylon.Modules.Payments \
             --startup-project src/D.Ceylon.Api
         ;;
     seed)

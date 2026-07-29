@@ -3,6 +3,7 @@ import Link from "next/link";
 const items = [
   ["Overview", "/portal/agent"],
   ["Quote queue", "/portal/agent/quotes"],
+  ["Bookings", "/portal/agent/bookings"],
 ] as const;
 
 export function AgentPortalNav() {

@@ -16,8 +16,51 @@ internal sealed class QuoteRecords(
     IOrganisationRecords organisations,
     IPriceCalculator calculator,
     TimeProvider timeProvider)
-    : IQuoteRecords
+    : IQuoteRecords, IQuoteBookingSources
 {
+    public async Task<AcceptedQuoteBookingSource?> GetAcceptedQuoteAsync(
+        Guid customerId,
+        Guid quoteId,
+        Guid quoteVersionId,
+        CancellationToken cancellationToken)
+    {
+        var quote = await database.Quotes.AsNoTracking()
+            .Where(candidate => candidate.CustomerId == customerId
+                && candidate.Id == quoteId
+                && candidate.Status == QuoteStatuses.Accepted
+                && candidate.CurrentVersionId == quoteVersionId)
+            .Include(candidate => candidate.Request)
+            .Include(candidate => candidate.Versions)
+                .ThenInclude(version => version.Lines)
+            .AsSplitQuery()
+            .SingleOrDefaultAsync(cancellationToken);
+        var version = quote?.Versions.SingleOrDefault(candidate => candidate.Id == quoteVersionId);
+        return quote is null || version is null
+            ? null
+            : new AcceptedQuoteBookingSource(
+                quote.Id,
+                version.Id,
+                quote.CustomerId,
+                quote.OrganisationId,
+                version.Currency,
+                version.Subtotal,
+                version.TaxTotal,
+                version.AdjustmentTotal,
+                version.GrandTotal,
+                quote.Request.ItineraryTitle,
+                quote.Request.TravelStartDate,
+                quote.Request.TravelEndDate,
+                version.Lines.OrderBy(line => line.Position)
+                    .Select(line => new QuoteBookingLine(
+                        line.Position,
+                        line.Title,
+                        line.Description,
+                        line.Quantity,
+                        line.UnitAmount,
+                        line.LineTotal))
+                    .ToArray());
+    }
+
     public async Task<PagedResponse<CustomerQuoteSummaryResponse>> GetCustomerQuotesAsync(
         Guid customerId,
         int pageNumber,

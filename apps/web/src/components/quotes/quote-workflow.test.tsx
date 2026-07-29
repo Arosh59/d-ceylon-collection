@@ -15,6 +15,10 @@ vi.mock("@/app/portal/customer/quote-actions", () => ({
   customerQuoteTransition: vi.fn(),
   requestQuote: vi.fn(),
 }));
+vi.mock("@/app/portal/customer/booking-actions", () => ({
+  createBooking: vi.fn(),
+  createPayment: vi.fn(),
+}));
 vi.mock("@/app/portal/agent/quote-actions", () => ({
   agentQuoteTransition: vi.fn(),
   prepareQuote: vi.fn(),

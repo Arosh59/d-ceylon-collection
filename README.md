@@ -8,11 +8,11 @@ local infrastructure, and an isolated future AI service.
 
 ## Status
 
-Phases 0 through 7 establish repository boundaries, containerized local infrastructure, the ASP.NET
+Phases 0 through 9 establish repository boundaries, containerized local infrastructure, the ASP.NET
 Core modular API, public Next.js catalogue, generated SDK, authentication and authorization,
 protected customer records, and the deterministic customer travel planner and draft-itinerary
-builder. Quotes, bookings, payments, administration, editorial integration, and deployment resources
-remain in later phases.
+builder, immutable quote workflow, and booking/payment-instruction foundations. Supplier operations,
+administration, editorial integration, and deployment resources remain in later phases.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 

@@ -176,4 +176,4 @@ if [[ "${rate_limited}" != true ]]; then
     exit 1
 fi
 
-echo "Phase 8 versioned quote, protected portal, and responsive browser checks passed."
+echo "Phase 9 booking, payment, protected portal, and responsive browser checks passed."

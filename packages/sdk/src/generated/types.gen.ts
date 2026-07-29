@@ -46,6 +46,63 @@ export type AgentQuoteResponse = {
   updatedAtUtc: string;
 };
 
+export type BookingItemResponse = {
+  id: string;
+  position: number | string;
+  title: string;
+  description: null | string;
+  quantity: number | string;
+  unitAmount: number | string;
+  lineTotal: number | string;
+  currency: string;
+};
+
+export type BookingResponse = {
+  id: string;
+  bookingReference: string;
+  quoteId: string;
+  quoteVersionId: string;
+  customerId: string;
+  organisationId: null | string;
+  itineraryTitle: string;
+  travelStartDate: string;
+  travelEndDate: string;
+  status: string;
+  currency: string;
+  totalAmount: number | string;
+  paidAmount: number | string;
+  customerNotes: null | string;
+  confirmedAtUtc: null | string;
+  cancelledAtUtc: null | string;
+  cancellationReason: null | string;
+  items: Array<BookingItemResponse>;
+  invoices: Array<InvoiceResponse>;
+  vouchers: Array<VoucherResponse>;
+  concurrencyToken: string;
+  createdAtUtc: string;
+  updatedAtUtc: string;
+};
+
+export type BookingSummaryResponse = {
+  id: string;
+  bookingReference: string;
+  itineraryTitle: string;
+  travelStartDate: string;
+  travelEndDate: string;
+  status: string;
+  currency: string;
+  totalAmount: number | string;
+  paidAmount: number | string;
+  confirmedAtUtc: null | string;
+  concurrencyToken: string;
+  updatedAtUtc: string;
+};
+
+export type CancelBookingRequest = {
+  reason?: null | string;
+  concurrencyToken?: string;
+};
+
 export type CollectionDetailResponse = {
   id: string;
   name: string;
@@ -62,6 +119,12 @@ export type CollectionSummaryResponse = {
   slug: string;
   summary: string;
   heroMedia: null | MediaMetadataResponse;
+};
+
+export type CreateBookingRequest = {
+  quoteId?: string;
+  quoteVersionId?: string;
+  customerNotes?: null | string;
 };
 
 export type CreateCustomerProfileRequest = {
@@ -81,6 +144,12 @@ export type CreateItineraryItemRequest = {
   durationMinutes?: null | number | string;
   destinationSlug: string;
   position?: null | number | string;
+};
+
+export type CreatePaymentRequest = {
+  kind: string;
+  gateway: string;
+  idempotencyKey: string;
 };
 
 export type CreateQuoteRequest = {
@@ -211,6 +280,22 @@ export type HttpValidationProblemDetails = {
   };
 };
 
+export type InvoiceResponse = {
+  id: string;
+  invoiceNumber: string;
+  status: string;
+  currency: string;
+  subtotal: number | string;
+  taxTotal: number | string;
+  adjustmentTotal: number | string;
+  grandTotal: number | string;
+  issuedAtUtc: null | string;
+  dueAtUtc: null | string;
+  paidAtUtc: null | string;
+  hasDocument: boolean;
+  createdAtUtc: string;
+};
+
 export type ItineraryDayResponse = {
   id: string;
   dayNumber: number | string;
@@ -265,6 +350,11 @@ export type PagedResponseOfAgentQuoteQueueResponse = {
   pagination: PaginationMetadata;
 };
 
+export type PagedResponseOfBookingSummaryResponse = {
+  items: Array<BookingSummaryResponse>;
+  pagination: PaginationMetadata;
+};
+
 export type PagedResponseOfCollectionSummaryResponse = {
   items: Array<CollectionSummaryResponse>;
   pagination: PaginationMetadata;
@@ -282,6 +372,11 @@ export type PagedResponseOfDestinationSummaryResponse = {
 
 export type PagedResponseOfNamedReferenceResponse = {
   items: Array<NamedReferenceResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfPaymentSummaryResponse = {
+  items: Array<PaymentSummaryResponse>;
   pagination: PaginationMetadata;
 };
 
@@ -322,6 +417,52 @@ export type PaginationMetadata = {
   totalPages: number | string;
   hasPreviousPage: boolean;
   hasNextPage: boolean;
+};
+
+export type PaymentResponse = {
+  id: string;
+  bookingId: string;
+  customerId: string;
+  kind: string;
+  gateway: string;
+  status: string;
+  currency: string;
+  amount: number | string;
+  reconciliationStatus: string;
+  hasPaymentLink: boolean;
+  paymentLinkExpiresAtUtc: null | string;
+  capturedAtUtc: null | string;
+  failedReason: null | string;
+  transactions: Array<PaymentTransactionResponse>;
+  refunds: Array<RefundResponse>;
+  concurrencyToken: string;
+  createdAtUtc: string;
+  updatedAtUtc: string;
+};
+
+export type PaymentSummaryResponse = {
+  id: string;
+  bookingId: string;
+  kind: string;
+  gateway: string;
+  status: string;
+  currency: string;
+  amount: number | string;
+  reconciliationStatus: string;
+  capturedAtUtc: null | string;
+  concurrencyToken: string;
+  updatedAtUtc: string;
+};
+
+export type PaymentTransactionResponse = {
+  id: string;
+  gateway: string;
+  gatewayReference: string;
+  eventType: string;
+  amount: number | string;
+  currency: string;
+  occurredAtUtc: string;
+  webhookSignatureVerified: boolean;
 };
 
 export type PortalAccessResponse = {
@@ -449,6 +590,15 @@ export type QuoteVersionResponse = {
   terms: string;
   lines: Array<QuoteLineResponse>;
   components: Array<QuotePriceComponentResponse>;
+};
+
+export type RefundResponse = {
+  id: string;
+  amount: number | string;
+  currency: string;
+  reason: null | string;
+  status: string;
+  createdAtUtc: string;
 };
 
 export type ReorderItineraryItemRequest = {
@@ -603,6 +753,20 @@ export type UpdateTravelPlanInputRequest = {
 export type UpdateWishlistEntryRequest = {
   note?: null | string;
   concurrencyToken?: string;
+};
+
+export type VoucherResponse = {
+  id: string;
+  voucherCode: string;
+  title: string;
+  description: null | string;
+  validFrom: string;
+  validUntil: string;
+  status: string;
+  redeemedAtUtc: null | string;
+  issuedAtUtc: string;
+  hasDocument: boolean;
+  concurrencyToken: string;
 };
 
 export type WishlistEntryResponse = {
@@ -2370,3 +2534,319 @@ export type WithdrawAgentQuoteV1Responses = {
 
 export type WithdrawAgentQuoteV1Response =
   WithdrawAgentQuoteV1Responses[keyof WithdrawAgentQuoteV1Responses];
+
+export type GetCustomerBookingsV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/customer/bookings";
+};
+
+export type GetCustomerBookingsV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetCustomerBookingsV1Error =
+  GetCustomerBookingsV1Errors[keyof GetCustomerBookingsV1Errors];
+
+export type GetCustomerBookingsV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfBookingSummaryResponse;
+};
+
+export type GetCustomerBookingsV1Response =
+  GetCustomerBookingsV1Responses[keyof GetCustomerBookingsV1Responses];
+
+export type CreateCustomerBookingV1Data = {
+  body: CreateBookingRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/customer/bookings";
+};
+
+export type CreateCustomerBookingV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type CreateCustomerBookingV1Error =
+  CreateCustomerBookingV1Errors[keyof CreateCustomerBookingV1Errors];
+
+export type CreateCustomerBookingV1Responses = {
+  /**
+   * Created
+   */
+  201: BookingResponse;
+};
+
+export type CreateCustomerBookingV1Response =
+  CreateCustomerBookingV1Responses[keyof CreateCustomerBookingV1Responses];
+
+export type GetCustomerBookingV1Data = {
+  body?: never;
+  path: {
+    bookingId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/bookings/{bookingId}";
+};
+
+export type GetCustomerBookingV1Errors = {
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type GetCustomerBookingV1Error =
+  GetCustomerBookingV1Errors[keyof GetCustomerBookingV1Errors];
+
+export type GetCustomerBookingV1Responses = {
+  /**
+   * OK
+   */
+  200: BookingResponse;
+};
+
+export type GetCustomerBookingV1Response =
+  GetCustomerBookingV1Responses[keyof GetCustomerBookingV1Responses];
+
+export type GetCustomerVoucherV1Data = {
+  body?: never;
+  path: {
+    bookingId: string;
+    voucherId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/bookings/{bookingId}/vouchers/{voucherId}";
+};
+
+export type GetCustomerVoucherV1Errors = {
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type GetCustomerVoucherV1Error =
+  GetCustomerVoucherV1Errors[keyof GetCustomerVoucherV1Errors];
+
+export type GetCustomerVoucherV1Responses = {
+  /**
+   * OK
+   */
+  200: VoucherResponse;
+};
+
+export type GetCustomerVoucherV1Response =
+  GetCustomerVoucherV1Responses[keyof GetCustomerVoucherV1Responses];
+
+export type RequestBookingCancellationV1Data = {
+  body: CancelBookingRequest;
+  path: {
+    bookingId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/bookings/{bookingId}/request-cancellation";
+};
+
+export type RequestBookingCancellationV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type RequestBookingCancellationV1Error =
+  RequestBookingCancellationV1Errors[keyof RequestBookingCancellationV1Errors];
+
+export type RequestBookingCancellationV1Responses = {
+  /**
+   * OK
+   */
+  200: BookingResponse;
+};
+
+export type RequestBookingCancellationV1Response =
+  RequestBookingCancellationV1Responses[keyof RequestBookingCancellationV1Responses];
+
+export type GetAgentBookingsV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/agent/bookings";
+};
+
+export type GetAgentBookingsV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetAgentBookingsV1Error = GetAgentBookingsV1Errors[keyof GetAgentBookingsV1Errors];
+
+export type GetAgentBookingsV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfBookingSummaryResponse;
+};
+
+export type GetAgentBookingsV1Response =
+  GetAgentBookingsV1Responses[keyof GetAgentBookingsV1Responses];
+
+export type GetAgentBookingV1Data = {
+  body?: never;
+  path: {
+    bookingId: string;
+  };
+  query?: never;
+  url: "/api/v1/agent/bookings/{bookingId}";
+};
+
+export type GetAgentBookingV1Errors = {
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type GetAgentBookingV1Error = GetAgentBookingV1Errors[keyof GetAgentBookingV1Errors];
+
+export type GetAgentBookingV1Responses = {
+  /**
+   * OK
+   */
+  200: BookingResponse;
+};
+
+export type GetAgentBookingV1Response =
+  GetAgentBookingV1Responses[keyof GetAgentBookingV1Responses];
+
+export type GetCustomerPaymentsV1Data = {
+  body?: never;
+  path: {
+    bookingId: string;
+  };
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/customer/bookings/{bookingId}/payments";
+};
+
+export type GetCustomerPaymentsV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetCustomerPaymentsV1Error =
+  GetCustomerPaymentsV1Errors[keyof GetCustomerPaymentsV1Errors];
+
+export type GetCustomerPaymentsV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfPaymentSummaryResponse;
+};
+
+export type GetCustomerPaymentsV1Response =
+  GetCustomerPaymentsV1Responses[keyof GetCustomerPaymentsV1Responses];
+
+export type CreateCustomerPaymentV1Data = {
+  body: CreatePaymentRequest;
+  path: {
+    bookingId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/bookings/{bookingId}/payments";
+};
+
+export type CreateCustomerPaymentV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type CreateCustomerPaymentV1Error =
+  CreateCustomerPaymentV1Errors[keyof CreateCustomerPaymentV1Errors];
+
+export type CreateCustomerPaymentV1Responses = {
+  /**
+   * Created
+   */
+  201: PaymentResponse;
+};
+
+export type CreateCustomerPaymentV1Response =
+  CreateCustomerPaymentV1Responses[keyof CreateCustomerPaymentV1Responses];
+
+export type GetCustomerPaymentV1Data = {
+  body?: never;
+  path: {
+    paymentId: string;
+  };
+  query?: never;
+  url: "/api/v1/customer/payments/{paymentId}";
+};
+
+export type GetCustomerPaymentV1Errors = {
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+};
+
+export type GetCustomerPaymentV1Error =
+  GetCustomerPaymentV1Errors[keyof GetCustomerPaymentV1Errors];
+
+export type GetCustomerPaymentV1Responses = {
+  /**
+   * OK
+   */
+  200: PaymentResponse;
+};
+
+export type GetCustomerPaymentV1Response =
+  GetCustomerPaymentV1Responses[keyof GetCustomerPaymentV1Responses];

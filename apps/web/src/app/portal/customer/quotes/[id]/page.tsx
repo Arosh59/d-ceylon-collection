@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { CustomerQuoteActions } from "@/components/quotes/quote-workflow";
+import { CreateBookingForm, CustomerQuoteActions } from "@/components/quotes/quote-workflow";
 import { requirePortalAuthentication } from "@/lib/portal-auth";
 import { getQuoteClient } from "@/lib/quotes";
 
@@ -137,6 +137,9 @@ export default async function CustomerQuoteDetailPage({
         )}
         <div className="mt-8">
           <CustomerQuoteActions quote={quote} />
+        </div>
+        <div className="mt-6">
+          <CreateBookingForm quote={quote} />
         </div>
       </article>
     </main>

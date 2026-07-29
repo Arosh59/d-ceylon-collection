@@ -76,6 +76,33 @@ public sealed record CustomerQuoteResponse(
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset UpdatedAtUtc);
 
+/// <summary>
+/// Immutable, accepted-quote snapshot used by the Bookings module. It deliberately contains
+/// no Quote persistence types, so a booking cannot observe or modify a quote aggregate.
+/// </summary>
+public sealed record QuoteBookingLine(
+    int Position,
+    string Title,
+    string? Description,
+    decimal Quantity,
+    decimal UnitAmount,
+    decimal LineTotal);
+
+public sealed record AcceptedQuoteBookingSource(
+    Guid QuoteId,
+    Guid QuoteVersionId,
+    Guid CustomerId,
+    Guid? OrganisationId,
+    string Currency,
+    decimal Subtotal,
+    decimal TaxTotal,
+    decimal AdjustmentTotal,
+    decimal GrandTotal,
+    string ItineraryTitle,
+    DateOnly TravelStartDate,
+    DateOnly TravelEndDate,
+    IReadOnlyList<QuoteBookingLine> Lines);
+
 public sealed record AgentQuoteQueueResponse(
     Guid Id,
     string ItineraryTitle,
@@ -444,6 +471,15 @@ public interface IQuoteRecords
         Guid organisationId,
         Guid quoteId,
         Guid concurrencyToken,
+        CancellationToken cancellationToken);
+}
+
+public interface IQuoteBookingSources
+{
+    Task<AcceptedQuoteBookingSource?> GetAcceptedQuoteAsync(
+        Guid customerId,
+        Guid quoteId,
+        Guid quoteVersionId,
         CancellationToken cancellationToken);
 }
 

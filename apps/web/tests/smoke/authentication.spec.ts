@@ -153,6 +153,14 @@ test("customer, agent quote, forbidden, and logout flow", async ({ page }, testI
   await page.getByRole("button", { name: "Accept sent quote" }).click();
   await expect(page).toHaveURL(/\?updated=accept$/u, { timeout: 15_000 });
   await expect(page.getByRole("status")).toContainText("Quote status updated to accepted");
+  await page.getByRole("button", { name: "Create booking record" }).click();
+  await expect(page).toHaveURL(/\/portal\/customer\/bookings\/[^/]+\?created=1$/u, {
+    timeout: 15_000,
+  });
+  await expect(page.getByRole("note")).toContainText("not an availability, payment, voucher");
+  await page.getByRole("button", { name: "Create payment instruction" }).click();
+  await expect(page).toHaveURL(/\?payment=created$/u, { timeout: 15_000 });
+  await expect(page.getByText(/pending ·/u)).toBeVisible();
 
   await page.goto("/portal/customer/travel-plans/00000000-0000-0000-0000-000000000099");
   await expect(
