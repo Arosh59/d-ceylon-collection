@@ -1,6 +1,6 @@
 # D Ceylon Collection API
 
-The primary backend is an ASP.NET Core 10 modular monolith. Phases 2 through 7 implement the API
+The primary backend is an ASP.NET Core 10 modular monolith. Phases 2 through 8 implement the API
 host, Catalogue discovery, external authentication, authorization policy foundations, and the
 Identity and Access, Organisations and Agents, Customers and Travellers, and Itineraries and Travel
 Planning module boundaries.
@@ -42,6 +42,8 @@ apps/api/
 │       ├── IdentityAccess/D.Ceylon.Modules.IdentityAccess/
 │       ├── ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning/
 │       └── OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents/
+│       ├── Pricing/D.Ceylon.Modules.Pricing/
+│       └── Quotes/D.Ceylon.Modules.Quotes/
 └── tests/
     ├── D.Ceylon.Api.UnitTests/
     └── D.Ceylon.Api.IntegrationTests/
@@ -103,6 +105,9 @@ ephemeral SDK container. It does not install .NET or store credentials in projec
 - `PUT /api/v1/customer/travel-plans/{planId}/input` — validated planner-input editing
 - `POST /api/v1/customer/travel-plans/{planId}/generate` — explicit deterministic regeneration
 - travel-plan day/item `PUT`, `POST`, and reorder routes — concurrency-protected draft editing
+- `/api/v1/customer/quotes` — customer-owned request, list, review, accept, decline, and withdraw
+- `/api/v1/agent/quotes` — organisation-scoped queue, draft preparation, pricing, send, revise,
+  and withdraw
 
 List endpoints accept optional `pageNumber` and `pageSize` parameters. Page numbers range from 1 to
 100,000 and page sizes from 1 to 100.
@@ -140,6 +145,14 @@ metadata, and optimistic concurrency/audit values. Stable Catalogue references a
 the Catalogue contract rather than duplicated entities. The planner contains no availability,
 pricing, quote, booking, payment, AI, or optimization persistence.
 
+Phase 8 adds `quotes` and a dependency-light Pricing boundary. Quotes retain stable reviewed
+itinerary references, mutable agent drafts, itemized fixed-precision amounts, immutable sent
+versions, explicit expiry/status transitions, customer and organisation ownership, audit metadata,
+and concurrency tokens. Supported currencies are EUR, GBP, LKR, and USD. Quotes never claim
+availability, create bookings, process payment, or store payment credentials. See
+[`docs/quote-limitations.md`](../../docs/quote-limitations.md) and
+[`docs/pricing-and-currency.md`](../../docs/pricing-and-currency.md).
+
 Migrations are explicit; API startup never changes the database automatically. Create a future
 migration with:
 
@@ -149,6 +162,7 @@ migration with:
 ./scripts/api.sh migration-add-organisations MigrationName
 ./scripts/api.sh migration-add-customers MigrationName
 ./scripts/api.sh migration-add-itineraries MigrationName
+./scripts/api.sh migration-add-quotes MigrationName
 ```
 
 Review generated SQL and model changes before applying it.
@@ -168,3 +182,7 @@ CRUD, pagination, stale-write conflicts, sensitive-change audit events, and migr
 7 tests add deterministic repeatability and Catalogue-snapshot fingerprints, rule/pace behavior,
 planner validation, traveller ownership, cross-owner denial, day/item ordering, stale-write
 conflicts, audit events, and planning indexes.
+
+Phase 8 tests add deterministic pricing/currency arithmetic, immutable sent-version fixtures,
+expiry and transition checks, customer/organisation denial, audit events, quote indexes, and
+PostgreSQL-backed request-to-acceptance workflow coverage.

@@ -8,9 +8,7 @@ test.beforeAll(() => {
   }
 });
 
-test("customer profile, traveller, wishlist, itinerary, forbidden, and logout flow", async ({
-  page,
-}, testInfo) => {
+test("customer, agent quote, forbidden, and logout flow", async ({ page }, testInfo) => {
   const suffix = testInfo.project.name === "mobile" ? "Mobile" : "Desktop";
   const travellerName = `Phase Six ${suffix}`;
   const itineraryTitle = `Phase Six ${suffix} foundation`;
@@ -99,8 +97,62 @@ test("customer profile, traveller, wishlist, itinerary, forbidden, and logout fl
   await expect(page.getByRole("note")).toContainText("does not confirm live availability");
   await expect(page.getByLabel("Day 1 title")).toBeEditable();
   await expect(page.getByRole("button", { name: "Regenerate deterministic draft" })).toBeEnabled();
-  await page.getByRole("link", { name: "Review planner input" }).click();
-  await expect(page.getByLabel("Plan title")).toHaveValue(travelPlanTitle);
+
+  await page.getByRole("button", { name: "Request quote for reviewed draft" }).click();
+  await expect(page).toHaveURL(/\/portal\/customer\/quotes\/[^/]+\?requested=1$/u, {
+    timeout: 15_000,
+  });
+  const quotePath = new URL(page.url()).pathname;
+  await expect(page.getByRole("status")).toContainText("quote request was recorded");
+  await expect(page.getByRole("note")).toContainText("does not confirm supplier availability");
+
+  await page.goto("/portal/customer");
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await expect(page).toHaveURL(/\/$/u);
+
+  await page.goto("/auth/sign-in?callbackUrl=%2Fportal%2Fagent%2Fquotes");
+  await page.getByLabel("Testing persona").selectOption("agent");
+  await page.getByLabel("Testing access key").fill(testKey!);
+  await page.getByRole("button", { name: "Sign in with test identity" }).click();
+  await expect(page).toHaveURL(/\/portal\/agent\/quotes$/u);
+  const quoteCard = page.locator("li", { hasText: travelPlanTitle });
+  await expect(quoteCard).toBeVisible();
+  await quoteCard.getByRole("button", { name: "Claim and prepare quote" }).click();
+  await expect(page).toHaveURL(/\/portal\/agent\/quotes\/[^/]+\?prepared=1$/u, {
+    timeout: 15_000,
+  });
+  await page.getByLabel("Line 1 title").fill("Private Sri Lanka journey");
+  await page.getByLabel("Quantity").first().fill("1");
+  await page.getByLabel("Unit amount").first().fill("1250");
+  await page
+    .getByLabel("Customer terms")
+    .fill("This immutable quote is an estimate and not a booking or payment confirmation.");
+  await page.getByRole("button", { name: "Save itemized quote draft" }).click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Quote draft and deterministic totals updated" }),
+  ).toBeVisible({ timeout: 15_000 });
+  await page.getByRole("button", { name: "Send immutable quote version" }).click();
+  await expect(page).toHaveURL(/\?sent=1$/u, { timeout: 15_000 });
+  await expect(page.getByRole("status")).toContainText("Quote workflow updated successfully");
+
+  await page.goto("/portal/customer");
+  await expect(page).toHaveURL(/\/auth\/forbidden$/u);
+  await expect(
+    page.getByRole("heading", { name: "Your account cannot open this portal" }),
+  ).toBeVisible();
+
+  await page.goto("/portal/agent");
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await expect(page).toHaveURL(/\/$/u);
+  await page.goto(`/auth/sign-in?callbackUrl=${encodeURIComponent(quotePath)}`);
+  await page.getByLabel("Testing persona").selectOption("customer");
+  await page.getByLabel("Testing access key").fill(testKey!);
+  await page.getByRole("button", { name: "Sign in with test identity" }).click();
+  await expect(page).toHaveURL(new RegExp(`${quotePath.replaceAll("/", "\\/")}$`, "u"));
+  await expect(page.getByText("Immutable quote versions")).toBeVisible();
+  await page.getByRole("button", { name: "Accept sent quote" }).click();
+  await expect(page).toHaveURL(/\?updated=accept$/u, { timeout: 15_000 });
+  await expect(page.getByRole("status")).toContainText("Quote status updated to accepted");
 
   await page.goto("/portal/customer/travel-plans/00000000-0000-0000-0000-000000000099");
   await expect(
@@ -123,17 +175,4 @@ test("customer profile, traveller, wishlist, itinerary, forbidden, and logout fl
   await expect(page).toHaveURL(/\/$/u);
   await page.goto("/portal/customer");
   await expect(page).toHaveURL(/\/auth\/sign-in\?callbackUrl=/u);
-});
-
-test("agent sign-in reaches only the agent organisation portal", async ({ page }) => {
-  await page.goto("/auth/sign-in?callbackUrl=%2Fportal%2Fagent");
-  await page.getByLabel("Testing persona").selectOption("agent");
-  await page.getByLabel("Testing access key").fill(testKey!);
-  await page.getByRole("button", { name: "Sign in with test identity" }).click();
-
-  await expect(page).toHaveURL(/\/portal\/agent$/u);
-  await expect(page.getByRole("heading", { name: "Welcome, Test Agent" })).toBeVisible();
-
-  await page.goto("/portal/customer");
-  await expect(page).toHaveURL(/\/auth\/forbidden$/u);
 });

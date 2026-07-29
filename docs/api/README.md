@@ -1,6 +1,6 @@
 # API Guide
 
-The primary API is an ASP.NET Core 10 modular monolith. Phases 2 through 7 implement the host,
+The primary API is an ASP.NET Core 10 modular monolith. Phases 2 through 8 implement the host,
 Catalogue discovery, external JWT bearer validation, authorization policies, and ownership module
 and deterministic travel-planning foundations.
 
@@ -93,6 +93,10 @@ Authenticated customer-owned routes are:
 - paginated `GET` and `POST /api/v1/customer/travel-plans`, plan detail and input update,
   deterministic `POST /travel-plans/{id}/generate`, and concurrency-protected day/item
   create/update/reorder operations.
+- paginated `GET` and `POST /api/v1/customer/quotes`, plus quote detail and version-specific
+  `POST` accept/decline or concurrency-protected withdraw operations; and
+- organisation-scoped `GET /api/v1/agent/quotes`, quote detail, and prepare/draft/send/revise/
+  withdraw operations.
 
 The authenticated customer ID comes only from validated claims. Browser-supplied customer IDs are
 never trusted, and an owner-filtered missing record returns a correlated 404 without disclosing
@@ -103,6 +107,12 @@ traveller associations, bounded accessibility/dietary considerations, and item o
 revisions record the fixed rule version and a fingerprint covering normalized input and the
 published Catalogue snapshot. They are drafts only and never claim availability, final pricing,
 quotes, bookability, bookings, or payments.
+
+Quote requests retain the reviewed itinerary revision, rule version, and fingerprint. Agents submit
+server-validated, fixed-precision itemized pricing in EUR, GBP, LKR, or USD. Sending snapshots an
+immutable version with terms and expiry; acceptance records a customer decision only and never
+creates a booking or payment. See [quote limitations](../quote-limitations.md) and
+[pricing and currency guidance](../pricing-and-currency.md).
 
 ## Development
 

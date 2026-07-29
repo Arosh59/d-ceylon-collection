@@ -79,4 +79,7 @@ revise, conflict, ownership denial, and concurrency checks; OpenAPI spec updated
 schema (including the previously missing AgentQuoteQueueResponse.concurrencyToken), SDK
 regenerated, TypeScript type check and ESLint pass with zero warnings, Prettier formatting clean,
 and customer/agent portal quote pages (list, detail, request, accept, decline, prepare, draft
-editor, send, revise, withdraw) verified. No booking, payment, or AI involvement in this phase.
+editor, send, revise, withdraw) verified. The acceptance harness seeds deterministic test
+organisations and the responsive browser suite covers customer request, agent claim/draft/send,
+customer acceptance, both portal-forbidden paths, and logout. No booking, payment, or AI involvement
+in this phase.

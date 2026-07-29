@@ -1,12 +1,13 @@
 # Customer Data and Privacy
 
-## Phase 6 and 7 scope
+## Phase 6 through 8 scope
 
 The Customers and Travellers module stores only information needed to support customer-controlled
 travel discovery and planning. Phase 7 adds planner inputs, traveller associations, draft
 days/items, and revision metadata in the separate planning module. The system does not store
-passport documents or numbers, identity documents, medical records, quotes, bookings, or payment
-data.
+passport documents or numbers, identity documents, medical records, payment credentials, invoices,
+vouchers, or bookings. Phase 8 stores customer quote-request notes and commercially sensitive quote
+terms, assumptions, itemized prices, and agent internal notes.
 
 ## Data-minimisation rules
 
@@ -24,6 +25,9 @@ data.
   authentication claims on every API query and mutation.
 - Persistence entities, access tokens, and customer identifiers are not exposed as browser session
   data.
+- Quote requests contain only bounded customer commercial context. Customers must not enter card
+  details, passport data, medical records, or unrelated sensitive information in quote notes.
+- Internal quote notes are organisation-scoped and never returned through customer quote DTOs.
 
 ## Access, change, and deletion
 
@@ -34,7 +38,8 @@ and deletes use concurrency tokens to prevent silent overwrites.
 
 Security/privacy-sensitive creates, changes, and deletions write an audit event containing the event
 type, outcome, authenticated subject, time, and correlation ID. Audit records must not include
-contact values, dietary/accessibility text, emergency details, itinerary notes, or bearer tokens.
+contact values, dietary/accessibility text, emergency details, itinerary notes, quote notes, internal
+notes, monetary values, or bearer tokens.
 
 ## Operational requirements
 

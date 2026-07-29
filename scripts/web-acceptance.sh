@@ -75,9 +75,36 @@ wait_for_url() {
     return 1
 }
 
+seed_testing_organisations() {
+    docker compose exec -T postgres \
+        psql --username "${POSTGRES_APP_USER}" --dbname "${POSTGRES_APP_DB}" \
+        --set ON_ERROR_STOP=1 \
+        --command "
+            INSERT INTO organisations_agents.organisations
+                (id, name, slug, is_active, created_at_utc, updated_at_utc, concurrency_token)
+            VALUES
+                ('20000000-0000-0000-0000-000000000001',
+                 'Test Agent Organisation',
+                 'test-agent-organisation',
+                 TRUE,
+                 NOW(),
+                 NOW(),
+                 '20000000-0000-0000-0000-000000000011'),
+                ('20000000-0000-0000-0000-000000000002',
+                 'Other Test Agent Organisation',
+                 'other-test-agent-organisation',
+                 TRUE,
+                 NOW(),
+                 NOW(),
+                 '20000000-0000-0000-0000-000000000022')
+            ON CONFLICT (id) DO NOTHING;
+        "
+}
+
 ./scripts/local-infrastructure.sh verify
 ./scripts/api.sh migrate
 ./scripts/api.sh seed
+seed_testing_organisations
 
 ./scripts/api.sh run >"${TEMP_DIRECTORY}/api.log" 2>&1 &
 API_PROCESS_ID=$!
@@ -149,4 +176,4 @@ if [[ "${rate_limited}" != true ]]; then
     exit 1
 fi
 
-echo "Phase 7 deterministic planning, protected portals, and responsive browser checks passed."
+echo "Phase 8 versioned quote, protected portal, and responsive browser checks passed."

@@ -2,7 +2,7 @@
 
 ## Scope and status
 
-This model was reviewed for the Phase 7 deterministic-planning boundary. It must be revisited
+This model was reviewed for the Phase 8 quote and pricing boundary. It must be revisited
 whenever payments, private documents, new external providers, or AI capabilities are introduced.
 
 ## Assets
@@ -118,6 +118,18 @@ authorization, transport protection, safe logging, and bounded timeouts and reso
 | Same inputs silently produce different output  | Fixed rule, explicit ordering, stable IDs, and input/Catalogue fingerprint      | Controlled rule-version release and fixture review |
 | Draft is mistaken for a purchasable itinerary  | Portal labelling excludes availability, price, quote, booking, and bookability  | Content review and customer-support training       |
 | Sensitive planning notes leak                  | Bounded optional fields, metadata-only audits, no token/client-session exposure | Log-redaction and retention validation             |
+
+## Phase 8 quote and pricing abuse cases
+
+| Abuse case | Implemented control | Remaining operational control |
+| --- | --- | --- |
+| Customer or agent changes a sent quote | Immutable sent-version snapshots and version-specific acceptance | Controlled commercial approval process |
+| Customer accesses another customer’s quote | Claim-derived owner predicates and indistinct 404 responses | Periodic authorization regression testing |
+| Agent crosses an organisation boundary | Active-organisation validation and organisation-scoped queries | Agent membership lifecycle and review |
+| A stale commercial change overwrites a newer one | UUID concurrency tokens and correlated 409 Problem Details | Support conflict-resolution guidance |
+| Unsupported or imprecise money is accepted | Server-side ISO-currency, sign, range, and fixed-precision validation | Finance review before live pricing |
+| Quote is mistaken for a booking or payment | Portal labels, terms, and limitations explicitly reject that claim | Sales and support training |
+| Internal notes reach a customer | Separate customer/agent DTO projections and tests | Log-redaction review and support-access controls |
 
 ## Open questions
 

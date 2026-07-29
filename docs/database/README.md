@@ -107,7 +107,20 @@ item ordering, and Catalogue product/destination references. Travel dates have a
 constraint. Historical revisions remain available in the aggregate; no Catalogue entity,
 availability, price, quote, booking, or payment record is duplicated.
 
-All five module migration sets are explicit:
+## Phase 8 quotes and pricing schema
+
+Migration `20260728092831_AddQuoteWorkflow` creates the `quotes` schema with customer quote
+requests, quote roots, mutable agent draft lines/components, immutable sent-version snapshots, and
+versioned line/component snapshots. Quote requests retain stable itinerary revision identifiers,
+rule version, and fingerprint without duplicating planning entities.
+
+Amounts use `numeric(18,2)` with explicit three-letter currency codes. Ownership/status/update,
+organisation/status/update, expiry, quote/version, line ordering, component ordering, and
+customer/revision uniqueness indexes support queue access, expiry processing, and immutable history.
+Each mutable quote root uses a UUID concurrency token and UTC audit timestamps. No card data,
+payment credential, booking, invoice, or voucher table is introduced.
+
+All six module migration sets are explicit:
 
 ```bash
 ./scripts/api.sh migrations-list

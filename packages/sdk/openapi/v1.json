@@ -3199,7 +3199,8 @@
             "format": "double"
           },
           "concurrencyToken": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "updatedAtUtc": {
             "type": "string",
