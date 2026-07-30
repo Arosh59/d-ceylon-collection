@@ -12,7 +12,9 @@
   "paths": {
     "/api/v1/catalogue/products": {
       "get": {
-        "tags": ["Catalogue"],
+        "tags": [
+          "Catalogue"
+        ],
         "summary": "Searches and filters published catalogue products.",
         "operationId": "GetProductsV1",
         "parameters": [
@@ -72,7 +74,10 @@
               "maximum": 100000000,
               "minimum": 0,
               "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-              "type": ["number", "string"],
+              "type": [
+                "number",
+                "string"
+              ],
               "format": "double"
             }
           },
@@ -83,7 +88,10 @@
               "maximum": 100000000,
               "minimum": 0,
               "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-              "type": ["number", "string"],
+              "type": [
+                "number",
+                "string"
+              ],
               "format": "double"
             }
           },
@@ -94,7 +102,10 @@
               "maximum": 525600,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -105,7 +116,10 @@
               "maximum": 525600,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -124,7 +138,10 @@
               "maximum": 100000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -135,7 +152,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -166,7 +186,9 @@
     },
     "/api/v1/catalogue/products/{slug}": {
       "get": {
-        "tags": ["Catalogue"],
+        "tags": [
+          "Catalogue"
+        ],
         "summary": "Gets one published product by slug.",
         "operationId": "GetProductBySlugV1",
         "parameters": [
@@ -215,7 +237,9 @@
     },
     "/api/v1/catalogue/product-types": {
       "get": {
-        "tags": ["Catalogue"],
+        "tags": [
+          "Catalogue"
+        ],
         "summary": "Gets product types.",
         "operationId": "GetProductTypesV1",
         "parameters": [
@@ -226,7 +250,10 @@
               "maximum": 100000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -237,7 +264,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -268,7 +298,9 @@
     },
     "/api/v1/catalogue/categories": {
       "get": {
-        "tags": ["Catalogue"],
+        "tags": [
+          "Catalogue"
+        ],
         "summary": "Gets catalogue categories.",
         "operationId": "GetCategoriesV1",
         "parameters": [
@@ -279,7 +311,10 @@
               "maximum": 100000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -290,7 +325,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -321,7 +359,9 @@
     },
     "/api/v1/catalogue/tags": {
       "get": {
-        "tags": ["Catalogue"],
+        "tags": [
+          "Catalogue"
+        ],
         "summary": "Gets catalogue tags.",
         "operationId": "GetTagsV1",
         "parameters": [
@@ -332,7 +372,10 @@
               "maximum": 100000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -343,7 +386,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -374,7 +420,9 @@
     },
     "/api/v1/catalogue/collections": {
       "get": {
-        "tags": ["Catalogue"],
+        "tags": [
+          "Catalogue"
+        ],
         "summary": "Gets published travel collections.",
         "operationId": "GetCollectionsV1",
         "parameters": [
@@ -385,7 +433,10 @@
               "maximum": 100000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -396,7 +447,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -427,7 +481,9 @@
     },
     "/api/v1/catalogue/collections/{slug}": {
       "get": {
-        "tags": ["Catalogue"],
+        "tags": [
+          "Catalogue"
+        ],
         "summary": "Gets one published travel collection.",
         "operationId": "GetCollectionBySlugV1",
         "parameters": [
@@ -476,7 +532,9 @@
     },
     "/api/v1/catalogue/destinations": {
       "get": {
-        "tags": ["Catalogue"],
+        "tags": [
+          "Catalogue"
+        ],
         "summary": "Gets published destinations.",
         "operationId": "GetDestinationsV1",
         "parameters": [
@@ -487,7 +545,10 @@
               "maximum": 100000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -498,7 +559,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -529,7 +593,9 @@
     },
     "/api/v1/catalogue/destinations/{slug}": {
       "get": {
-        "tags": ["Catalogue"],
+        "tags": [
+          "Catalogue"
+        ],
         "summary": "Gets one published destination.",
         "operationId": "GetDestinationBySlugV1",
         "parameters": [
@@ -578,7 +644,9 @@
     },
     "/api/v1/access/me": {
       "get": {
-        "tags": ["Identity and Access"],
+        "tags": [
+          "Identity and Access"
+        ],
         "operationId": "GetCurrentAccessV1",
         "responses": {
           "200": {
@@ -606,7 +674,9 @@
     },
     "/api/v1/access/customer/{customerId}": {
       "get": {
-        "tags": ["Identity and Access"],
+        "tags": [
+          "Identity and Access"
+        ],
         "operationId": "GetCustomerPortalV1",
         "parameters": [
           {
@@ -655,7 +725,9 @@
     },
     "/api/v1/access/agent/{organisationId}": {
       "get": {
-        "tags": ["Identity and Access"],
+        "tags": [
+          "Identity and Access"
+        ],
         "operationId": "GetAgentPortalV1",
         "parameters": [
           {
@@ -704,7 +776,9 @@
     },
     "/api/v1/access/staff": {
       "get": {
-        "tags": ["Identity and Access"],
+        "tags": [
+          "Identity and Access"
+        ],
         "operationId": "GetStaffPortalV1",
         "responses": {
           "200": {
@@ -722,7 +796,9 @@
     },
     "/api/v1/access/administrator": {
       "get": {
-        "tags": ["Identity and Access"],
+        "tags": [
+          "Identity and Access"
+        ],
         "operationId": "GetAdministratorPortalV1",
         "responses": {
           "200": {
@@ -740,7 +816,9 @@
     },
     "/api/v1/customer/profile": {
       "get": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "GetCustomerProfileV1",
         "responses": {
           "200": {
@@ -766,7 +844,9 @@
         }
       },
       "post": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "CreateCustomerProfileV1",
         "requestBody": {
           "content": {
@@ -812,7 +892,9 @@
         }
       },
       "put": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "UpdateCustomerProfileV1",
         "requestBody": {
           "content": {
@@ -868,7 +950,9 @@
         }
       },
       "delete": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "DeleteCustomerProfileV1",
         "parameters": [
           {
@@ -920,7 +1004,9 @@
     },
     "/api/v1/customer/travellers": {
       "get": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "GetCustomerTravellersV1",
         "parameters": [
           {
@@ -930,7 +1016,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -941,7 +1030,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -970,7 +1062,9 @@
         }
       },
       "post": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "CreateCustomerTravellerV1",
         "requestBody": {
           "content": {
@@ -1008,7 +1102,9 @@
     },
     "/api/v1/customer/travellers/{travellerId}": {
       "get": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "GetCustomerTravellerV1",
         "parameters": [
           {
@@ -1045,7 +1141,9 @@
         }
       },
       "put": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "UpdateCustomerTravellerV1",
         "parameters": [
           {
@@ -1112,7 +1210,9 @@
         }
       },
       "delete": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "DeleteCustomerTravellerV1",
         "parameters": [
           {
@@ -1173,7 +1273,9 @@
     },
     "/api/v1/customer/wishlist": {
       "get": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "GetCustomerWishlistV1",
         "parameters": [
           {
@@ -1183,7 +1285,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -1194,7 +1299,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1223,7 +1331,9 @@
         }
       },
       "post": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "CreateCustomerWishlistEntryV1",
         "requestBody": {
           "content": {
@@ -1281,7 +1391,9 @@
     },
     "/api/v1/customer/wishlist/{entryId}": {
       "put": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "UpdateCustomerWishlistEntryV1",
         "parameters": [
           {
@@ -1348,7 +1460,9 @@
         }
       },
       "delete": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "DeleteCustomerWishlistEntryV1",
         "parameters": [
           {
@@ -1409,7 +1523,9 @@
     },
     "/api/v1/customer/saved-itineraries": {
       "get": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "GetCustomerSavedItinerariesV1",
         "parameters": [
           {
@@ -1419,7 +1535,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -1430,7 +1549,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1459,7 +1581,9 @@
         }
       },
       "post": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "CreateCustomerSavedItineraryV1",
         "requestBody": {
           "content": {
@@ -1507,7 +1631,9 @@
     },
     "/api/v1/customer/saved-itineraries/{itineraryId}": {
       "get": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "GetCustomerSavedItineraryV1",
         "parameters": [
           {
@@ -1544,7 +1670,9 @@
         }
       },
       "put": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "UpdateCustomerSavedItineraryV1",
         "parameters": [
           {
@@ -1611,7 +1739,9 @@
         }
       },
       "delete": {
-        "tags": ["Customer records"],
+        "tags": [
+          "Customer records"
+        ],
         "operationId": "DeleteCustomerSavedItineraryV1",
         "parameters": [
           {
@@ -1672,7 +1802,9 @@
     },
     "/api/v1/editorial/journal": {
       "get": {
-        "tags": ["Editorial"],
+        "tags": [
+          "Editorial"
+        ],
         "operationId": "GetJournalArticlesV1",
         "parameters": [
           {
@@ -1682,7 +1814,10 @@
               "maximum": 100000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -1693,7 +1828,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1734,7 +1872,9 @@
     },
     "/api/v1/editorial/journal/{slug}": {
       "get": {
-        "tags": ["Editorial"],
+        "tags": [
+          "Editorial"
+        ],
         "operationId": "GetJournalArticleBySlugV1",
         "parameters": [
           {
@@ -1782,7 +1922,9 @@
     },
     "/api/v1/editorial/promotions": {
       "get": {
-        "tags": ["Editorial"],
+        "tags": [
+          "Editorial"
+        ],
         "operationId": "GetPromotionsV1",
         "responses": {
           "200": {
@@ -1813,7 +1955,9 @@
     },
     "/api/v1/customer/travel-plans": {
       "get": {
-        "tags": ["Travel planning"],
+        "tags": [
+          "Travel planning"
+        ],
         "operationId": "GetCustomerTravelPlansV1",
         "parameters": [
           {
@@ -1823,7 +1967,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -1834,7 +1981,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -1863,7 +2013,9 @@
         }
       },
       "post": {
-        "tags": ["Travel planning"],
+        "tags": [
+          "Travel planning"
+        ],
         "operationId": "CreateCustomerTravelPlanV1",
         "requestBody": {
           "content": {
@@ -1911,7 +2063,9 @@
     },
     "/api/v1/customer/travel-plans/{planId}": {
       "get": {
-        "tags": ["Travel planning"],
+        "tags": [
+          "Travel planning"
+        ],
         "operationId": "GetCustomerTravelPlanV1",
         "parameters": [
           {
@@ -1950,7 +2104,9 @@
     },
     "/api/v1/customer/travel-plans/{planId}/input": {
       "put": {
-        "tags": ["Travel planning"],
+        "tags": [
+          "Travel planning"
+        ],
         "operationId": "UpdateCustomerTravelPlanInputV1",
         "parameters": [
           {
@@ -2019,7 +2175,9 @@
     },
     "/api/v1/customer/travel-plans/{planId}/generate": {
       "post": {
-        "tags": ["Travel planning"],
+        "tags": [
+          "Travel planning"
+        ],
         "operationId": "GenerateCustomerTravelPlanV1",
         "parameters": [
           {
@@ -2088,7 +2246,9 @@
     },
     "/api/v1/customer/travel-plans/{planId}/days/{dayId}": {
       "put": {
-        "tags": ["Travel planning"],
+        "tags": [
+          "Travel planning"
+        ],
         "operationId": "UpdateCustomerItineraryDayV1",
         "parameters": [
           {
@@ -2166,7 +2326,9 @@
     },
     "/api/v1/customer/travel-plans/{planId}/days/{dayId}/items": {
       "post": {
-        "tags": ["Travel planning"],
+        "tags": [
+          "Travel planning"
+        ],
         "operationId": "CreateCustomerItineraryItemV1",
         "parameters": [
           {
@@ -2244,7 +2406,9 @@
     },
     "/api/v1/customer/travel-plans/{planId}/items/{itemId}": {
       "put": {
-        "tags": ["Travel planning"],
+        "tags": [
+          "Travel planning"
+        ],
         "operationId": "UpdateCustomerItineraryItemV1",
         "parameters": [
           {
@@ -2322,7 +2486,9 @@
     },
     "/api/v1/customer/travel-plans/{planId}/items/{itemId}/reorder": {
       "post": {
-        "tags": ["Travel planning"],
+        "tags": [
+          "Travel planning"
+        ],
         "operationId": "ReorderCustomerItineraryItemV1",
         "parameters": [
           {
@@ -2400,7 +2566,9 @@
     },
     "/api/v1/customer/quotes": {
       "get": {
-        "tags": ["Customer quotes"],
+        "tags": [
+          "Customer quotes"
+        ],
         "operationId": "GetCustomerQuotesV1",
         "parameters": [
           {
@@ -2410,7 +2578,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2421,7 +2592,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2450,7 +2624,9 @@
         }
       },
       "post": {
-        "tags": ["Customer quotes"],
+        "tags": [
+          "Customer quotes"
+        ],
         "operationId": "RequestCustomerQuoteV1",
         "requestBody": {
           "content": {
@@ -2508,7 +2684,9 @@
     },
     "/api/v1/customer/quotes/{quoteId}": {
       "get": {
-        "tags": ["Customer quotes"],
+        "tags": [
+          "Customer quotes"
+        ],
         "operationId": "GetCustomerQuoteV1",
         "parameters": [
           {
@@ -2547,7 +2725,9 @@
     },
     "/api/v1/customer/quotes/{quoteId}/accept": {
       "post": {
-        "tags": ["Customer quotes"],
+        "tags": [
+          "Customer quotes"
+        ],
         "operationId": "AcceptCustomerQuoteV1",
         "parameters": [
           {
@@ -2616,7 +2796,9 @@
     },
     "/api/v1/customer/quotes/{quoteId}/decline": {
       "post": {
-        "tags": ["Customer quotes"],
+        "tags": [
+          "Customer quotes"
+        ],
         "operationId": "DeclineCustomerQuoteV1",
         "parameters": [
           {
@@ -2685,7 +2867,9 @@
     },
     "/api/v1/customer/quotes/{quoteId}/withdraw": {
       "post": {
-        "tags": ["Customer quotes"],
+        "tags": [
+          "Customer quotes"
+        ],
         "operationId": "WithdrawCustomerQuoteV1",
         "parameters": [
           {
@@ -2754,7 +2938,9 @@
     },
     "/api/v1/agent/quotes": {
       "get": {
-        "tags": ["Agent quotes"],
+        "tags": [
+          "Agent quotes"
+        ],
         "operationId": "GetAgentQuoteQueueV1",
         "parameters": [
           {
@@ -2764,7 +2950,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -2775,7 +2964,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -2806,7 +2998,9 @@
     },
     "/api/v1/agent/quotes/{quoteId}": {
       "get": {
-        "tags": ["Agent quotes"],
+        "tags": [
+          "Agent quotes"
+        ],
         "operationId": "GetAgentQuoteV1",
         "parameters": [
           {
@@ -2845,7 +3039,9 @@
     },
     "/api/v1/agent/quotes/{quoteId}/prepare": {
       "post": {
-        "tags": ["Agent quotes"],
+        "tags": [
+          "Agent quotes"
+        ],
         "operationId": "PrepareAgentQuoteV1",
         "parameters": [
           {
@@ -2914,7 +3110,9 @@
     },
     "/api/v1/agent/quotes/{quoteId}/draft": {
       "put": {
-        "tags": ["Agent quotes"],
+        "tags": [
+          "Agent quotes"
+        ],
         "operationId": "UpdateAgentQuoteDraftV1",
         "parameters": [
           {
@@ -2983,7 +3181,9 @@
     },
     "/api/v1/agent/quotes/{quoteId}/send": {
       "post": {
-        "tags": ["Agent quotes"],
+        "tags": [
+          "Agent quotes"
+        ],
         "operationId": "SendAgentQuoteV1",
         "parameters": [
           {
@@ -3052,7 +3252,9 @@
     },
     "/api/v1/agent/quotes/{quoteId}/revise": {
       "post": {
-        "tags": ["Agent quotes"],
+        "tags": [
+          "Agent quotes"
+        ],
         "operationId": "ReviseAgentQuoteV1",
         "parameters": [
           {
@@ -3121,7 +3323,9 @@
     },
     "/api/v1/agent/quotes/{quoteId}/withdraw": {
       "post": {
-        "tags": ["Agent quotes"],
+        "tags": [
+          "Agent quotes"
+        ],
         "operationId": "WithdrawAgentQuoteV1",
         "parameters": [
           {
@@ -3190,7 +3394,9 @@
     },
     "/api/v1/customer/bookings": {
       "get": {
-        "tags": ["Customer bookings"],
+        "tags": [
+          "Customer bookings"
+        ],
         "operationId": "GetCustomerBookingsV1",
         "parameters": [
           {
@@ -3200,7 +3406,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3211,7 +3420,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3240,7 +3452,9 @@
         }
       },
       "post": {
-        "tags": ["Customer bookings"],
+        "tags": [
+          "Customer bookings"
+        ],
         "operationId": "CreateCustomerBookingV1",
         "requestBody": {
           "content": {
@@ -3298,7 +3512,9 @@
     },
     "/api/v1/customer/bookings/{bookingId}": {
       "get": {
-        "tags": ["Customer bookings"],
+        "tags": [
+          "Customer bookings"
+        ],
         "operationId": "GetCustomerBookingV1",
         "parameters": [
           {
@@ -3337,7 +3553,9 @@
     },
     "/api/v1/customer/bookings/{bookingId}/vouchers/{voucherId}": {
       "get": {
-        "tags": ["Customer bookings"],
+        "tags": [
+          "Customer bookings"
+        ],
         "operationId": "GetCustomerVoucherV1",
         "parameters": [
           {
@@ -3385,7 +3603,9 @@
     },
     "/api/v1/customer/bookings/{bookingId}/request-cancellation": {
       "post": {
-        "tags": ["Customer bookings"],
+        "tags": [
+          "Customer bookings"
+        ],
         "operationId": "RequestBookingCancellationV1",
         "parameters": [
           {
@@ -3454,7 +3674,9 @@
     },
     "/api/v1/agent/bookings": {
       "get": {
-        "tags": ["Agent bookings"],
+        "tags": [
+          "Agent bookings"
+        ],
         "operationId": "GetAgentBookingsV1",
         "parameters": [
           {
@@ -3464,7 +3686,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3475,7 +3700,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3506,7 +3734,9 @@
     },
     "/api/v1/agent/bookings/{bookingId}": {
       "get": {
-        "tags": ["Agent bookings"],
+        "tags": [
+          "Agent bookings"
+        ],
         "operationId": "GetAgentBookingV1",
         "parameters": [
           {
@@ -3545,7 +3775,9 @@
     },
     "/api/v1/customer/bookings/{bookingId}/payments": {
       "get": {
-        "tags": ["Customer payments"],
+        "tags": [
+          "Customer payments"
+        ],
         "operationId": "GetCustomerPaymentsV1",
         "parameters": [
           {
@@ -3564,7 +3796,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3575,7 +3810,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3604,7 +3842,9 @@
         }
       },
       "post": {
-        "tags": ["Customer payments"],
+        "tags": [
+          "Customer payments"
+        ],
         "operationId": "CreateCustomerPaymentV1",
         "parameters": [
           {
@@ -3673,7 +3913,9 @@
     },
     "/api/v1/customer/payments/{paymentId}": {
       "get": {
-        "tags": ["Customer payments"],
+        "tags": [
+          "Customer payments"
+        ],
         "operationId": "GetCustomerPaymentV1",
         "parameters": [
           {
@@ -3712,7 +3954,9 @@
     },
     "/api/v1/operations/suppliers": {
       "get": {
-        "tags": ["Supplier operations"],
+        "tags": [
+          "Supplier operations"
+        ],
         "operationId": "GetOperationSuppliersV1",
         "parameters": [
           {
@@ -3722,7 +3966,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3733,7 +3980,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3762,7 +4012,9 @@
         }
       },
       "post": {
-        "tags": ["Supplier operations"],
+        "tags": [
+          "Supplier operations"
+        ],
         "operationId": "CreateOperationSupplierV1",
         "requestBody": {
           "content": {
@@ -3800,7 +4052,9 @@
     },
     "/api/v1/operations/tasks": {
       "get": {
-        "tags": ["Supplier operations"],
+        "tags": [
+          "Supplier operations"
+        ],
         "operationId": "GetBookingOperationTasksV1",
         "parameters": [
           {
@@ -3810,7 +4064,10 @@
               "maximum": 10000,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           },
@@ -3821,7 +4078,10 @@
               "maximum": 100,
               "minimum": 1,
               "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": ["integer", "string"],
+              "type": [
+                "integer",
+                "string"
+              ],
               "format": "int32"
             }
           }
@@ -3850,7 +4110,9 @@
         }
       },
       "post": {
-        "tags": ["Supplier operations"],
+        "tags": [
+          "Supplier operations"
+        ],
         "operationId": "CreateBookingOperationTaskV1",
         "requestBody": {
           "content": {
@@ -3869,6 +4131,596 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OperationTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/operations/vehicles": {
+      "get": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "GetOperationVehiclesV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfVehicleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "CreateOperationVehicleV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVehicleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/operations/drivers": {
+      "get": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "GetOperationDriversV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfDriverResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "CreateOperationDriverV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDriverRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/operations/guides": {
+      "get": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "GetOperationGuidesV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfGuideResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "CreateOperationGuideV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGuideRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuideResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/operations/arrivals": {
+      "get": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "GetOperationArrivalsV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfArrivalResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "CreateOperationArrivalV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArrivalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArrivalResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/operations/assignments": {
+      "get": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "GetOperationBookingResourceAssignmentsV1",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "maximum": 10000,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "maximum": 100,
+              "minimum": 1,
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfBookingResourceAssignmentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Supplier operations"
+        ],
+        "operationId": "CreateOperationBookingResourceAssignmentV1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookingResourceAssignmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResourceAssignmentResponse"
                 }
               }
             }
@@ -3927,7 +4779,10 @@
         "type": "object",
         "properties": {
           "currency": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "assumptions": {
             "type": "array",
@@ -3948,10 +4803,16 @@
             }
           },
           "terms": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "internalNotes": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "lines": {
             "type": "array",
@@ -4046,15 +4907,25 @@
           },
           "currentVersionNumber": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "currency": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "grandTotal": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["null", "number", "string"],
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "concurrencyToken": {
@@ -4100,7 +4971,10 @@
             "$ref": "#/components/schemas/AgentQuoteDraftResponse"
           },
           "currentVersionId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "versions": {
@@ -4123,6 +4997,55 @@
           }
         }
       },
+      "ArrivalResponse": {
+        "required": [
+          "id",
+          "bookingId",
+          "arrivalAtUtc",
+          "airport",
+          "flightNumber",
+          "status",
+          "notes",
+          "concurrencyToken"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "arrivalAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "airport": {
+            "type": "string"
+          },
+          "flightNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "BookingItemResponse": {
         "required": [
           "id",
@@ -4142,32 +5065,109 @@
           },
           "position": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "title": {
             "type": "string"
           },
           "description": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "quantity": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "unitAmount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "lineTotal": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currency": {
             "type": "string"
+          }
+        }
+      },
+      "BookingResourceAssignmentResponse": {
+        "required": [
+          "id",
+          "bookingId",
+          "serviceDate",
+          "vehicleId",
+          "driverId",
+          "guideId",
+          "status",
+          "notes",
+          "concurrencyToken"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "serviceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "vehicleId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "driverId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "guideId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -4219,7 +5219,10 @@
             "format": "uuid"
           },
           "organisationId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "itineraryTitle": {
@@ -4241,27 +5244,45 @@
           },
           "totalAmount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "paidAmount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "customerNotes": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "confirmedAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "cancelledAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "cancellationReason": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "items": {
             "type": "array",
@@ -4338,16 +5359,25 @@
           },
           "totalAmount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "paidAmount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "confirmedAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "concurrencyToken": {
@@ -4366,7 +5396,10 @@
           "reason": {
             "maxLength": 500,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "concurrencyToken": {
             "type": "string",
@@ -4414,13 +5447,22 @@
           },
           "publishedProductCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
       },
       "CollectionSummaryResponse": {
-        "required": ["id", "name", "slug", "summary", "heroMedia"],
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "summary",
+          "heroMedia"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -4448,6 +5490,43 @@
           }
         }
       },
+      "CreateArrivalRequest": {
+        "required": [
+          "airport"
+        ],
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "arrivalAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "airport": {
+            "maxLength": 120,
+            "minLength": 0,
+            "type": "string"
+          },
+          "flightNumber": {
+            "maxLength": 30,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "CreateBookingRequest": {
         "type": "object",
         "properties": {
@@ -4462,12 +5541,62 @@
           "customerNotes": {
             "maxLength": 2000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CreateBookingResourceAssignmentRequest": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "serviceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "vehicleId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "driverId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "guideId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "notes": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "CreateCustomerProfileRequest": {
-        "required": ["givenName", "familyName", "preferredLocale", "preferredContactMethod"],
+        "required": [
+          "givenName",
+          "familyName",
+          "preferredLocale",
+          "preferredContactMethod"
+        ],
         "type": "object",
         "properties": {
           "givenName": {
@@ -4483,16 +5612,25 @@
           "contactEmail": {
             "maxLength": 320,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "contactPhone": {
             "maxLength": 40,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "countryCode": {
             "pattern": "^[A-Za-z]{2}$",
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "preferredLocale": {
             "pattern": "^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$",
@@ -4507,8 +5645,65 @@
           }
         }
       },
+      "CreateDriverRequest": {
+        "required": [
+          "name",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 160,
+            "minLength": 0,
+            "type": "string"
+          },
+          "phone": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string"
+          },
+          "licenceNumber": {
+            "maxLength": 80,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CreateGuideRequest": {
+        "required": [
+          "name",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 160,
+            "minLength": 0,
+            "type": "string"
+          },
+          "phone": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string"
+          },
+          "languages": {
+            "maxLength": 300,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "CreateItineraryItemRequest": {
-        "required": ["title", "destinationSlug"],
+        "required": [
+          "title",
+          "destinationSlug"
+        ],
         "type": "object",
         "properties": {
           "title": {
@@ -4519,13 +5714,20 @@
           "notes": {
             "maxLength": 2000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "durationMinutes": {
             "maximum": 1440,
             "minimum": 1,
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "destinationSlug": {
@@ -4534,13 +5736,19 @@
           },
           "position": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
       },
       "CreateOperationTaskRequest": {
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "type": "object",
         "properties": {
           "bookingId": {
@@ -4548,7 +5756,10 @@
             "format": "uuid"
           },
           "supplierId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "title": {
@@ -4557,18 +5768,28 @@
             "type": "string"
           },
           "dueDate": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "notes": {
             "maxLength": 2000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "CreatePaymentRequest": {
-        "required": ["kind", "gateway", "idempotencyKey"],
+        "required": [
+          "kind",
+          "gateway",
+          "idempotencyKey"
+        ],
         "type": "object",
         "properties": {
           "kind": {
@@ -4602,12 +5823,17 @@
           "customerNotes": {
             "maxLength": 2000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "CreateSavedItineraryRequest": {
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "type": "object",
         "properties": {
           "title": {
@@ -4618,26 +5844,41 @@
           "summary": {
             "maxLength": 2000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "travelStartDate": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "travelEndDate": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "primaryDestinationSlug": {
             "maxLength": 200,
             "minLength": 0,
             "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "CreateSupplierRequest": {
-        "required": ["name", "category"],
+        "required": [
+          "name",
+          "category"
+        ],
         "type": "object",
         "properties": {
           "name": {
@@ -4653,17 +5894,26 @@
           "contactName": {
             "maxLength": 120,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "contactEmail": {
             "maxLength": 320,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "CreateTravellerRequest": {
-        "required": ["givenName", "familyName"],
+        "required": [
+          "givenName",
+          "familyName"
+        ],
         "type": "object",
         "properties": {
           "givenName": {
@@ -4677,33 +5927,51 @@
             "type": "string"
           },
           "dateOfBirth": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "accessibilityNeeds": {
             "maxLength": 1000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "dietaryNeeds": {
             "maxLength": 1000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "emergencyContactName": {
             "maxLength": 200,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "emergencyContactPhone": {
             "maxLength": 40,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "CreateTravelPlanRequest": {
-        "required": ["title", "pace"],
+        "required": [
+          "title",
+          "pace"
+        ],
         "type": "object",
         "properties": {
           "title": {
@@ -4712,7 +5980,10 @@
             "type": "string"
           },
           "savedItineraryId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "travelStartDate": {
@@ -4766,17 +6037,69 @@
           "accessibilityConsiderations": {
             "maxLength": 1000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "dietaryConsiderations": {
             "maxLength": 1000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CreateVehicleRequest": {
+        "required": [
+          "name",
+          "registrationNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "supplierId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 0,
+            "type": "string"
+          },
+          "registrationNumber": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string"
+          },
+          "capacity": {
+            "maximum": 100,
+            "minimum": 1,
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "notes": {
+            "maxLength": 1000,
+            "minLength": 0,
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "CreateWishlistEntryRequest": {
-        "required": ["productSlug"],
+        "required": [
+          "productSlug"
+        ],
         "type": "object",
         "properties": {
           "productSlug": {
@@ -4788,7 +6111,10 @@
           "note": {
             "maxLength": 500,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -4811,7 +6137,10 @@
             "type": "string"
           },
           "email": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "roles": {
             "type": "array",
@@ -4826,11 +6155,17 @@
             }
           },
           "customerId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "organisationId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           }
         }
@@ -4862,13 +6197,22 @@
             "type": "string"
           },
           "contactEmail": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "contactPhone": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "countryCode": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "preferredLocale": {
             "type": "string"
@@ -4914,11 +6258,17 @@
             "$ref": "#/components/schemas/QuoteRequestResponse"
           },
           "organisationId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "currentVersionId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "versions": {
@@ -4977,19 +6327,32 @@
           },
           "currentVersionNumber": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "currency": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "grandTotal": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["null", "number", "string"],
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "expiresAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "concurrencyToken": {
@@ -5042,13 +6405,22 @@
           },
           "publishedProductCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
       },
       "DestinationSummaryResponse": {
-        "required": ["id", "name", "slug", "summary", "heroMedia"],
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "summary",
+          "heroMedia"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -5076,9 +6448,81 @@
           }
         }
       },
+      "DriverResponse": {
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "licenceNumber",
+          "status",
+          "concurrencyToken"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "licenceNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
       "GenerateTravelPlanRequest": {
         "type": "object",
         "properties": {
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "GuideResponse": {
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "languages",
+          "status",
+          "concurrencyToken"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "languages": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
           "concurrencyToken": {
             "type": "string",
             "format": "uuid"
@@ -5089,21 +6533,37 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "title": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "status": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "detail": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "instance": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "errors": {
             "type": "object",
@@ -5149,34 +6609,55 @@
           },
           "subtotal": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "taxTotal": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "adjustmentTotal": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "grandTotal": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "issuedAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "dueAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "paidAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "hasDocument": {
@@ -5189,7 +6670,14 @@
         }
       },
       "ItineraryDayResponse": {
-        "required": ["id", "dayNumber", "date", "title", "concurrencyToken", "items"],
+        "required": [
+          "id",
+          "dayNumber",
+          "date",
+          "title",
+          "concurrencyToken",
+          "items"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -5198,7 +6686,10 @@
           },
           "dayNumber": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "date": {
@@ -5240,25 +6731,38 @@
           },
           "position": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "title": {
             "type": "string"
           },
           "notes": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "durationMinutes": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "destinationSlug": {
             "type": "string"
           },
           "productSlug": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "source": {
             "type": "string"
@@ -5286,7 +6790,10 @@
           },
           "revisionNumber": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "ruleVersion": {
@@ -5308,7 +6815,14 @@
         }
       },
       "JournalArticleDetail": {
-        "required": ["slug", "title", "summary", "content", "heroImageUrl", "publishedAtUtc"],
+        "required": [
+          "slug",
+          "title",
+          "summary",
+          "content",
+          "heroImageUrl",
+          "publishedAtUtc"
+        ],
         "type": "object",
         "properties": {
           "slug": {
@@ -5318,22 +6832,37 @@
             "type": "string"
           },
           "summary": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "content": {
             "type": "string"
           },
           "heroImageUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "publishedAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           }
         }
       },
       "JournalArticleSummary": {
-        "required": ["slug", "title", "summary", "heroImageUrl", "publishedAtUtc"],
+        "required": [
+          "slug",
+          "title",
+          "summary",
+          "heroImageUrl",
+          "publishedAtUtc"
+        ],
         "type": "object",
         "properties": {
           "slug": {
@@ -5343,19 +6872,34 @@
             "type": "string"
           },
           "summary": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "heroImageUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "publishedAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           }
         }
       },
       "MediaMetadataResponse": {
-        "required": ["id", "assetKey", "altText", "width", "height"],
+        "required": [
+          "id",
+          "assetKey",
+          "altText",
+          "width",
+          "height"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -5370,23 +6914,35 @@
           },
           "width": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "height": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
       },
       "MoneyResponse": {
-        "required": ["amount", "currency"],
+        "required": [
+          "amount",
+          "currency"
+        ],
         "type": "object",
         "properties": {
           "amount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currency": {
@@ -5395,7 +6951,11 @@
         }
       },
       "NamedReferenceResponse": {
-        "required": ["id", "name", "slug"],
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -5432,7 +6992,10 @@
             "format": "uuid"
           },
           "supplierId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "title": {
@@ -5442,11 +7005,17 @@
             "type": "string"
           },
           "dueDate": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "notes": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "concurrencyToken": {
             "type": "string",
@@ -5455,7 +7024,10 @@
         }
       },
       "PagedResponseOfAgentQuoteQueueResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5469,8 +7041,47 @@
           }
         }
       },
+      "PagedResponseOfArrivalResponse": {
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArrivalResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
+      "PagedResponseOfBookingResourceAssignmentResponse": {
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingResourceAssignmentResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
       "PagedResponseOfBookingSummaryResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5485,7 +7096,10 @@
         }
       },
       "PagedResponseOfCollectionSummaryResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5500,7 +7114,10 @@
         }
       },
       "PagedResponseOfCustomerQuoteSummaryResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5515,7 +7132,10 @@
         }
       },
       "PagedResponseOfDestinationSummaryResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5529,8 +7149,47 @@
           }
         }
       },
+      "PagedResponseOfDriverResponse": {
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DriverResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
+      "PagedResponseOfGuideResponse": {
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuideResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
       "PagedResponseOfJournalArticleSummary": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5545,7 +7204,10 @@
         }
       },
       "PagedResponseOfNamedReferenceResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5560,7 +7222,10 @@
         }
       },
       "PagedResponseOfOperationTaskResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5575,7 +7240,10 @@
         }
       },
       "PagedResponseOfPaymentSummaryResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5590,7 +7258,10 @@
         }
       },
       "PagedResponseOfProductSummaryResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5605,7 +7276,10 @@
         }
       },
       "PagedResponseOfProductTypeResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5620,7 +7294,10 @@
         }
       },
       "PagedResponseOfSavedItineraryResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5635,7 +7312,10 @@
         }
       },
       "PagedResponseOfSupplierResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5650,7 +7330,10 @@
         }
       },
       "PagedResponseOfTravellerResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5665,7 +7348,10 @@
         }
       },
       "PagedResponseOfTravelPlanSummaryResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5679,8 +7365,29 @@
           }
         }
       },
+      "PagedResponseOfVehicleResponse": {
+        "required": [
+          "items",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginationMetadata"
+          }
+        }
+      },
       "PagedResponseOfWishlistEntryResponse": {
-        "required": ["items", "pagination"],
+        "required": [
+          "items",
+          "pagination"
+        ],
         "type": "object",
         "properties": {
           "items": {
@@ -5707,22 +7414,34 @@
         "properties": {
           "pageNumber": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "pageSize": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "totalItems": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int64"
           },
           "totalPages": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "hasPreviousPage": {
@@ -5782,7 +7501,10 @@
           },
           "amount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "reconciliationStatus": {
@@ -5792,15 +7514,24 @@
             "type": "boolean"
           },
           "paymentLinkExpiresAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "capturedAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "failedReason": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "transactions": {
             "type": "array",
@@ -5866,14 +7597,20 @@
           },
           "amount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "reconciliationStatus": {
             "type": "string"
           },
           "capturedAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "concurrencyToken": {
@@ -5914,7 +7651,10 @@
           },
           "amount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currency": {
@@ -5930,7 +7670,10 @@
         }
       },
       "PortalAccessResponse": {
-        "required": ["portal", "access"],
+        "required": [
+          "portal",
+          "access"
+        ],
         "type": "object",
         "properties": {
           "portal": {
@@ -5942,7 +7685,9 @@
         }
       },
       "PrepareAgentQuoteRequest": {
-        "required": ["currency"],
+        "required": [
+          "currency"
+        ],
         "type": "object",
         "properties": {
           "currency": {
@@ -5960,21 +7705,37 @@
         "type": "object",
         "properties": {
           "type": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "title": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "status": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "detail": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "instance": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -6018,7 +7779,11 @@
           },
           "startingPrice": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["null", "number", "string"],
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currency": {
@@ -6026,7 +7791,11 @@
           },
           "durationMinutes": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "categories": {
@@ -6095,7 +7864,11 @@
           },
           "startingPrice": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["null", "number", "string"],
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currency": {
@@ -6103,7 +7876,11 @@
           },
           "durationMinutes": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "primaryMedia": {
@@ -6131,7 +7908,11 @@
         }
       },
       "ProductTypeResponse": {
-        "required": ["id", "name", "slug"],
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -6147,7 +7928,14 @@
         }
       },
       "PromotionResponse": {
-        "required": ["id", "title", "summary", "callToActionLabel", "callToActionUrl", "imageUrl"],
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "callToActionLabel",
+          "callToActionUrl",
+          "imageUrl"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -6157,16 +7945,28 @@
             "type": "string"
           },
           "summary": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "callToActionLabel": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "callToActionUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "imageUrl": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -6180,7 +7980,9 @@
         }
       },
       "QuoteLineInput": {
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "type": "object",
         "properties": {
           "title": {
@@ -6191,16 +7993,25 @@
           "description": {
             "maxLength": 1000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "quantity": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "unitAmount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           }
         }
@@ -6223,18 +8034,27 @@
           },
           "position": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "title": {
             "type": "string"
           },
           "description": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "quantity": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "unitPrice": {
@@ -6246,7 +8066,10 @@
         }
       },
       "QuotePriceComponentInput": {
-        "required": ["kind", "label"],
+        "required": [
+          "kind",
+          "label"
+        ],
         "type": "object",
         "properties": {
           "kind": {
@@ -6261,13 +8084,22 @@
           },
           "amount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           }
         }
       },
       "QuotePriceComponentResponse": {
-        "required": ["id", "position", "kind", "label", "amount"],
+        "required": [
+          "id",
+          "position",
+          "kind",
+          "label",
+          "amount"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -6276,7 +8108,10 @@
           },
           "position": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "kind": {
@@ -6320,7 +8155,10 @@
           },
           "itineraryRevisionNumber": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "itineraryTitle": {
@@ -6341,7 +8179,10 @@
             "type": "string"
           },
           "customerNotes": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "requestedAtUtc": {
             "type": "string",
@@ -6388,7 +8229,10 @@
           },
           "versionNumber": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "sentAtUtc": {
@@ -6450,7 +8294,14 @@
         }
       },
       "RefundResponse": {
-        "required": ["id", "amount", "currency", "reason", "status", "createdAtUtc"],
+        "required": [
+          "id",
+          "amount",
+          "currency",
+          "reason",
+          "status",
+          "createdAtUtc"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -6459,14 +8310,20 @@
           },
           "amount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
-            "type": ["number", "string"],
+            "type": [
+              "number",
+              "string"
+            ],
             "format": "double"
           },
           "currency": {
             "type": "string"
           },
           "reason": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "status": {
             "type": "string"
@@ -6488,7 +8345,10 @@
             "maximum": 100,
             "minimum": 1,
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "concurrencyToken": {
@@ -6519,18 +8379,30 @@
             "type": "string"
           },
           "summary": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "travelStartDate": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "travelEndDate": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "primaryDestinationSlug": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "isArchived": {
             "type": "boolean"
@@ -6581,10 +8453,16 @@
             "type": "string"
           },
           "contactName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "contactEmail": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "status": {
             "type": "string"
@@ -6621,20 +8499,35 @@
             "type": "string"
           },
           "dateOfBirth": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "accessibilityNeeds": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "dietaryNeeds": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "emergencyContactName": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "emergencyContactPhone": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "concurrencyToken": {
             "type": "string",
@@ -6697,10 +8590,16 @@
             }
           },
           "accessibilityConsiderations": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "dietaryConsiderations": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -6726,7 +8625,10 @@
             "format": "uuid"
           },
           "savedItineraryId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "title": {
@@ -6803,7 +8705,10 @@
           },
           "currentRevisionNumber": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["integer", "string"],
+            "type": [
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "concurrencyToken": {
@@ -6817,7 +8722,10 @@
         }
       },
       "UpdateAgentQuoteDraftRequest": {
-        "required": ["currency", "terms"],
+        "required": [
+          "currency",
+          "terms"
+        ],
         "type": "object",
         "properties": {
           "currency": {
@@ -6851,7 +8759,10 @@
           "internalNotes": {
             "maxLength": 2000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "lines": {
             "type": "array",
@@ -6872,7 +8783,12 @@
         }
       },
       "UpdateCustomerProfileRequest": {
-        "required": ["givenName", "familyName", "preferredLocale", "preferredContactMethod"],
+        "required": [
+          "givenName",
+          "familyName",
+          "preferredLocale",
+          "preferredContactMethod"
+        ],
         "type": "object",
         "properties": {
           "concurrencyToken": {
@@ -6892,16 +8808,25 @@
           "contactEmail": {
             "maxLength": 320,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "contactPhone": {
             "maxLength": 40,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "countryCode": {
             "pattern": "^[A-Za-z]{2}$",
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "preferredLocale": {
             "pattern": "^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$",
@@ -6917,7 +8842,9 @@
         }
       },
       "UpdateItineraryDayRequest": {
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "type": "object",
         "properties": {
           "title": {
@@ -6932,7 +8859,10 @@
         }
       },
       "UpdateItineraryItemRequest": {
-        "required": ["title", "destinationSlug"],
+        "required": [
+          "title",
+          "destinationSlug"
+        ],
         "type": "object",
         "properties": {
           "concurrencyToken": {
@@ -6947,13 +8877,20 @@
           "notes": {
             "maxLength": 2000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "durationMinutes": {
             "maximum": 1440,
             "minimum": 1,
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           },
           "destinationSlug": {
@@ -6962,13 +8899,19 @@
           },
           "position": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": ["null", "integer", "string"],
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
             "format": "int32"
           }
         }
       },
       "UpdateSavedItineraryRequest": {
-        "required": ["title"],
+        "required": [
+          "title"
+        ],
         "type": "object",
         "properties": {
           "concurrencyToken": {
@@ -6983,26 +8926,41 @@
           "summary": {
             "maxLength": 2000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "travelStartDate": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "travelEndDate": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "primaryDestinationSlug": {
             "maxLength": 200,
             "minLength": 0,
             "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "UpdateTravellerRequest": {
-        "required": ["givenName", "familyName"],
+        "required": [
+          "givenName",
+          "familyName"
+        ],
         "type": "object",
         "properties": {
           "concurrencyToken": {
@@ -7020,33 +8978,51 @@
             "type": "string"
           },
           "dateOfBirth": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date"
           },
           "accessibilityNeeds": {
             "maxLength": 1000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "dietaryNeeds": {
             "maxLength": 1000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "emergencyContactName": {
             "maxLength": 200,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "emergencyContactPhone": {
             "maxLength": 40,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
       "UpdateTravelPlanInputRequest": {
-        "required": ["title", "pace"],
+        "required": [
+          "title",
+          "pace"
+        ],
         "type": "object",
         "properties": {
           "concurrencyToken": {
@@ -7059,7 +9035,10 @@
             "type": "string"
           },
           "savedItineraryId": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "uuid"
           },
           "travelStartDate": {
@@ -7113,12 +9092,18 @@
           "accessibilityConsiderations": {
             "maxLength": 1000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "dietaryConsiderations": {
             "maxLength": 1000,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -7128,7 +9113,63 @@
           "note": {
             "maxLength": 500,
             "minLength": 0,
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "concurrencyToken": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "VehicleResponse": {
+        "required": [
+          "id",
+          "supplierId",
+          "name",
+          "registrationNumber",
+          "capacity",
+          "status",
+          "notes",
+          "concurrencyToken"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "registrationNumber": {
+            "type": "string"
+          },
+          "capacity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "concurrencyToken": {
             "type": "string",
@@ -7163,7 +9204,10 @@
             "type": "string"
           },
           "description": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "validFrom": {
             "type": "string",
@@ -7177,7 +9221,10 @@
             "type": "string"
           },
           "redeemedAtUtc": {
-            "type": ["null", "string"],
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           },
           "issuedAtUtc": {
@@ -7212,7 +9259,10 @@
             "type": "string"
           },
           "note": {
-            "type": ["null", "string"]
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "concurrencyToken": {
             "type": "string",

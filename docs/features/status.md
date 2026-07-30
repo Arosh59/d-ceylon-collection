@@ -15,7 +15,7 @@ only after its documented checks pass.
 | 7     | Deterministic travel planner                           | Complete    |
 | 8     | Quote workflow                                         | Complete    |
 | 9     | Booking, payments, invoices, and vouchers              | Complete    |
-| 10    | Suppliers and operations                               | In progress |
+| 10    | Suppliers and operations                               | Complete    |
 | 11    | Directus editorial integration                         | In progress |
 | 12    | Accessible interactive Sri Lanka map                   | In progress |
 | 13    | Administration application                             | In progress |
@@ -93,14 +93,15 @@ desktop/mobile browser flows passed. Customer flows cover accepted immutable quo
 server-priced idempotent payment instruction; agent views are organisation-scoped. Supplier
 operations, payment capture, card storage, live availability, and administration remain excluded.
 
-Phase 10 is in progress. Its initial supplier and booking-operations boundary has a reviewed
-`InitialSupplierOperations` migration, a staff-only versioned API, stable Booking contract lookup,
-auditing, readiness coverage, generated SDK types, and a protected server-side operations portal.
-The current verification includes locked NuGet restore, clean NuGet/npm audits, zero-warning API
-build, 63 unit tests, 30 isolated PostgreSQL integration tests, no-pending-model checks, local
-migration application, OpenAPI equality, strict TypeScript, lint, 42 frontend tests, and a
-production web build. Supplier self-service, administration, Directus, live availability, and
-payment capture are explicitly excluded.
+Phase 10 is complete. Its reviewed `InitialSupplierOperations` and `AddOperationalResources`
+migrations provide suppliers, vehicles, drivers, guides, arrivals, booking-resource assignments,
+and booking-operation tasks. The staff-only versioned API uses stable Booking contract lookup,
+input validation, indexes, auditing, correlation IDs, and Problem Details; the protected
+server-side portal uses generated SDK contracts and accessible empty summaries. Acceptance includes
+zero-warning API builds, no-pending-model checks, local migration application, OpenAPI
+regeneration/equality, strict TypeScript, lint, 43 frontend tests, 63 unit tests, and 31 isolated
+PostgreSQL integration tests. Supplier self-service, administration, Directus, live availability,
+and payment capture remain explicitly outside Phase 10.
 
 Phases 11–15 now have verified implementation foundations: a configuration-driven, read-only
 Directus Editorial module with Journal and promotion contracts; an accessible abstract destination

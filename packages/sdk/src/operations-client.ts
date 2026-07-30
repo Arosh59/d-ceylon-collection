@@ -1,14 +1,34 @@
 import type {
+  ArrivalResponse,
+  BookingResourceAssignmentResponse,
+  DriverResponse,
   GetBookingOperationTasksV1Responses,
+  GetOperationArrivalsV1Responses,
+  GetOperationBookingResourceAssignmentsV1Responses,
+  GetOperationDriversV1Responses,
+  GetOperationGuidesV1Responses,
   GetOperationSuppliersV1Responses,
+  GetOperationVehiclesV1Responses,
+  GuideResponse,
   OperationTaskResponse,
   SupplierResponse,
+  VehicleResponse,
 } from "./generated";
 
 export type OperationSupplier = SupplierResponse;
 export type BookingOperationTask = OperationTaskResponse;
+export type OperationVehicle = VehicleResponse;
+export type OperationDriver = DriverResponse;
+export type OperationGuide = GuideResponse;
+export type OperationArrival = ArrivalResponse;
+export type BookingResourceAssignment = BookingResourceAssignmentResponse;
 export type OperationSupplierPage = GetOperationSuppliersV1Responses[200];
 export type BookingOperationTaskPage = GetBookingOperationTasksV1Responses[200];
+export type OperationVehiclePage = GetOperationVehiclesV1Responses[200];
+export type OperationDriverPage = GetOperationDriversV1Responses[200];
+export type OperationGuidePage = GetOperationGuidesV1Responses[200];
+export type OperationArrivalPage = GetOperationArrivalsV1Responses[200];
+export type BookingResourceAssignmentPage = GetOperationBookingResourceAssignmentsV1Responses[200];
 
 export interface OperationsClientOptions {
   accessToken: string;
@@ -25,6 +45,11 @@ export interface OperationsPagination {
 export interface OperationsClient {
   getSuppliers(query?: OperationsPagination): Promise<OperationSupplierPage>;
   getTasks(query?: OperationsPagination): Promise<BookingOperationTaskPage>;
+  getVehicles(query?: OperationsPagination): Promise<OperationVehiclePage>;
+  getDrivers(query?: OperationsPagination): Promise<OperationDriverPage>;
+  getGuides(query?: OperationsPagination): Promise<OperationGuidePage>;
+  getArrivals(query?: OperationsPagination): Promise<OperationArrivalPage>;
+  getAssignments(query?: OperationsPagination): Promise<BookingResourceAssignmentPage>;
 }
 
 interface ProblemDetails {
@@ -86,6 +111,14 @@ export function createOperationsClient(options: OperationsClientOptions): Operat
     getSuppliers: (query) =>
       get<OperationSupplierPage>(pagePath("/api/v1/operations/suppliers", query)),
     getTasks: (query) => get<BookingOperationTaskPage>(pagePath("/api/v1/operations/tasks", query)),
+    getVehicles: (query) =>
+      get<OperationVehiclePage>(pagePath("/api/v1/operations/vehicles", query)),
+    getDrivers: (query) => get<OperationDriverPage>(pagePath("/api/v1/operations/drivers", query)),
+    getGuides: (query) => get<OperationGuidePage>(pagePath("/api/v1/operations/guides", query)),
+    getArrivals: (query) =>
+      get<OperationArrivalPage>(pagePath("/api/v1/operations/arrivals", query)),
+    getAssignments: (query) =>
+      get<BookingResourceAssignmentPage>(pagePath("/api/v1/operations/assignments", query)),
   };
 }
 

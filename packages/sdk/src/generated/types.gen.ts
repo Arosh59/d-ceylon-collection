@@ -46,6 +46,17 @@ export type AgentQuoteResponse = {
   updatedAtUtc: string;
 };
 
+export type ArrivalResponse = {
+  id: string;
+  bookingId: string;
+  arrivalAtUtc: string;
+  airport: string;
+  flightNumber: null | string;
+  status: string;
+  notes: null | string;
+  concurrencyToken: string;
+};
+
 export type BookingItemResponse = {
   id: string;
   position: number | string;
@@ -55,6 +66,18 @@ export type BookingItemResponse = {
   unitAmount: number | string;
   lineTotal: number | string;
   currency: string;
+};
+
+export type BookingResourceAssignmentResponse = {
+  id: string;
+  bookingId: string;
+  serviceDate: string;
+  vehicleId: null | string;
+  driverId: null | string;
+  guideId: null | string;
+  status: string;
+  notes: null | string;
+  concurrencyToken: string;
 };
 
 export type BookingResponse = {
@@ -121,10 +144,27 @@ export type CollectionSummaryResponse = {
   heroMedia: null | MediaMetadataResponse;
 };
 
+export type CreateArrivalRequest = {
+  bookingId?: string;
+  arrivalAtUtc?: string;
+  airport: string;
+  flightNumber?: null | string;
+  notes?: null | string;
+};
+
 export type CreateBookingRequest = {
   quoteId?: string;
   quoteVersionId?: string;
   customerNotes?: null | string;
+};
+
+export type CreateBookingResourceAssignmentRequest = {
+  bookingId?: string;
+  serviceDate?: string;
+  vehicleId?: null | string;
+  driverId?: null | string;
+  guideId?: null | string;
+  notes?: null | string;
 };
 
 export type CreateCustomerProfileRequest = {
@@ -136,6 +176,18 @@ export type CreateCustomerProfileRequest = {
   preferredLocale: string;
   preferredContactMethod: string;
   marketingConsent?: boolean;
+};
+
+export type CreateDriverRequest = {
+  name: string;
+  phone: string;
+  licenceNumber?: null | string;
+};
+
+export type CreateGuideRequest = {
+  name: string;
+  phone: string;
+  languages?: null | string;
 };
 
 export type CreateItineraryItemRequest = {
@@ -205,6 +257,14 @@ export type CreateTravelPlanRequest = {
   tagSlugs?: Array<string>;
   accessibilityConsiderations?: null | string;
   dietaryConsiderations?: null | string;
+};
+
+export type CreateVehicleRequest = {
+  supplierId?: null | string;
+  name: string;
+  registrationNumber: string;
+  capacity?: number | string;
+  notes?: null | string;
 };
 
 export type CreateWishlistEntryRequest = {
@@ -280,8 +340,26 @@ export type DestinationSummaryResponse = {
   heroMedia: null | MediaMetadataResponse;
 };
 
+export type DriverResponse = {
+  id: string;
+  name: string;
+  phone: string;
+  licenceNumber: null | string;
+  status: string;
+  concurrencyToken: string;
+};
+
 export type GenerateTravelPlanRequest = {
   concurrencyToken?: string;
+};
+
+export type GuideResponse = {
+  id: string;
+  name: string;
+  phone: string;
+  languages: null | string;
+  status: string;
+  concurrencyToken: string;
 };
 
 export type HttpValidationProblemDetails = {
@@ -393,6 +471,16 @@ export type PagedResponseOfAgentQuoteQueueResponse = {
   pagination: PaginationMetadata;
 };
 
+export type PagedResponseOfArrivalResponse = {
+  items: Array<ArrivalResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfBookingResourceAssignmentResponse = {
+  items: Array<BookingResourceAssignmentResponse>;
+  pagination: PaginationMetadata;
+};
+
 export type PagedResponseOfBookingSummaryResponse = {
   items: Array<BookingSummaryResponse>;
   pagination: PaginationMetadata;
@@ -410,6 +498,16 @@ export type PagedResponseOfCustomerQuoteSummaryResponse = {
 
 export type PagedResponseOfDestinationSummaryResponse = {
   items: Array<DestinationSummaryResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfDriverResponse = {
+  items: Array<DriverResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfGuideResponse = {
+  items: Array<GuideResponse>;
   pagination: PaginationMetadata;
 };
 
@@ -460,6 +558,11 @@ export type PagedResponseOfTravellerResponse = {
 
 export type PagedResponseOfTravelPlanSummaryResponse = {
   items: Array<TravelPlanSummaryResponse>;
+  pagination: PaginationMetadata;
+};
+
+export type PagedResponseOfVehicleResponse = {
+  items: Array<VehicleResponse>;
   pagination: PaginationMetadata;
 };
 
@@ -830,6 +933,17 @@ export type UpdateTravelPlanInputRequest = {
 export type UpdateWishlistEntryRequest = {
   note?: null | string;
   concurrencyToken?: string;
+};
+
+export type VehicleResponse = {
+  id: string;
+  supplierId: null | string;
+  name: string;
+  registrationNumber: string;
+  capacity: number | string;
+  status: string;
+  notes: null | string;
+  concurrencyToken: string;
 };
 
 export type VoucherResponse = {
@@ -3141,3 +3255,328 @@ export type CreateBookingOperationTaskV1Responses = {
 
 export type CreateBookingOperationTaskV1Response =
   CreateBookingOperationTaskV1Responses[keyof CreateBookingOperationTaskV1Responses];
+
+export type GetOperationVehiclesV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/operations/vehicles";
+};
+
+export type GetOperationVehiclesV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetOperationVehiclesV1Error =
+  GetOperationVehiclesV1Errors[keyof GetOperationVehiclesV1Errors];
+
+export type GetOperationVehiclesV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfVehicleResponse;
+};
+
+export type GetOperationVehiclesV1Response =
+  GetOperationVehiclesV1Responses[keyof GetOperationVehiclesV1Responses];
+
+export type CreateOperationVehicleV1Data = {
+  body: CreateVehicleRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/operations/vehicles";
+};
+
+export type CreateOperationVehicleV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type CreateOperationVehicleV1Error =
+  CreateOperationVehicleV1Errors[keyof CreateOperationVehicleV1Errors];
+
+export type CreateOperationVehicleV1Responses = {
+  /**
+   * Created
+   */
+  201: VehicleResponse;
+};
+
+export type CreateOperationVehicleV1Response =
+  CreateOperationVehicleV1Responses[keyof CreateOperationVehicleV1Responses];
+
+export type GetOperationDriversV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/operations/drivers";
+};
+
+export type GetOperationDriversV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetOperationDriversV1Error =
+  GetOperationDriversV1Errors[keyof GetOperationDriversV1Errors];
+
+export type GetOperationDriversV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfDriverResponse;
+};
+
+export type GetOperationDriversV1Response =
+  GetOperationDriversV1Responses[keyof GetOperationDriversV1Responses];
+
+export type CreateOperationDriverV1Data = {
+  body: CreateDriverRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/operations/drivers";
+};
+
+export type CreateOperationDriverV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type CreateOperationDriverV1Error =
+  CreateOperationDriverV1Errors[keyof CreateOperationDriverV1Errors];
+
+export type CreateOperationDriverV1Responses = {
+  /**
+   * Created
+   */
+  201: DriverResponse;
+};
+
+export type CreateOperationDriverV1Response =
+  CreateOperationDriverV1Responses[keyof CreateOperationDriverV1Responses];
+
+export type GetOperationGuidesV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/operations/guides";
+};
+
+export type GetOperationGuidesV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetOperationGuidesV1Error =
+  GetOperationGuidesV1Errors[keyof GetOperationGuidesV1Errors];
+
+export type GetOperationGuidesV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfGuideResponse;
+};
+
+export type GetOperationGuidesV1Response =
+  GetOperationGuidesV1Responses[keyof GetOperationGuidesV1Responses];
+
+export type CreateOperationGuideV1Data = {
+  body: CreateGuideRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/operations/guides";
+};
+
+export type CreateOperationGuideV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type CreateOperationGuideV1Error =
+  CreateOperationGuideV1Errors[keyof CreateOperationGuideV1Errors];
+
+export type CreateOperationGuideV1Responses = {
+  /**
+   * Created
+   */
+  201: GuideResponse;
+};
+
+export type CreateOperationGuideV1Response =
+  CreateOperationGuideV1Responses[keyof CreateOperationGuideV1Responses];
+
+export type GetOperationArrivalsV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/operations/arrivals";
+};
+
+export type GetOperationArrivalsV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetOperationArrivalsV1Error =
+  GetOperationArrivalsV1Errors[keyof GetOperationArrivalsV1Errors];
+
+export type GetOperationArrivalsV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfArrivalResponse;
+};
+
+export type GetOperationArrivalsV1Response =
+  GetOperationArrivalsV1Responses[keyof GetOperationArrivalsV1Responses];
+
+export type CreateOperationArrivalV1Data = {
+  body: CreateArrivalRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/operations/arrivals";
+};
+
+export type CreateOperationArrivalV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type CreateOperationArrivalV1Error =
+  CreateOperationArrivalV1Errors[keyof CreateOperationArrivalV1Errors];
+
+export type CreateOperationArrivalV1Responses = {
+  /**
+   * Created
+   */
+  201: ArrivalResponse;
+};
+
+export type CreateOperationArrivalV1Response =
+  CreateOperationArrivalV1Responses[keyof CreateOperationArrivalV1Responses];
+
+export type GetOperationBookingResourceAssignmentsV1Data = {
+  body?: never;
+  path?: never;
+  query?: {
+    PageNumber?: number | string;
+    PageSize?: number | string;
+  };
+  url: "/api/v1/operations/assignments";
+};
+
+export type GetOperationBookingResourceAssignmentsV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type GetOperationBookingResourceAssignmentsV1Error =
+  GetOperationBookingResourceAssignmentsV1Errors[keyof GetOperationBookingResourceAssignmentsV1Errors];
+
+export type GetOperationBookingResourceAssignmentsV1Responses = {
+  /**
+   * OK
+   */
+  200: PagedResponseOfBookingResourceAssignmentResponse;
+};
+
+export type GetOperationBookingResourceAssignmentsV1Response =
+  GetOperationBookingResourceAssignmentsV1Responses[keyof GetOperationBookingResourceAssignmentsV1Responses];
+
+export type CreateOperationBookingResourceAssignmentV1Data = {
+  body: CreateBookingResourceAssignmentRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/operations/assignments";
+};
+
+export type CreateOperationBookingResourceAssignmentV1Errors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+  /**
+   * Not Found
+   */
+  404: ProblemDetails;
+  /**
+   * Conflict
+   */
+  409: ProblemDetails;
+};
+
+export type CreateOperationBookingResourceAssignmentV1Error =
+  CreateOperationBookingResourceAssignmentV1Errors[keyof CreateOperationBookingResourceAssignmentV1Errors];
+
+export type CreateOperationBookingResourceAssignmentV1Responses = {
+  /**
+   * Created
+   */
+  201: BookingResourceAssignmentResponse;
+};
+
+export type CreateOperationBookingResourceAssignmentV1Response =
+  CreateOperationBookingResourceAssignmentV1Responses[keyof CreateOperationBookingResourceAssignmentV1Responses];
