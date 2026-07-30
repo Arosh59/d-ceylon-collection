@@ -12,7 +12,7 @@ jobs:
   frontend:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version: 24.11.0
@@ -32,7 +32,7 @@ jobs:
   ai-service:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
@@ -42,7 +42,7 @@ jobs:
   api:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: ./scripts/create-local-env.sh
       - run: ./scripts/local-infrastructure.sh up
       - run: ./scripts/api.sh restore-locked
