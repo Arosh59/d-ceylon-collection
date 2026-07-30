@@ -6,14 +6,14 @@ const developmentScriptSource = process.env.NODE_ENV === "development" ? " 'unsa
 const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
-  "connect-src 'self'",
-  "font-src 'self' data:",
+  "connect-src 'self' https://maps.googleapis.com https://maps.gstatic.com https://maps.google.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  "img-src 'self' data:",
+  "img-src 'self' data: https://maps.googleapis.com https://maps.gstatic.com https://maps.google.com",
   "object-src 'none'",
-  `script-src 'self' 'unsafe-inline'${developmentScriptSource}`,
-  "style-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://maps.gstatic.com${developmentScriptSource}`,
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 ].join("; ");
 
 const securityHeaders = [

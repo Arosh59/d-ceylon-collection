@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export interface MapDestination {
   name: string;
@@ -9,6 +9,32 @@ export interface MapDestination {
   slug: string;
   summary: string;
 }
+
+type MapPosition = { lat: number; lng: number };
+
+type GoogleMapInstance = {
+  panTo: (position: MapPosition) => void;
+};
+
+type GoogleMapsApi = {
+  Map: new (
+    element: HTMLElement,
+    options: {
+      center: MapPosition;
+      fullscreenControl: boolean;
+      mapTypeControl: boolean;
+      streetViewControl: boolean;
+      zoom: number;
+    },
+  ) => GoogleMapInstance;
+  Marker: new (options: { map: GoogleMapInstance; position: MapPosition; title: string }) => {
+    addListener: (eventName: string, handler: () => void) => void;
+  };
+};
+
+type GoogleMapsWindow = Window & { google?: { maps?: GoogleMapsApi } };
+
+let googleMapsLoad: Promise<GoogleMapsApi> | undefined;
 
 export function DestinationMap({ destinations }: { destinations: MapDestination[] }) {
   const [selectedSlug, setSelectedSlug] = useState(destinations[0]?.slug ?? "");
@@ -23,42 +49,11 @@ export function DestinationMap({ destinations }: { destinations: MapDestination[
           Select a destination marker to update the destination summary. The destination list below
           provides an equivalent non-map experience.
         </p>
-        <svg
-          aria-describedby="map-instructions"
-          aria-label="Abstract Sri Lanka destination map"
-          className="h-auto w-full"
-          role="img"
-          viewBox="0 0 460 620"
-        >
-          <path
-            aria-hidden="true"
-            d="M235 30C300 80 346 143 342 217c-4 66 59 91 25 155-23 43-37 120-104 183-44 42-93 5-112-41-24-59-67-105-44-175 17-53 63-76 60-145-2-58 31-88 68-134Z"
-            fill="#e8eef5"
-            stroke="#0E2342"
-            strokeWidth="3"
-          />
-          {destinations.map((destination, index) => {
-            const position = markerPosition(index, destinations.length);
-            const active = destination.slug === selectedSlug;
-            return (
-              <g key={destination.slug} transform={`translate(${position.x} ${position.y})`}>
-                <circle
-                  aria-hidden="true"
-                  fill={active ? "#C8A45D" : "#0E2342"}
-                  r={active ? "14" : "10"}
-                />
-                <foreignObject height="44" width="44" x="-22" y="-22">
-                  <button
-                    aria-label={`Select ${destination.name}, ${destination.productCount} published products`}
-                    className="size-11 cursor-pointer rounded-full bg-transparent focus-visible:outline-3 focus-visible:outline-gold"
-                    onClick={() => setSelectedSlug(destination.slug)}
-                    type="button"
-                  />
-                </foreignObject>
-              </g>
-            );
-          })}
-        </svg>
+        <GoogleDestinationMap
+          destinations={destinations}
+          onSelect={setSelectedSlug}
+          selectedSlug={selectedSlug}
+        />
       </div>
       <aside aria-live="polite" className="rounded-3xl bg-navy p-7 text-white">
         {selected ? (
@@ -101,6 +96,171 @@ export function DestinationMap({ destinations }: { destinations: MapDestination[
       </section>
     </div>
   );
+}
+
+function GoogleDestinationMap({
+  destinations,
+  onSelect,
+  selectedSlug,
+}: {
+  destinations: MapDestination[];
+  onSelect: (slug: string) => void;
+  selectedSlug: string;
+}) {
+  const mapElement = useRef<HTMLDivElement>(null);
+  const mapReference = useRef<GoogleMapInstance | null>(null);
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
+
+  useEffect(() => {
+    if (!apiKey || !mapElement.current) return;
+
+    let cancelled = false;
+    void (async () => {
+      try {
+        const maps = await loadGoogleMapsApi(apiKey);
+        if (cancelled || !mapElement.current) return;
+
+        const map = new maps.Map(mapElement.current, {
+          center: { lat: 7.8731, lng: 80.7718 },
+          fullscreenControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+          zoom: 7,
+        });
+        mapReference.current = map;
+        destinations.forEach((destination) => {
+          const position = destinationPosition(destination.slug);
+          if (!position) return;
+          const marker = new maps.Marker({
+            map,
+            position,
+            title: `${destination.name}: ${destination.productCount} published products`,
+          });
+          marker.addListener("click", () => onSelect(destination.slug));
+        });
+      } catch {
+        mapElement.current?.setAttribute("data-map-load-error", "true");
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [apiKey, destinations, onSelect]);
+
+  useEffect(() => {
+    const position = destinationPosition(selectedSlug);
+    if (position) mapReference.current?.panTo(position);
+  }, [selectedSlug]);
+
+  if (!apiKey) {
+    return (
+      <AbstractDestinationMap
+        destinations={destinations}
+        onSelect={onSelect}
+        selectedSlug={selectedSlug}
+      />
+    );
+  }
+
+  return (
+    <div
+      aria-describedby="map-instructions"
+      aria-label="Google map of Sri Lanka destination locations. Use the destination list below for keyboard selection."
+      className="h-[34rem] w-full rounded-2xl bg-mist"
+      ref={mapElement}
+      role="region"
+    />
+  );
+}
+
+function loadGoogleMapsApi(apiKey: string): Promise<GoogleMapsApi> {
+  const browserWindow = window as GoogleMapsWindow;
+  if (browserWindow.google?.maps) return Promise.resolve(browserWindow.google.maps);
+  if (googleMapsLoad) return googleMapsLoad;
+
+  googleMapsLoad = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    const parameters = new URLSearchParams({
+      auth_referrer_policy: "origin",
+      key: apiKey,
+      language: "en",
+      region: "LK",
+      v: "weekly",
+    });
+    script.async = true;
+    script.dataset.googleMaps = "true";
+    script.src = `https://maps.googleapis.com/maps/api/js?${parameters.toString()}`;
+    script.addEventListener("error", () => reject(new Error("Google Maps could not be loaded.")));
+    script.addEventListener("load", () => {
+      const maps = (window as GoogleMapsWindow).google?.maps;
+      if (maps) resolve(maps);
+      else reject(new Error("Google Maps did not initialise."));
+    });
+    document.head.append(script);
+  });
+
+  return googleMapsLoad;
+}
+
+function AbstractDestinationMap({
+  destinations,
+  onSelect,
+  selectedSlug,
+}: {
+  destinations: MapDestination[];
+  onSelect: (slug: string) => void;
+  selectedSlug: string;
+}) {
+  return (
+    <svg
+      aria-describedby="map-instructions"
+      aria-label="Abstract Sri Lanka destination map"
+      className="h-auto w-full"
+      role="img"
+      viewBox="0 0 460 620"
+    >
+      <path
+        aria-hidden="true"
+        d="M235 30C300 80 346 143 342 217c-4 66 59 91 25 155-23 43-37 120-104 183-44 42-93 5-112-41-24-59-67-105-44-175 17-53 63-76 60-145-2-58 31-88 68-134Z"
+        fill="#e8eef5"
+        stroke="#0E2342"
+        strokeWidth="3"
+      />
+      {destinations.map((destination, index) => {
+        const position = markerPosition(index, destinations.length);
+        const active = destination.slug === selectedSlug;
+        return (
+          <g key={destination.slug} transform={`translate(${position.x} ${position.y})`}>
+            <circle
+              aria-hidden="true"
+              fill={active ? "#C8A45D" : "#0E2342"}
+              r={active ? "14" : "10"}
+            />
+            <foreignObject height="44" width="44" x="-22" y="-22">
+              <button
+                aria-label={`Select ${destination.name}, ${destination.productCount} published products`}
+                className="size-11 cursor-pointer rounded-full bg-transparent focus-visible:outline-3 focus-visible:outline-gold"
+                onClick={() => onSelect(destination.slug)}
+                type="button"
+              />
+            </foreignObject>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function destinationPosition(slug: string) {
+  return {
+    colombo: { lat: 6.9271, lng: 79.8612 },
+    ella: { lat: 6.8667, lng: 81.0466 },
+    galle: { lat: 6.0329, lng: 80.2168 },
+    kandy: { lat: 7.2906, lng: 80.6337 },
+    sigiriya: { lat: 7.957, lng: 80.7603 },
+    tangalle: { lat: 6.0249, lng: 80.7941 },
+  }[slug];
 }
 
 function markerPosition(index: number, count: number) {

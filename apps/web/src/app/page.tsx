@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -37,9 +39,17 @@ export default function HomePage() {
   return (
     <main id="main-content">
       <section className="relative grid min-h-[95svh] place-items-center overflow-hidden bg-navy text-white">
+        <Image
+          alt=""
+          className="object-cover object-[68%_center]"
+          fill
+          priority
+          sizes="100vw"
+          src="/images/hill-country-hero.png"
+        />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(circle_at_68%_28%,rgba(200,164,93,0.27),transparent_24rem),radial-gradient(circle_at_18%_80%,rgba(60,113,122,0.3),transparent_26rem),linear-gradient(135deg,#15375d_0%,#0e2342_48%,#071426_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,20,38,0.9)_0%,rgba(7,20,38,0.69)_42%,rgba(7,20,38,0.16)_100%)]"
         />
         <div
           aria-hidden="true"
