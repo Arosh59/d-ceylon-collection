@@ -20,6 +20,29 @@ describe("readAuthenticationEnvironment", () => {
     });
   });
 
+  it("defaults a missing environment to Development and accepts common casing", () => {
+    expect(
+      readAuthenticationEnvironment({
+        AUTH_CLIENT_ID: valid.AUTH_CLIENT_ID,
+        AUTH_CLIENT_SECRET: valid.AUTH_CLIENT_SECRET,
+        AUTH_ISSUER: valid.AUTH_ISSUER,
+        AUTH_SCOPE: valid.AUTH_SCOPE,
+        AUTH_SECRET: valid.AUTH_SECRET,
+      }),
+    ).toMatchObject({
+      applicationEnvironment: "Development",
+    });
+    expect(
+      readAuthenticationEnvironment({ ...valid, APP_ENVIRONMENT: "production" }),
+    ).toMatchObject({ applicationEnvironment: "Production" });
+  });
+
+  it("rejects an unknown environment", () => {
+    expect(() => readAuthenticationEnvironment({ ...valid, APP_ENVIRONMENT: "local" })).toThrow(
+      "APP_ENVIRONMENT must be Development, Production, or Testing.",
+    );
+  });
+
   it("rejects test authentication outside Testing", () => {
     expect(() =>
       readAuthenticationEnvironment({

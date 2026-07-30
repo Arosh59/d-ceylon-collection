@@ -55,11 +55,21 @@ export function readAuthenticationEnvironment(
 }
 
 function readApplicationEnvironment(value: string | undefined): ApplicationEnvironment {
-  if (value === "Development" || value === "Production" || value === "Testing") {
-    return value;
+  const normalized = value?.trim().toLowerCase();
+  if (!normalized) {
+    return "Development";
   }
 
-  throw new Error("APP_ENVIRONMENT must be Development, Production, or Testing.");
+  switch (normalized) {
+    case "development":
+      return "Development";
+    case "production":
+      return "Production";
+    case "testing":
+      return "Testing";
+    default:
+      throw new Error("APP_ENVIRONMENT must be Development, Production, or Testing.");
+  }
 }
 
 function readIssuer(value: string | undefined, environment: ApplicationEnvironment): string {

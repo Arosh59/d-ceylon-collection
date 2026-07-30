@@ -19,7 +19,8 @@ The server requires:
 
 - `API_BASE_URL` — server-only origin of the ASP.NET Core API; and
 - `SITE_URL` — canonical public origin used by metadata, robots, and sitemap generation;
-- `APP_ENVIRONMENT` — `Development`, `Production`, or isolated `Testing`;
+- `APP_ENVIRONMENT` — `Development`, `Production`, or isolated `Testing` (omitting it defaults to
+  `Development`; casing is accepted);
 - `AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, and `AUTH_SCOPE` — external OIDC
   integration; and
 - `AUTH_SECRET` — at least 32 random characters for encrypted session state.
