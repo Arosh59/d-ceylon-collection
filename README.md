@@ -8,11 +8,11 @@ local infrastructure, and an isolated future AI service.
 
 ## Status
 
-The repository now includes the modular API, public and administration Next.js hosts, generated
-SDK, protected customer/agent/operations foundations, Directus editorial boundary and Journal,
-accessible destination-map foundation, and an isolated draft-only FastAPI gateway. Production
-deployment remains gated on external identity, Directus, payment, supplier, Azure, and operational
-approvals described in the release checklist.
+The repository now includes the modular API, public and administration Next.js hosts, generated SDK,
+protected customer/agent/operations foundations, Directus editorial boundary and Journal, accessible
+destination-map foundation, and an isolated draft-only FastAPI gateway. Production deployment
+remains gated on external identity, Directus, payment, supplier, Azure, and operational approvals
+described in the release checklist.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 
@@ -49,6 +49,10 @@ after compatibility and deprecation checks.
 
 Review [local setup](docs/local-setup.md) to generate local credentials, run the infrastructure,
 apply migrations, and start the API and public frontend.
+
+For the public site, run `npm run dev` (or the explicit `npm run dev:web`) and open
+<http://127.0.0.1:3000>. The separate administration host uses `npm run dev:admin` at
+<http://127.0.0.1:3001> and requires configured administrator OIDC access.
 
 ## Documentation
 
