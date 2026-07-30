@@ -1,7 +1,10 @@
 import Link from "next/link";
 
 import { SignInPanel } from "@/components/auth/sign-in-panel";
-import { authenticationEnvironment } from "@/lib/auth-options";
+import {
+  getAuthenticationConfigurationError,
+  getAuthenticationEnvironment,
+} from "@/lib/auth-environment";
 import { safeRedirectTarget } from "@/lib/safe-redirect";
 
 interface SignInPageProps {
@@ -11,6 +14,9 @@ interface SignInPageProps {
 export default async function SignInPage({ searchParams }: SignInPageProps) {
   const value = (await searchParams).callbackUrl;
   const callbackUrl = safeRedirectTarget(Array.isArray(value) ? value[0] : value);
+  const configurationError = getAuthenticationConfigurationError();
+  const testingEnabled =
+    !configurationError && getAuthenticationEnvironment().applicationEnvironment === "Testing";
 
   return (
     <main className="min-h-screen bg-canvas px-5 pt-36 pb-20" id="main-content">
@@ -28,7 +34,8 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         <div className="mt-8">
           <SignInPanel
             callbackUrl={callbackUrl}
-            testingEnabled={authenticationEnvironment === "Testing"}
+            configurationError={configurationError}
+            testingEnabled={testingEnabled}
           />
         </div>
         <p className="mt-7 text-sm text-ink-muted">

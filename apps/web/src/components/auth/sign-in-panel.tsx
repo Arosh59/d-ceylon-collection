@@ -5,10 +5,11 @@ import { useState } from "react";
 
 interface SignInPanelProps {
   callbackUrl: string;
+  configurationError?: string | undefined;
   testingEnabled: boolean;
 }
 
-export function SignInPanel({ callbackUrl, testingEnabled }: SignInPanelProps) {
+export function SignInPanel({ callbackUrl, configurationError, testingEnabled }: SignInPanelProps) {
   const [busy, setBusy] = useState(false);
   const [persona, setPersona] = useState("customer");
   const [testKey, setTestKey] = useState("");
@@ -23,6 +24,22 @@ export function SignInPanel({ callbackUrl, testingEnabled }: SignInPanelProps) {
     setBusy(true);
     await signIn("testing", { callbackUrl, persona, testKey });
     setBusy(false);
+  }
+
+  if (configurationError) {
+    return (
+      <div
+        className="rounded-2xl border border-gold/40 bg-gold/10 p-5 text-sm text-ink"
+        role="alert"
+      >
+        <p className="font-semibold text-navy">Secure sign-in is not configured on this server.</p>
+        <p className="mt-2">
+          Add the server-only OIDC settings from <code>apps/web/.env.example</code> to an ignored
+          <code>apps/web/.env.local</code> file, then restart the web server.
+        </p>
+        <p className="mt-2 text-ink-muted">Configuration detail: {configurationError}</p>
+      </div>
+    );
   }
 
   return (
