@@ -8,7 +8,7 @@ version = "0.0.0"
 description = "Isolated, draft-only AI gateway skeleton for D Ceylon Collection"
 requires-python = ">=3.11"
 dependencies = [
-  "fastapi==0.139.2",
+  "fastapi==0.141.1",
   "uvicorn==0.51.0"
 ]
 
