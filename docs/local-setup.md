@@ -32,6 +32,15 @@ shared development machine. Never commit `.env`.
 Directus Studio is available at <http://127.0.0.1:8055>. Sign in with the `DIRECTUS_ADMIN_EMAIL` and
 `DIRECTUS_ADMIN_PASSWORD` stored in your local `.env`.
 
+The first Directus start bootstraps the administrator from those variables. Directus deliberately
+does not replace an existing administrator when `.env` changes. If a persisted local Directus
+database has no usable administrator, do not delete shared volumes or alter production-like content
+to recover it. Recreate only the disposable local Directus database/volume after taking a backup and
+an explicit data-loss decision, then start the stack with the intended values. The API container
+uses `DIRECTUS_API_BASE_URL=http://directus:8055` by default; set `DIRECTUS_STATIC_TOKEN` only when
+the Editorial service must read non-public content. Public Journal and promotion records should
+instead be exposed through the least-privilege Directus public policy.
+
 ## Everyday commands
 
 ```bash

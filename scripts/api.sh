@@ -25,6 +25,7 @@ network_name="${compose_project}_backend"
 
 application_connection="Host=postgres;Port=5432;Database=${POSTGRES_APP_DB};Username=${POSTGRES_APP_USER};Password=${POSTGRES_APP_PASSWORD};Include Error Detail=false"
 admin_connection="Host=postgres;Port=5432;Database=postgres;Username=${POSTGRES_ADMIN_USER};Password=${POSTGRES_ADMIN_PASSWORD};Include Error Detail=false"
+directus_base_url="${DIRECTUS_API_BASE_URL:-http://directus:8055}"
 
 sdk_container() {
     docker run \
@@ -41,6 +42,8 @@ sdk_container() {
         --env "Authentication__Testing__Audience=${AUTH_TEST_AUDIENCE:-}" \
         --env "Authentication__Testing__SigningKey=${AUTH_TEST_SIGNING_KEY:-}" \
         --env "Authentication__Testing__EndpointKey=${AUTH_TEST_ENDPOINT_KEY:-}" \
+        --env "Directus__BaseUrl=${directus_base_url}" \
+        --env "Directus__StaticToken=${DIRECTUS_STATIC_TOKEN:-}" \
         --env DOTNET_CLI_TELEMETRY_OPTOUT=1 \
         --env DOTNET_NOLOGO=1 \
         "${sdk_image}" \
@@ -435,6 +438,8 @@ case "${command_name}" in
             --env "Authentication__Testing__Audience=${AUTH_TEST_AUDIENCE:-}" \
             --env "Authentication__Testing__SigningKey=${AUTH_TEST_SIGNING_KEY:-}" \
             --env "Authentication__Testing__EndpointKey=${AUTH_TEST_ENDPOINT_KEY:-}" \
+            --env "Directus__BaseUrl=${directus_base_url}" \
+            --env "Directus__StaticToken=${DIRECTUS_STATIC_TOKEN:-}" \
             --env DOTNET_CLI_TELEMETRY_OPTOUT=1 \
             --env DOTNET_NOLOGO=1 \
             "${sdk_image}" \
