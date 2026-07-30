@@ -30,7 +30,8 @@ passwords with restrictive file permissions. Review `DIRECTUS_ADMIN_EMAIL` in `.
 shared development machine. Never commit `.env`.
 
 Directus Studio is available at <http://127.0.0.1:8055>. Sign in with the `DIRECTUS_ADMIN_EMAIL` and
-`DIRECTUS_ADMIN_PASSWORD` stored in your local `.env`.
+`DIRECTUS_ADMIN_PASSWORD` stored in your local `.env`. Replace the example email with a syntactically
+valid address before the first Directus start; Directus validates it during administrator bootstrap.
 
 The first Directus start bootstraps the administrator from those variables. Directus deliberately
 does not replace an existing administrator when `.env` changes. If a persisted local Directus
@@ -40,6 +41,17 @@ an explicit data-loss decision, then start the stack with the intended values. T
 uses `DIRECTUS_API_BASE_URL=http://directus:8055` by default; set `DIRECTUS_STATIC_TOKEN` only when
 the Editorial service must read non-public content. Public Journal and promotion records should
 instead be exposed through the least-privilege Directus public policy.
+
+Provision the local-only Editorial schema and sample content after infrastructure is healthy:
+
+```bash
+set -a; source .env; set +a
+node scripts/provision-local-directus.mjs --seed
+```
+
+The script creates only the `journal_articles` and `promotions` collections, grants the Directus
+public policy read access limited to `status=published`, and seeds no licensed media. It is
+idempotent and never overwrites existing editorial records.
 
 ## Everyday commands
 
