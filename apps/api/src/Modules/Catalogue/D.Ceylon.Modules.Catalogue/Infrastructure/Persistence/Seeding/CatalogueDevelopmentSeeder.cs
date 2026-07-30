@@ -173,12 +173,12 @@ public sealed class CatalogueDevelopmentSeeder(CatalogueDbContext database)
             new(Id(503), "placeholder:awaken-sunrise", "Abstract sunrise tones representing Awaken.", 1600, 1000),
             new(Id(504), "placeholder:breathe-mist", "Abstract mist and foliage tones representing Breathe.", 1600, 1000),
             new(Id(505), "placeholder:rediscover-city", "Abstract warm city tones representing Rediscover.", 1600, 1000),
-            new(Id(511), "placeholder:colombo", "Abstract coastal city placeholder for Colombo.", 1600, 1000),
-            new(Id(512), "placeholder:galle", "Abstract fort and ocean placeholder for Galle.", 1600, 1000),
-            new(Id(513), "placeholder:kandy", "Abstract lake and hill placeholder for Kandy.", 1600, 1000),
-            new(Id(514), "placeholder:ella", "Abstract tea hill placeholder for Ella.", 1600, 1000),
-            new(Id(515), "placeholder:sigiriya", "Abstract rock and sunrise placeholder for Sigiriya.", 1600, 1000),
-            new(Id(516), "placeholder:tangalle", "Abstract cove and palms placeholder for Tangalle.", 1600, 1000),
+            new(Id(511), "placeholder:colombo", "Colombo's coastal cityscape.", 1600, 1000),
+            new(Id(512), "placeholder:galle", "Galle Fort beside the Indian Ocean.", 1600, 1000),
+            new(Id(513), "placeholder:kandy", "Kandy Lake framed by the central highlands.", 1600, 1000),
+            new(Id(514), "placeholder:ella", "The clouded highland valley around Ella Rock.", 1600, 1000),
+            new(Id(515), "placeholder:sigiriya", "Sigiriya rock rising above Sri Lanka's cultural triangle.", 1600, 1000),
+            new(Id(516), "placeholder:tangalle", "The palm-lined coast at Tangalle.", 1600, 1000),
         };
 
         var productMedia = BuildProducts();

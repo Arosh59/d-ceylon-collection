@@ -86,8 +86,10 @@ and Elasticsearch remain absent.
 
 Development seeding is an explicit, environment-guarded operation. It creates deterministic Root,
 Flow, Awaken, Breathe, and Rediscover collections plus representative published products and
-destinations. Media records contain stable placeholder keys, alternative text, and dimensions—no
-licensed image files, external map data, or direct browser database access.
+destinations. Media records contain stable placeholder keys, alternative text, and dimensions. The
+public web application maps the six seeded destination keys to local reusable source photographs
+with an attribution ledger; other editorial media remains metadata-only. The browser has no direct
+database access.
 
 The public App Router pages consume only generated OpenAPI response types through the server-side
 SDK. Catalogue, collection, destination, experience, accommodation, and product pages are

@@ -62,7 +62,8 @@ Migration `20260728040227_Phase4CatalogueDiscovery` adds:
 - tag and media-asset tables; and
 - normalized product-tag and ordered product-media relationships.
 
-Media assets store metadata and stable `placeholder:*` keys only. Apply the schema and deterministic
+Media assets store metadata and stable `placeholder:*` keys only. The public web application maps
+the six seeded destination keys to documented local image files. Apply the schema and deterministic
 Development-only catalogue data explicitly:
 
 ```bash
