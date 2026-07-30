@@ -49,9 +49,10 @@ set -a; source .env; set +a
 node scripts/provision-local-directus.mjs --seed
 ```
 
-The script creates only the `journal_articles` and `promotions` collections, grants the Directus
-public policy read access limited to `status=published`, and seeds no licensed media. It is
-idempotent and never overwrites existing editorial records.
+The script creates only the `journal_articles`, `promotions`, and `media_assets` collections,
+grants the Directus public policy read access limited to `status=published`, and seeds no licensed
+media files. `media_assets` records retain alternative-text and rights metadata for stable
+placeholder keys. The script is idempotent and never overwrites existing editorial records.
 
 ## Everyday commands
 

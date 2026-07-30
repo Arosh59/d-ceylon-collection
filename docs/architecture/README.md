@@ -20,7 +20,7 @@ approved editorial content.
 - **Application API:** authentication integration, authorization, ownership, pricing, quotes,
   bookings, payments, operations, and audit.
 - **Directus:** editorial destinations, Journal, marketing content, homepage sections, collection
-  descriptions, promotions, and media metadata.
+  descriptions, promotions, and media metadata including alt text and rights/provenance status.
 - **AI service:** isolated future service that accesses approved capabilities only through
   authenticated API tools and never connects to the database.
 

@@ -16,10 +16,10 @@ only after its documented checks pass.
 | 8     | Quote workflow                                         | Complete    |
 | 9     | Booking, payments, invoices, and vouchers              | Complete    |
 | 10    | Suppliers and operations                               | Complete    |
-| 11    | Directus editorial integration                         | In progress |
-| 12    | Accessible interactive Sri Lanka map                   | In progress |
-| 13    | Administration application                             | In progress |
-| 14    | AI gateway and isolated FastAPI skeleton               | In progress |
+| 11    | Directus editorial integration                         | Complete    |
+| 12    | Accessible interactive Sri Lanka map                   | Complete    |
+| 13    | Administration application                             | Complete    |
+| 14    | AI gateway and isolated FastAPI skeleton               | Complete    |
 | 15    | Production hardening and release readiness             | In progress |
 
 Phase 0 is marked complete only after repository structure and documentation validation pass.
@@ -103,12 +103,30 @@ regeneration/equality, strict TypeScript, lint, 43 frontend tests, 63 unit tests
 PostgreSQL integration tests. Supplier self-service, administration, Directus, live availability,
 and payment capture remain explicitly outside Phase 10.
 
-Phases 11–15 now have verified implementation foundations: a configuration-driven, read-only
-Directus Editorial module with Journal and promotion contracts; an accessible abstract destination
-map with a complete non-map fallback; a separately hosted, administrator-only Next.js application;
-an isolated FastAPI draft gateway that rejects database configuration and has no commercial write
-tools; and locked-install CI, Dependabot, Azure-compatible managed-environment baseline, and a
-release checklist. They remain in progress until external Directus schema/roles, approved GeoJSON
-and media, administrator role provisioning, backend-to-AI gateway deployment, payment/supplier
-certification, Azure/Key Vault configuration, performance testing, backup/restore exercise, and
-formal security/release approval are complete.
+Phase 11 is complete for local development: the configuration-driven, read-only Directus Editorial
+module serves Journal and promotion contracts. The repeatable local CMS provisioner creates
+published-only Journal, promotions, and rights/alt-text media metadata collections without image
+files; public-page list/detail rendering and idempotence are verified. Approved production content
+and media licensing remain release inputs, not missing repository functionality.
+
+Phase 12 is complete with an accessible abstract destination map, keyboard selection, catalogue
+product counts, and a complete non-map list fallback. It exposes a documented adapter location for
+approved province/district GeoJSON, weather, guide, restaurant, and editorial-media data without
+committing unlicensed data.
+
+Phase 13 is complete with a separately hosted, administrator-only Next.js application, role-aware
+external-OIDC session boundary, validated redirects, protected navigation across the required
+administration modules, and passing type, lint, and production-build checks. Production role
+assignments remain an identity-provider deployment concern.
+
+Phase 14 is complete as an isolated FastAPI draft gateway. It rejects database-like configuration,
+requires an authenticated backend secret, has no commercial write tools, and passes its gateway
+safety tests. Deployment and approved backend tool implementations are intentionally separate
+production release work.
+
+Phase 15 is in progress. Locked-install CI, Dependabot, Azure-compatible managed-environment
+baseline, release checklist, security guidance, and a tested local application-database backup/
+restore exercise are committed. It remains open for Azure/Key Vault configuration, performance
+testing against approved infrastructure, a production encrypted-backup restore exercise, payment
+and supplier certification, monitoring/on-call assignment, and formal security/privacy/release
+approval.

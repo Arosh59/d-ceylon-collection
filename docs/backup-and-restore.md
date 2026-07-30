@@ -1,7 +1,23 @@
 # Backup and Restore Guide
 
-This is the operational documentation placeholder for PostgreSQL, object
-storage, Directus content, configuration, and encryption-key dependencies.
+PostgreSQL transactional data, Directus content/storage, deployment configuration, and encryption
+key dependencies require distinct backup and restore plans. Application startup never changes a
+database; restore and migration actions are controlled operations.
+
+## Local restore exercise
+
+With local infrastructure running, this command takes a plain PostgreSQL backup of the application
+database, restores it into a uniquely named temporary database, verifies migration and table
+integrity, and drops only that temporary database on exit. The backup is retained in the operating
+system temporary directory for inspection.
+
+```bash
+DCEYLON_CONFIRM_LOCAL_RESTORE_EXERCISE=yes ./scripts/verify-local-backup-restore.sh
+```
+
+It never drops the application or Directus database. It is not a substitute for a production
+restore exercise, which must use approved encrypted backups, separate infrastructure, and an
+observed application smoke test.
 
 Before production launch, this guide must define:
 
@@ -14,5 +30,5 @@ Before production launch, this guide must define:
 - evidence retention for scheduled restore exercises; and
 - escalation and incident communication.
 
-A backup is not considered reliable until a representative restore has been
-completed and verified in an isolated environment.
+A backup is not considered reliable until a representative restore has been completed and verified
+in an isolated environment.

@@ -129,6 +129,29 @@ const collections = [
     ],
     readableFields: ["id", "status", "sort", "title", "summary", "cta_label", "cta_url", "image"],
   },
+  {
+    name: "media_assets",
+    note: "Rights and accessibility metadata for editorial media references; files remain in approved storage.",
+    displayTemplate: "{{ asset_key }}",
+    fields: [
+      idField,
+      statusField,
+      textField("asset_key", { required: true, unique: true, maxLength: 240 }),
+      textField("alt_text", { required: true, type: "text" }),
+      textField("rights_holder", { maxLength: 240 }),
+      textField("rights_status", { required: true, maxLength: 40 }),
+      textField("source_reference", { maxLength: 2048 }),
+    ],
+    readableFields: [
+      "id",
+      "status",
+      "asset_key",
+      "alt_text",
+      "rights_holder",
+      "rights_status",
+      "source_reference",
+    ],
+  },
 ];
 
 const existingCollections = await request("/collections", withAuthentication());
@@ -146,7 +169,12 @@ for (const collection of collections) {
       body: JSON.stringify({
         collection: collection.name,
         meta: {
-          icon: collection.name === "journal_articles" ? "article" : "campaign",
+          icon:
+            collection.name === "journal_articles"
+              ? "article"
+              : collection.name === "media_assets"
+                ? "photo_library"
+                : "campaign",
           note: collection.note,
           display_template: collection.displayTemplate,
           accountability: "all",
@@ -235,6 +263,26 @@ if (shouldSeed) {
         cta_label: "Explore the catalogue",
         cta_url: "/catalogue",
         image: "placeholder:promotion-catalogue",
+      },
+    ],
+    media_assets: [
+      {
+        id: "5c42d40a-8303-4ed6-a4af-0574ff081b1e",
+        status: "published",
+        asset_key: "placeholder:journal-hill-country",
+        alt_text: "Abstract placeholder for a Hill Country Journal feature.",
+        rights_holder: "D Ceylon Collection local development fixture",
+        rights_status: "placeholder-no-image-file",
+        source_reference: "Local development fixture only; replace with approved asset provenance.",
+      },
+      {
+        id: "5a81b27d-0a22-458f-b9a3-3ff755df3d8b",
+        status: "published",
+        asset_key: "placeholder:promotion-catalogue",
+        alt_text: "Abstract placeholder for a catalogue promotion.",
+        rights_holder: "D Ceylon Collection local development fixture",
+        rights_status: "placeholder-no-image-file",
+        source_reference: "Local development fixture only; replace with approved asset provenance.",
       },
     ],
   };
