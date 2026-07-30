@@ -30,8 +30,9 @@ passwords with restrictive file permissions. Review `DIRECTUS_ADMIN_EMAIL` in `.
 shared development machine. Never commit `.env`.
 
 Directus Studio is available at <http://127.0.0.1:8055>. Sign in with the `DIRECTUS_ADMIN_EMAIL` and
-`DIRECTUS_ADMIN_PASSWORD` stored in your local `.env`. Replace the example email with a syntactically
-valid address before the first Directus start; Directus validates it during administrator bootstrap.
+`DIRECTUS_ADMIN_PASSWORD` stored in your local `.env`. Replace the example email with a
+syntactically valid address before the first Directus start; Directus validates it during
+administrator bootstrap.
 
 The first Directus start bootstraps the administrator from those variables. Directus deliberately
 does not replace an existing administrator when `.env` changes. If a persisted local Directus
@@ -49,10 +50,10 @@ set -a; source .env; set +a
 node scripts/provision-local-directus.mjs --seed
 ```
 
-The script creates only the `journal_articles`, `promotions`, and `media_assets` collections,
-grants the Directus public policy read access limited to `status=published`, and seeds no licensed
-media files. `media_assets` records retain alternative-text and rights metadata for stable
-placeholder keys. The script is idempotent and never overwrites existing editorial records.
+The script creates only the `journal_articles`, `promotions`, and `media_assets` collections, grants
+the Directus public policy read access limited to `status=published`, and seeds no licensed media
+files. `media_assets` records retain alternative-text and rights metadata for stable placeholder
+keys. The script is idempotent and never overwrites existing editorial records.
 
 ## Everyday commands
 
@@ -102,28 +103,18 @@ Install the locked frontend dependencies from the repository root:
 npm ci
 ```
 
-Ensure the migrated and seeded API is running, then start the public application:
+Start the public application and its pinned API workflow together:
 
 ```bash
-./scripts/api.sh run
-
-# In a separate terminal
-API_BASE_URL=http://127.0.0.1:8080 \
-SITE_URL=http://127.0.0.1:3000 \
-APP_ENVIRONMENT=Development \
-AUTH_ISSUER=https://your-development-provider.example \
-AUTH_CLIENT_ID=dceylon-web \
-AUTH_CLIENT_SECRET=from-your-secret-store \
-AUTH_SCOPE="openid profile email dceylon.api" \
-AUTH_SECRET=at-least-32-random-characters \
-npm run dev:web
+npm run dev
 ```
 
-The public application is available at <http://127.0.0.1:3000>. Configuration is server-only and
-must use HTTP or HTTPS origins without credentials, query strings, or fragments. Authentication
-settings are also server-only. Production issuer URLs require HTTPS; copy `apps/web/.env.example`
-and supply provider and session secrets through local ignored configuration or a managed secret
-store.
+The launcher starts `./scripts/api.sh run` only when the API readiness endpoint is unavailable and
+stops the API process it started when the web host exits. The public application is available at
+<http://127.0.0.1:3000>. Configuration is server-only and must use HTTP or HTTPS origins without
+credentials, query strings, or fragments. Authentication settings are also server-only. Production
+issuer URLs require HTTPS; copy `apps/web/.env.example` and supply provider and session secrets
+through local ignored configuration or a managed secret store.
 
 Common checks are:
 

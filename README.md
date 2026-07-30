@@ -50,8 +50,9 @@ after compatibility and deprecation checks.
 Review [local setup](docs/local-setup.md) to generate local credentials, run the infrastructure,
 apply migrations, and start the API and public frontend.
 
-For the public site, run `npm run dev` (or the explicit `npm run dev:web`) and open
-<http://127.0.0.1:3000>. The separate administration host uses `npm run dev:admin` at
+For the public site, run `npm run dev`; it starts the pinned API workflow, waits for API readiness,
+then starts the web host at <http://127.0.0.1:3000>. Use `npm run dev:web` only when the API is
+already running. The separate administration host uses `npm run dev:admin` at
 <http://127.0.0.1:3001> and requires configured administrator OIDC access.
 
 ## Documentation

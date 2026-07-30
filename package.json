@@ -24,7 +24,7 @@
   "scripts": {
     "build:admin": "npm run build --workspace=@dceylon/admin",
     "build:web": "npm run build --workspace=@dceylon/web",
-    "dev": "npm run dev:web",
+    "dev": "./scripts/dev.sh",
     "dev:admin": "npm run dev --workspace=@dceylon/admin",
     "dev:web": "npm run dev --workspace=@dceylon/web",
     "format": "prettier --write --ignore-unknown apps/admin apps/web packages/sdk package.json package-lock.json",
