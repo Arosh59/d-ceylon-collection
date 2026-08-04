@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { MediaPlaceholder } from "./media-placeholder";
 
 describe("MediaPlaceholder", () => {
-  it("uses the licensed local destination image when a seeded destination asset is available", () => {
+  it("uses the configured local destination image when a seeded destination asset is available", () => {
     render(
       <MediaPlaceholder
         className="aspect-video"
@@ -20,7 +20,7 @@ describe("MediaPlaceholder", () => {
 
     const image = screen.getByRole("img", { name: "Galle Fort beside the Indian Ocean." });
     expect(decodeURIComponent(image.getAttribute("src") ?? "")).toContain(
-      "/images/destinations/galle.jpg",
+      "/images/destinations/galle-provided.png",
     );
   });
 });

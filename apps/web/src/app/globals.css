@@ -94,6 +94,19 @@ summary {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
 }
 
+.home-hero-carousel__track {
+  display: flex;
+  height: 100%;
+  transition: transform 1100ms ease-in-out;
+  width: 100%;
+}
+
+.home-hero-carousel__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+}
+
 .media-placeholder {
   align-items: flex-end;
   background:
@@ -109,6 +122,167 @@ summary {
   overflow: hidden;
   padding: 1.25rem;
   text-transform: uppercase;
+}
+
+.destination-motion-gallery {
+  background: var(--navy);
+  overflow: hidden;
+  position: relative;
+}
+
+.destination-motion-gallery__track {
+  display: flex;
+  height: 100%;
+  transition: transform 700ms ease-in-out;
+  width: 100%;
+}
+
+.destination-motion-gallery__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.destination-motion-gallery__image {
+  animation: destination-pan 18s ease-in-out infinite alternate;
+  animation-play-state: paused;
+  transform-origin: 52% 58%;
+}
+
+.destination-motion-gallery__veil {
+  background: linear-gradient(90deg, rgba(6, 18, 35, 0.3), transparent 48%, rgba(6, 18, 35, 0.12));
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+[data-motion-active="true"] .destination-motion-gallery__image {
+  animation-play-state: running;
+}
+
+@keyframes destination-pan {
+  0% {
+    transform: scale(1.03) translate3d(-1.5%, 1%, 0);
+  }
+
+  100% {
+    transform: scale(1.15) translate3d(1.5%, -1%, 0);
+  }
+}
+
+.destination-motion-gallery--colombo .destination-motion-gallery__image {
+  animation-duration: 20s;
+  animation-name: colombo-city-drift;
+  transform-origin: 58% 54%;
+}
+
+.destination-motion-gallery--colombo .destination-motion-gallery__veil {
+  background: linear-gradient(
+    90deg,
+    rgba(3, 20, 49, 0.3),
+    transparent 45%,
+    rgba(75, 105, 155, 0.18)
+  );
+}
+
+.destination-motion-gallery--ella .destination-motion-gallery__image {
+  animation-duration: 22s;
+  animation-name: ella-hill-country-drift;
+  transform-origin: 50% 50%;
+}
+
+.destination-motion-gallery--ella .destination-motion-gallery__veil {
+  background: linear-gradient(
+    90deg,
+    rgba(10, 39, 30, 0.24),
+    transparent 48%,
+    rgba(20, 51, 42, 0.22)
+  );
+}
+
+.destination-motion-gallery--galle .destination-motion-gallery__image {
+  animation-duration: 19s;
+  animation-name: galle-coastal-drift;
+  transform-origin: 48% 52%;
+}
+
+.destination-motion-gallery--galle .destination-motion-gallery__veil {
+  background: linear-gradient(90deg, rgba(7, 51, 76, 0.24), transparent 50%, rgba(5, 40, 56, 0.28));
+}
+
+.destination-motion-gallery--kandy .destination-motion-gallery__image {
+  animation-duration: 21s;
+  animation-name: kandy-lakeside-drift;
+  transform-origin: 52% 48%;
+}
+
+.destination-motion-gallery--kandy .destination-motion-gallery__veil {
+  background: linear-gradient(
+    90deg,
+    rgba(20, 47, 66, 0.22),
+    transparent 50%,
+    rgba(38, 72, 59, 0.2)
+  );
+}
+
+.destination-motion-gallery--tangalle .destination-motion-gallery__image {
+  animation-duration: 21s;
+  animation-name: tangalle-shoreline-drift;
+  transform-origin: 52% 55%;
+}
+
+.destination-motion-gallery--tangalle .destination-motion-gallery__veil {
+  background: linear-gradient(90deg, rgba(11, 59, 73, 0.2), transparent 46%, rgba(1, 41, 73, 0.24));
+}
+
+@keyframes colombo-city-drift {
+  0% {
+    transform: scale(1.04) translate3d(-1.75%, 0.75%, 0);
+  }
+
+  100% {
+    transform: scale(1.15) translate3d(1.75%, -0.75%, 0);
+  }
+}
+
+@keyframes ella-hill-country-drift {
+  0% {
+    transform: scale(1.03) translate3d(-0.75%, 1%, 0);
+  }
+
+  100% {
+    transform: scale(1.13) translate3d(0.75%, -1%, 0);
+  }
+}
+
+@keyframes galle-coastal-drift {
+  0% {
+    transform: scale(1.04) translate3d(1.5%, 0.5%, 0);
+  }
+
+  100% {
+    transform: scale(1.14) translate3d(-1.5%, -0.5%, 0);
+  }
+}
+
+@keyframes kandy-lakeside-drift {
+  0% {
+    transform: scale(1.03) translate3d(-0.75%, -0.75%, 0);
+  }
+
+  100% {
+    transform: scale(1.14) translate3d(0.75%, 0.75%, 0);
+  }
+}
+
+@keyframes tangalle-shoreline-drift {
+  0% {
+    transform: scale(1.03) translate3d(-1%, -0.5%, 0);
+  }
+
+  100% {
+    transform: scale(1.14) translate3d(1%, 0.5%, 0);
+  }
 }
 
 .filter-field {
@@ -174,5 +348,14 @@ summary {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .destination-motion-gallery__image {
+    animation: none;
+    transform: scale(1.03);
+  }
+
+  .home-hero-carousel__track {
+    transition: none;
   }
 }

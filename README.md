@@ -10,7 +10,7 @@ local infrastructure, and an isolated future AI service.
 
 The repository now includes the modular API, public and administration Next.js hosts, generated SDK,
 protected customer/agent/operations foundations, Directus editorial boundary and Journal, accessible
-destination-map foundation, and an isolated draft-only FastAPI gateway. Production deployment
+destination-map foundation, and an isolated Gemini-backed draft-only FastAPI gateway. Production deployment
 remains gated on external identity, Directus, payment, supplier, Azure, and operational approvals
 described in the release checklist.
 

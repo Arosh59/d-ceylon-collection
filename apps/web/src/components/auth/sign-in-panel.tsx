@@ -6,17 +6,28 @@ import { useState } from "react";
 interface SignInPanelProps {
   callbackUrl: string;
   configurationError?: string | undefined;
+  mode?: "sign-in" | "sign-up" | undefined;
   testingEnabled: boolean;
 }
 
-export function SignInPanel({ callbackUrl, configurationError, testingEnabled }: SignInPanelProps) {
+export function SignInPanel({
+  callbackUrl,
+  configurationError,
+  mode = "sign-in",
+  testingEnabled,
+}: SignInPanelProps) {
   const [busy, setBusy] = useState(false);
   const [persona, setPersona] = useState("customer");
   const [testKey, setTestKey] = useState("");
+  const isSignUp = mode === "sign-up";
 
   async function startExternalSignIn() {
     setBusy(true);
-    await signIn("dceylon", { callbackUrl });
+    if (isSignUp) {
+      await signIn("dceylon", { callbackUrl }, { prompt: "login", screen_hint: "signup" });
+    } else {
+      await signIn("dceylon", { callbackUrl });
+    }
     setBusy(false);
   }
 
@@ -32,7 +43,9 @@ export function SignInPanel({ callbackUrl, configurationError, testingEnabled }:
         className="rounded-2xl border border-gold/40 bg-gold/10 p-5 text-sm text-ink"
         role="alert"
       >
-        <p className="font-semibold text-navy">Secure sign-in is not configured on this server.</p>
+        <p className="font-semibold text-navy">
+          Secure {isSignUp ? "registration" : "sign-in"} is not configured on this server.
+        </p>
         <p className="mt-2">
           Add the server-only OIDC settings from <code>apps/web/.env.example</code> to an ignored
           <code>apps/web/.env.local</code> file, then restart the web server.
@@ -50,10 +63,14 @@ export function SignInPanel({ callbackUrl, configurationError, testingEnabled }:
         onClick={startExternalSignIn}
         type="button"
       >
-        {busy ? "Opening secure sign-in…" : "Continue to secure sign-in"}
+        {busy
+          ? `Opening secure ${isSignUp ? "registration" : "sign-in"}…`
+          : isSignUp
+            ? "Create your account securely"
+            : "Continue to secure sign-in"}
       </button>
 
-      {testingEnabled ? (
+      {testingEnabled && !isSignUp ? (
         <form
           aria-label="Testing identity sign-in"
           className="grid gap-4 border-t border-navy/10 pt-6"

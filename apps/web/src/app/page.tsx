@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { HomeHeroCarousel } from "@/components/home-hero-carousel";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -39,14 +38,7 @@ export default function HomePage() {
   return (
     <main id="main-content">
       <section className="relative grid min-h-[95svh] place-items-center overflow-hidden bg-navy text-white">
-        <Image
-          alt=""
-          className="object-cover object-[68%_center]"
-          fill
-          priority
-          sizes="100vw"
-          src="/images/hill-country-hero.png"
-        />
+        <HomeHeroCarousel />
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,20,38,0.9)_0%,rgba(7,20,38,0.69)_42%,rgba(7,20,38,0.16)_100%)]"

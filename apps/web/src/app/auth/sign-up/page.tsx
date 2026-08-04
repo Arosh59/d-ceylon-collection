@@ -7,13 +7,16 @@ import {
 } from "@/lib/auth-environment";
 import { safeRedirectTarget } from "@/lib/safe-redirect";
 
-interface SignInPageProps {
+interface SignUpPageProps {
   searchParams: Promise<{ callbackUrl?: string | string[] }>;
 }
 
-export default async function SignInPage({ searchParams }: SignInPageProps) {
+export default async function SignUpPage({ searchParams }: SignUpPageProps) {
   const value = (await searchParams).callbackUrl;
-  const callbackUrl = safeRedirectTarget(Array.isArray(value) ? value[0] : value);
+  const callbackUrl = safeRedirectTarget(
+    Array.isArray(value) ? value[0] : value,
+    "/portal/customer",
+  );
   const configurationError = getAuthenticationConfigurationError();
   const testingEnabled =
     !configurationError && getAuthenticationEnvironment().applicationEnvironment === "Testing";
@@ -21,30 +24,32 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
   return (
     <main className="min-h-screen bg-canvas px-5 pt-36 pb-20" id="main-content">
       <section
-        aria-labelledby="sign-in-heading"
+        aria-labelledby="sign-up-heading"
         className="mx-auto max-w-lg rounded-3xl border border-navy/10 bg-white p-7 shadow-soft sm:p-10"
       >
-        <p className="eyebrow">Secure access</p>
-        <h1 className="mt-3 text-4xl text-navy" id="sign-in-heading">
-          Sign in to your portal
+        <p className="eyebrow">Your journey, saved</p>
+        <h1 className="mt-3 text-4xl text-navy" id="sign-up-heading">
+          Create your D Ceylon account
         </h1>
         <p className="mt-4 text-ink-muted">
-          Your identity provider verifies your account. D Ceylon does not store your password.
+          Register securely with our identity provider to save itineraries and request a quote. D
+          Ceylon does not store your password.
         </p>
         <div className="mt-8">
           <SignInPanel
             callbackUrl={callbackUrl}
             configurationError={configurationError}
+            mode="sign-up"
             testingEnabled={testingEnabled}
           />
         </div>
         <p className="mt-6 text-sm text-ink-muted">
-          New to D Ceylon?{" "}
+          Already have an account?{" "}
           <Link
             className="font-semibold text-navy underline hover:text-gold-dark"
-            href={`/auth/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
           >
-            Create an account
+            Sign in
           </Link>
         </p>
         <p className="mt-7 text-sm text-ink-muted">

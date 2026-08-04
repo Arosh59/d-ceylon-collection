@@ -28,15 +28,18 @@ owner or organisation-ID check; UI filtering is never considered an authorizatio
 ## Web session
 
 The Next.js application uses `next-auth` with an external OIDC provider, PKCE, state and nonce
-validation, and an encrypted HTTP-only, SameSite=Lax session cookie. The API bearer token remains only in the
-encrypted server-side session token and is not included in the browser-visible session response.
-Production cookies are secure and use the `__Secure-` prefix.
+validation, and an encrypted HTTP-only, SameSite=Lax session cookie. The API bearer token remains
+only in the encrypted server-side session token and is not included in the browser-visible session
+response. Production cookies are secure and use the `__Secure-` prefix.
 
-Sign-in and callback processing live under `/api/auth`, with accessible entry, error, unauthorized,
-and forbidden routes under `/auth`. Redirects accept only same-origin or application-relative
-targets. Customer and agent layouts check the session role before rendering, then call the generated
-API client so the API independently validates the token and ownership boundary. Logout clears the
-session and returns to the public site.
+Sign-in, sign-up, and callback processing live under `/api/auth`, with accessible entry, error,
+unauthorized, and forbidden routes under `/auth`. The public `/auth/sign-up` route does not collect
+credentials: it redirects to Auth0 Universal Login with `screen_hint=signup` and `prompt=login`.
+Configure customer self-registration and email verification in the identity provider; other OIDC
+providers may use their own registration parameter or hosted registration flow. Redirects accept
+only same-origin or application-relative targets. Customer and agent layouts check the session role
+before rendering, then call the generated API client so the API independently validates the token
+and ownership boundary. Logout clears the session and returns to the public site.
 
 Required server-only web settings are documented in `apps/web/.env.example`. `AUTH_SECRET`,
 `AUTH_CLIENT_SECRET`, and provider credentials must come from a secret store and must never use
