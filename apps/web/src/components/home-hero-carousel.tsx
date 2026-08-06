@@ -16,6 +16,30 @@ const slides = [
     description: "Colombo's skyline reflected in Beira Lake at night",
     src: "/images/home/sri-lanka-colombo-night.jpg",
   },
+  {
+    description: "A palm-fringed tropical beach on Sri Lanka's coast",
+    src: "/images/home/sri-lanka-beach.jpg",
+  },
+  {
+    description: "A forest waterfall flowing into a natural pool",
+    src: "/images/home/sri-lanka-waterfall.jpg",
+  },
+  {
+    description: "Tea fields across Sri Lanka's misty hill country",
+    src: "/images/home/sri-lanka-tea-country.jpg",
+  },
+  {
+    description: "Colombo Port City illuminated at night",
+    src: "/images/home/sri-lanka-port-city.jpg",
+  },
+  {
+    description: "An aerial view of Sigiriya Rock Fortress",
+    src: "/images/home/sri-lanka-sigiriya.jpg",
+  },
+  {
+    description: "A Sri Lankan landscape from the supplied archive",
+    src: "/images/home/sri-lanka-landscape.avif",
+  },
 ] as const;
 
 export function HomeHeroCarousel() {

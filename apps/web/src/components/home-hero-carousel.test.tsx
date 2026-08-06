@@ -14,6 +14,7 @@ describe("HomeHeroCarousel", () => {
     const track = container.querySelector(".home-hero-carousel__track");
 
     expect(track).toHaveAttribute("data-slide-index", "0");
+    expect(screen.getByText(/Background image 1 of 9/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Pause slideshow" })).toHaveAttribute(
       "aria-pressed",
       "true",
@@ -22,6 +23,7 @@ describe("HomeHeroCarousel", () => {
     act(() => vi.advanceTimersByTime(7000));
 
     expect(track).toHaveAttribute("data-slide-index", "1");
+    expect(screen.getByText(/Background image 2 of 9/)).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Pause slideshow" }));
     act(() => vi.advanceTimersByTime(14000));
