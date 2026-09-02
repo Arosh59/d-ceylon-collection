@@ -119,10 +119,11 @@ external-OIDC session boundary, validated redirects, protected navigation across
 administration modules, and passing type, lint, and production-build checks. Production role
 assignments remain an identity-provider deployment concern.
 
-Phase 14 is complete as an isolated FastAPI draft gateway. It rejects database-like configuration,
-requires an authenticated backend secret, has no commercial write tools, and passes its gateway
-safety tests. Deployment and approved backend tool implementations are intentionally separate
-production release work.
+Phase 14 is complete as an isolated Gemini-backed FastAPI draft gateway. It rejects database-like
+configuration, requires an authenticated backend secret and server-only Gemini API key, requests
+strict JSON, and rejects any itinerary item that is not in the backend-approved catalogue list. It
+has no commercial write tools and passes gateway safety tests. Deployment and the approved
+backend-to-gateway call are intentionally separate production release work.
 
 Phase 15 is in progress. Locked-install CI, Dependabot, Azure-compatible managed-environment
 baseline, release checklist, security guidance, and a tested local application-database backup/

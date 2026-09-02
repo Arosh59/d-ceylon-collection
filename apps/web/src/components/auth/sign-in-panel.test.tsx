@@ -10,6 +10,20 @@ vi.mock("next-auth/react", () => ({
 }));
 
 describe("SignInPanel", () => {
+  it("starts Auth0 Universal Login registration without collecting a password", async () => {
+    const user = userEvent.setup();
+    render(<SignInPanel callbackUrl="/portal/customer" mode="sign-up" testingEnabled={false} />);
+
+    await user.click(screen.getByRole("button", { name: "Create your account securely" }));
+
+    expect(signIn).toHaveBeenCalledWith(
+      "dceylon",
+      { callbackUrl: "/portal/customer" },
+      { prompt: "login", screen_hint: "signup" },
+    );
+    expect(screen.queryByRole("form", { name: "Testing identity sign-in" })).toBeNull();
+  });
+
   it("starts the testing flow without exposing a provider secret in markup", async () => {
     const user = userEvent.setup();
     render(<SignInPanel callbackUrl="/portal/agent" testingEnabled />);
