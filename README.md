@@ -57,6 +57,7 @@ already running. The separate administration host uses `npm run dev:admin` at
 
 ## Documentation
 
+- [Project structure and technologies](docs/project-structure-and-technologies.md)
 - [Architecture overview](docs/architecture/README.md)
 - [Local setup](docs/local-setup.md)
 - [API guide](docs/api/README.md)

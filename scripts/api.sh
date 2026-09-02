@@ -4,10 +4,17 @@ set -Eeuo pipefail
 
 script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd -- "${script_directory}/.." && pwd)"
+docker_repository_root="${repository_root}"
 environment_file="${DCEYLON_ENV_FILE:-${repository_root}/.env}"
 sdk_image="mcr.microsoft.com/dotnet/sdk:10.0.302"
 api_directory="/workspace/apps/api"
 application_environment="${DCEYLON_ASPNETCORE_ENVIRONMENT:-Development}"
+
+case "$(uname -s)" in
+    CYGWIN*|MINGW*|MSYS*)
+        docker_repository_root="$(cygpath --mixed "${repository_root}")"
+        ;;
+esac
 
 if [[ ! -f "${environment_file}" ]]; then
     echo "Missing ${environment_file}." >&2
@@ -27,11 +34,22 @@ application_connection="Host=postgres;Port=5432;Database=${POSTGRES_APP_DB};User
 admin_connection="Host=postgres;Port=5432;Database=postgres;Username=${POSTGRES_ADMIN_USER};Password=${POSTGRES_ADMIN_PASSWORD};Include Error Detail=false"
 directus_base_url="${DIRECTUS_API_BASE_URL:-http://directus:8055}"
 
+run_docker_container() {
+    case "$(uname -s)" in
+        CYGWIN*|MINGW*|MSYS*)
+            MSYS_NO_PATHCONV=1 docker run "$@"
+            ;;
+        *)
+            docker run "$@"
+            ;;
+    esac
+}
+
 sdk_container() {
-    docker run \
+    run_docker_container \
         --rm \
         --network "${network_name}" \
-        --volume "${repository_root}:/workspace" \
+        --volume "${docker_repository_root}:/workspace" \
         --volume d-ceylon-dotnet-home:/root/.dotnet \
         --volume d-ceylon-dotnet-nuget:/root/.nuget/packages \
         --workdir "${api_directory}" \
@@ -423,12 +441,12 @@ case "${command_name}" in
         ;;
     run)
         api_port="${API_PORT:-8080}"
-        docker run \
+        run_docker_container \
             --rm \
             --name d-ceylon-api-dev \
             --network "${network_name}" \
             --publish "127.0.0.1:${api_port}:8080" \
-            --volume "${repository_root}:/workspace" \
+            --volume "${docker_repository_root}:/workspace" \
             --volume d-ceylon-dotnet-home:/root/.dotnet \
             --volume d-ceylon-dotnet-nuget:/root/.nuget/packages \
             --workdir "${api_directory}" \
