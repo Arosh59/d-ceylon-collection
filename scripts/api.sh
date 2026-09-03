@@ -4,469 +4,111 @@ set -Eeuo pipefail
 
 script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd -- "${script_directory}/.." && pwd)"
-docker_repository_root="${repository_root}"
 environment_file="${DCEYLON_ENV_FILE:-${repository_root}/.env}"
-sdk_image="mcr.microsoft.com/dotnet/sdk:10.0.302"
-api_directory="/workspace/apps/api"
-application_environment="${DCEYLON_ASPNETCORE_ENVIRONMENT:-Development}"
 
-case "$(uname -s)" in
-    CYGWIN*|MINGW*|MSYS*)
-        docker_repository_root="$(cygpath --mixed "${repository_root}")"
-        ;;
-esac
-
-if [[ ! -f "${environment_file}" ]]; then
-    echo "Missing ${environment_file}." >&2
-    echo "Run ./scripts/create-local-env.sh first." >&2
-    exit 1
+if [[ -f "${environment_file}" ]]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "${environment_file}"
+    set +a
 fi
 
-set -a
-# shellcheck disable=SC1090
-source "${environment_file}"
-set +a
-
-compose_project="${COMPOSE_PROJECT_NAME:-d-ceylon-local}"
-network_name="${compose_project}_backend"
-
-application_connection="Host=postgres;Port=5432;Database=${POSTGRES_APP_DB};Username=${POSTGRES_APP_USER};Password=${POSTGRES_APP_PASSWORD};Include Error Detail=false"
-admin_connection="Host=postgres;Port=5432;Database=postgres;Username=${POSTGRES_ADMIN_USER};Password=${POSTGRES_ADMIN_PASSWORD};Include Error Detail=false"
-directus_base_url="${DIRECTUS_API_BASE_URL:-http://directus:8055}"
-
-run_docker_container() {
-    case "$(uname -s)" in
-        CYGWIN*|MINGW*|MSYS*)
-            MSYS_NO_PATHCONV=1 docker run "$@"
-            ;;
-        *)
-            docker run "$@"
-            ;;
-    esac
-}
-
-sdk_container() {
-    run_docker_container \
-        --rm \
-        --network "${network_name}" \
-        --volume "${docker_repository_root}:/workspace" \
-        --volume d-ceylon-dotnet-home:/root/.dotnet \
-        --volume d-ceylon-dotnet-nuget:/root/.nuget/packages \
-        --workdir "${api_directory}" \
-        --env "ConnectionStrings__Postgres=${application_connection}" \
-        --env "TestDatabase__AdminConnection=${admin_connection}" \
-        --env "ASPNETCORE_ENVIRONMENT=${application_environment}" \
-        --env "Authentication__Testing__Issuer=${AUTH_TEST_ISSUER:-}" \
-        --env "Authentication__Testing__Audience=${AUTH_TEST_AUDIENCE:-}" \
-        --env "Authentication__Testing__SigningKey=${AUTH_TEST_SIGNING_KEY:-}" \
-        --env "Authentication__Testing__EndpointKey=${AUTH_TEST_ENDPOINT_KEY:-}" \
-        --env "Directus__BaseUrl=${directus_base_url}" \
-        --env "Directus__StaticToken=${DIRECTUS_STATIC_TOKEN:-}" \
-        --env DOTNET_CLI_TELEMETRY_OPTOUT=1 \
-        --env DOTNET_NOLOGO=1 \
-        "${sdk_image}" \
-        dotnet "$@"
-}
-
-require_network() {
-    if ! docker network inspect "${network_name}" >/dev/null 2>&1; then
-        echo "Missing Docker network ${network_name}." >&2
-        echo "Run ./scripts/local-infrastructure.sh up first." >&2
-        exit 1
-    fi
-}
+export API_PORT="${API_PORT:-8080}"
+export APP_ENVIRONMENT="${APP_ENVIRONMENT:-Development}"
+export DATABASE_URL="${DATABASE_URL:-postgresql://${POSTGRES_APP_USER:-dceylon_app}:${POSTGRES_APP_PASSWORD:-replace-me}@127.0.0.1:${POSTGRES_PORT:-5432}/${POSTGRES_APP_DB:-dceylon_app}}"
+export DIRECTUS_API_BASE_URL="${DIRECTUS_API_BASE_URL:-http://127.0.0.1:${DIRECTUS_PORT:-8055}}"
 
 usage() {
     cat <<'USAGE'
-Usage: ./scripts/api.sh COMMAND
+Usage: ./scripts/api.sh COMMAND [ARGUMENT]
 
 Commands:
-  restore            Restore locked NuGet dependencies and local tools
-  restore-locked     Verify restore against committed lock files
-  audit              Audit direct and transitive NuGet dependencies
-  format             Apply dotnet formatting
-  format-check       Verify formatting without changing files
-  build              Build the solution in Release mode
-  test-unit          Run unit tests
-  test-integration   Run PostgreSQL-backed API integration tests
-  test               Run all tests
-  migration-add NAME Create a named EF Core migration
-  migration-add-identity NAME
-                     Create an Identity and Access migration
-  migration-add-organisations NAME
-                     Create an Organisations and Agents migration
-  migration-add-customers NAME
-                     Create a Customers and Travellers migration
-  migration-add-itineraries NAME
-                     Create an Itineraries and Travel Planning migration
-  migration-add-quotes NAME
-  migration-add-bookings NAME
-  migration-add-payments NAME
-  migration-add-supplier-operations NAME
-                     Create a Supplier and Operations migration
-  migration-remove   Remove the latest unapplied EF Core migration
-  migrations-list    List EF Core migrations
-  migrations-check   Verify the EF Core model has no pending changes
-  migrate            Apply EF Core migrations to the local application database
-  seed               Apply deterministic catalogue development seed data
-  run                Run the API at the configured local API_PORT
+  restore              Install npm workspace dependencies
+  audit                Audit npm dependencies
+  format               Format the NestJS backend
+  format-check         Check backend formatting
+  build                Generate Prisma Client and build NestJS
+  typecheck            Type-check the backend
+  test-unit            Run backend Jest tests
+  test-integration     Run PostgreSQL-backed Jest tests
+  test                 Run all backend tests
+  baseline-existing    Mark the full baseline applied on an existing database
+  migration-add NAME   Create a reviewed Prisma migration in development
+  migrations-list      Show Prisma migration status
+  migrations-check     Validate Prisma and show migration status
+  migrate              Apply committed Prisma migrations (never resets data)
+  seed                 Explain the preserved-data seed policy
+  run                  Run the NestJS API at API_PORT
 USAGE
 }
 
+cd "${repository_root}"
 command_name="${1:-}"
-require_network
 
 case "${command_name}" in
     restore)
-        sdk_container restore D.Ceylon.Collection.slnx
-        sdk_container tool restore
-        ;;
-    restore-locked)
-        sdk_container restore D.Ceylon.Collection.slnx --locked-mode
+        npm install
         ;;
     audit)
-        sdk_container list D.Ceylon.Collection.slnx package \
-            --vulnerable \
-            --include-transitive
+        npm audit
         ;;
     format)
-        sdk_container format D.Ceylon.Collection.slnx --no-restore
+        npx prettier --write --ignore-unknown backend
         ;;
     format-check)
-        sdk_container format D.Ceylon.Collection.slnx --no-restore --verify-no-changes
+        npx prettier --check --ignore-unknown backend
         ;;
     build)
-        sdk_container build D.Ceylon.Collection.slnx --configuration Release --no-restore
+        npm run prisma:generate --workspace=@dceylon/backend
+        npm run build:backend
+        ;;
+    typecheck)
+        npm run typecheck:backend
         ;;
     test-unit)
-        sdk_container test tests/D.Ceylon.Api.UnitTests/D.Ceylon.Api.UnitTests.csproj \
-            --configuration Release \
-            --no-restore
-        ;;
-    test-integration)
-        sdk_container test tests/D.Ceylon.Api.IntegrationTests/D.Ceylon.Api.IntegrationTests.csproj \
-            --configuration Release \
-            --no-restore
+        npm run test:backend
         ;;
     test)
-        sdk_container test tests/D.Ceylon.Api.UnitTests/D.Ceylon.Api.UnitTests.csproj \
-            --configuration Release \
-            --no-restore
-        sdk_container test tests/D.Ceylon.Api.IntegrationTests/D.Ceylon.Api.IntegrationTests.csproj \
-            --configuration Release \
-            --no-restore
+        npm run test:backend
+        npm run test:backend:e2e
+        ;;
+    test-integration)
+        npm run test:e2e --workspace=@dceylon/backend
         ;;
     migration-add)
         migration_name="${2:-}"
-        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
-            echo "Migration names must start with a letter and contain only letters and numbers." >&2
+        if [[ ! "${migration_name}" =~ ^[a-z0-9][a-z0-9_-]*$ ]]; then
+            echo "A lowercase migration name is required." >&2
             exit 1
         fi
-        sdk_container tool restore
-        sdk_container ef migrations add "${migration_name}" \
-            --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
-            --startup-project src/D.Ceylon.Api \
-            --output-dir Infrastructure/Persistence/Migrations
+        npm exec --workspace=@dceylon/backend -- prisma migrate dev --name "${migration_name}"
         ;;
-    migration-add-identity)
-        migration_name="${2:-}"
-        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
-            echo "Migration names must start with a letter and contain only letters and numbers." >&2
-            exit 1
-        fi
-        sdk_container tool restore
-        sdk_container ef migrations add "${migration_name}" \
-            --context IdentityAccessDbContext \
-            --project src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess \
-            --startup-project src/D.Ceylon.Api \
-            --output-dir Infrastructure/Persistence/Migrations
-        ;;
-    migration-add-organisations)
-        migration_name="${2:-}"
-        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
-            echo "Migration names must start with a letter and contain only letters and numbers." >&2
-            exit 1
-        fi
-        sdk_container tool restore
-        sdk_container ef migrations add "${migration_name}" \
-            --context OrganisationsAgentsDbContext \
-            --project src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents \
-            --startup-project src/D.Ceylon.Api \
-            --output-dir Infrastructure/Persistence/Migrations
-        ;;
-    migration-add-customers)
-        migration_name="${2:-}"
-        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
-            echo "Migration names must start with a letter and contain only letters and numbers." >&2
-            exit 1
-        fi
-        sdk_container tool restore
-        sdk_container ef migrations add "${migration_name}" \
-            --context CustomersTravellersDbContext \
-            --project src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers \
-            --startup-project src/D.Ceylon.Api \
-            --output-dir Infrastructure/Persistence/Migrations
-        ;;
-    migration-add-itineraries)
-        migration_name="${2:-}"
-        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
-            echo "Migration names must start with a letter and contain only letters and numbers." >&2
-            exit 1
-        fi
-        sdk_container tool restore
-        sdk_container ef migrations add "${migration_name}" \
-            --context ItinerariesTravelPlanningDbContext \
-            --project src/Modules/ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning \
-            --startup-project src/D.Ceylon.Api \
-            --output-dir Infrastructure/Persistence/Migrations
-        ;;
-    migration-add-quotes)
-        migration_name="${2:-}"
-        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
-            echo "Migration names must start with a letter and contain only letters and numbers." >&2
-            exit 1
-        fi
-        sdk_container tool restore
-        sdk_container ef migrations add "${migration_name}" \
-            --context QuotesDbContext \
-            --project src/Modules/Quotes/D.Ceylon.Modules.Quotes \
-            --startup-project src/D.Ceylon.Api \
-            --output-dir Infrastructure/Persistence/Migrations
-        ;;
-    migration-add-bookings)
-        migration_name="${2:-}"
-        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
-            echo "Migration names must start with a letter and contain only letters and numbers." >&2
-            exit 1
-        fi
-        sdk_container tool restore
-        sdk_container ef migrations add "${migration_name}" \
-            --context BookingsDbContext \
-            --project src/Modules/Bookings/D.Ceylon.Modules.Bookings \
-            --startup-project src/D.Ceylon.Api \
-            --output-dir Infrastructure/Persistence/Migrations
-        ;;
-    migration-add-payments)
-        migration_name="${2:-}"
-        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
-            echo "Migration names must start with a letter and contain only letters and numbers." >&2
-            exit 1
-        fi
-        sdk_container tool restore
-        sdk_container ef migrations add "${migration_name}" \
-            --context PaymentsDbContext \
-            --project src/Modules/Payments/D.Ceylon.Modules.Payments \
-            --startup-project src/D.Ceylon.Api \
-            --output-dir Infrastructure/Persistence/Migrations
-        ;;
-    migration-add-supplier-operations)
-        migration_name="${2:-}"
-        if [[ ! "${migration_name}" =~ ^[A-Za-z][A-Za-z0-9]*$ ]]; then
-            echo "Migration names must start with a letter and contain only letters and numbers." >&2
-            exit 1
-        fi
-        sdk_container tool restore
-        sdk_container ef migrations add "${migration_name}" \
-            --context SupplierOperationsDbContext \
-            --project src/Modules/SupplierOperations/D.Ceylon.Modules.SupplierOperations \
-            --startup-project src/D.Ceylon.Api \
-            --output-dir Infrastructure/Migrations
-        ;;
-    migration-remove)
-        sdk_container tool restore
-        sdk_container ef migrations remove \
-            --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
-            --startup-project src/D.Ceylon.Api \
-            --force
+    baseline-existing)
+        npm exec --workspace=@dceylon/backend -- prisma migrate resolve --applied 20260903000000_existing_database_baseline
         ;;
     migrations-list)
-        sdk_container tool restore
-        sdk_container ef migrations list \
-            --context CatalogueDbContext \
-            --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations list \
-            --context IdentityAccessDbContext \
-            --project src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations list \
-            --context OrganisationsAgentsDbContext \
-            --project src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations list \
-            --context CustomersTravellersDbContext \
-            --project src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations list \
-            --context ItinerariesTravelPlanningDbContext \
-            --project src/Modules/ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations list \
-            --context QuotesDbContext \
-            --project src/Modules/Quotes/D.Ceylon.Modules.Quotes \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations list \
-            --context BookingsDbContext \
-            --project src/Modules/Bookings/D.Ceylon.Modules.Bookings \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations list \
-            --context PaymentsDbContext \
-            --project src/Modules/Payments/D.Ceylon.Modules.Payments \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations list \
-            --context SupplierOperationsDbContext \
-            --project src/Modules/SupplierOperations/D.Ceylon.Modules.SupplierOperations \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
+        npm exec --workspace=@dceylon/backend -- prisma migrate status
         ;;
     migrations-check)
-        sdk_container tool restore
-        sdk_container ef migrations has-pending-model-changes \
-            --context CatalogueDbContext \
-            --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations has-pending-model-changes \
-            --context ItinerariesTravelPlanningDbContext \
-            --project src/Modules/ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations has-pending-model-changes \
-            --context IdentityAccessDbContext \
-            --project src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations has-pending-model-changes \
-            --context OrganisationsAgentsDbContext \
-            --project src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations has-pending-model-changes \
-            --context CustomersTravellersDbContext \
-            --project src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations has-pending-model-changes \
-            --context QuotesDbContext \
-            --project src/Modules/Quotes/D.Ceylon.Modules.Quotes \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations has-pending-model-changes \
-            --context BookingsDbContext \
-            --project src/Modules/Bookings/D.Ceylon.Modules.Bookings \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations has-pending-model-changes \
-            --context PaymentsDbContext \
-            --project src/Modules/Payments/D.Ceylon.Modules.Payments \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
-        sdk_container ef migrations has-pending-model-changes \
-            --context SupplierOperationsDbContext \
-            --project src/Modules/SupplierOperations/D.Ceylon.Modules.SupplierOperations \
-            --startup-project src/D.Ceylon.Api \
-            --no-build \
-            --configuration Release
+        npm run prisma:validate --workspace=@dceylon/backend
+        npm exec --workspace=@dceylon/backend -- prisma migrate status
         ;;
     migrate)
-        sdk_container tool restore
-        sdk_container ef database update \
-            --context CatalogueDbContext \
-            --project src/Modules/Catalogue/D.Ceylon.Modules.Catalogue \
-            --startup-project src/D.Ceylon.Api
-        sdk_container ef database update \
-            --context IdentityAccessDbContext \
-            --project src/Modules/IdentityAccess/D.Ceylon.Modules.IdentityAccess \
-            --startup-project src/D.Ceylon.Api
-        sdk_container ef database update \
-            --context OrganisationsAgentsDbContext \
-            --project src/Modules/OrganisationsAgents/D.Ceylon.Modules.OrganisationsAgents \
-            --startup-project src/D.Ceylon.Api
-        sdk_container ef database update \
-            --context CustomersTravellersDbContext \
-            --project src/Modules/CustomersTravellers/D.Ceylon.Modules.CustomersTravellers \
-            --startup-project src/D.Ceylon.Api
-        sdk_container ef database update \
-            --context ItinerariesTravelPlanningDbContext \
-            --project src/Modules/ItinerariesTravelPlanning/D.Ceylon.Modules.ItinerariesTravelPlanning \
-            --startup-project src/D.Ceylon.Api
-        sdk_container ef database update \
-            --context QuotesDbContext \
-            --project src/Modules/Quotes/D.Ceylon.Modules.Quotes \
-            --startup-project src/D.Ceylon.Api
-        sdk_container ef database update \
-            --context BookingsDbContext \
-            --project src/Modules/Bookings/D.Ceylon.Modules.Bookings \
-            --startup-project src/D.Ceylon.Api
-        sdk_container ef database update \
-            --context PaymentsDbContext \
-            --project src/Modules/Payments/D.Ceylon.Modules.Payments \
-            --startup-project src/D.Ceylon.Api
-        sdk_container ef database update \
-            --context SupplierOperationsDbContext \
-            --project src/Modules/SupplierOperations/D.Ceylon.Modules.SupplierOperations \
-            --startup-project src/D.Ceylon.Api
+        npm exec --workspace=@dceylon/backend -- prisma migrate deploy
         ;;
     seed)
-        sdk_container run \
-            --project src/D.Ceylon.Api \
-            --no-launch-profile \
-            -- \
-            --seed-catalogue
+        echo "Existing catalogue and transactional data are preserved; no destructive seed is applied."
         ;;
     run)
-        api_port="${API_PORT:-8080}"
-        run_docker_container \
-            --rm \
-            --name d-ceylon-api-dev \
-            --network "${network_name}" \
-            --publish "127.0.0.1:${api_port}:8080" \
-            --volume "${docker_repository_root}:/workspace" \
-            --volume d-ceylon-dotnet-home:/root/.dotnet \
-            --volume d-ceylon-dotnet-nuget:/root/.nuget/packages \
-            --workdir "${api_directory}" \
-            --env "ConnectionStrings__Postgres=${application_connection}" \
-            --env "ASPNETCORE_ENVIRONMENT=${application_environment}" \
-            --env "Authentication__Testing__Issuer=${AUTH_TEST_ISSUER:-}" \
-            --env "Authentication__Testing__Audience=${AUTH_TEST_AUDIENCE:-}" \
-            --env "Authentication__Testing__SigningKey=${AUTH_TEST_SIGNING_KEY:-}" \
-            --env "Authentication__Testing__EndpointKey=${AUTH_TEST_ENDPOINT_KEY:-}" \
-            --env "Directus__BaseUrl=${directus_base_url}" \
-            --env "Directus__StaticToken=${DIRECTUS_STATIC_TOKEN:-}" \
-            --env DOTNET_CLI_TELEMETRY_OPTOUT=1 \
-            --env DOTNET_NOLOGO=1 \
-            "${sdk_image}" \
-            dotnet run \
-                --project src/D.Ceylon.Api \
-                --no-launch-profile
+        npm run build:backend
+        npm run start --workspace=@dceylon/backend
+        ;;
+    -h|--help|help|"")
+        usage
         ;;
     *)
-        usage
+        echo "Unknown command: ${command_name}" >&2
+        usage >&2
         exit 1
         ;;
 esac

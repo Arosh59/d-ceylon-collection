@@ -58,7 +58,7 @@ export AUTH_TEST_ISSUER
 export AUTH_TEST_AUDIENCE
 export AUTH_TEST_SIGNING_KEY
 export AUTH_TEST_ENDPOINT_KEY
-export DCEYLON_ASPNETCORE_ENVIRONMENT=Testing
+export APP_ENVIRONMENT=Testing
 
 wait_for_url() {
     local name="$1"

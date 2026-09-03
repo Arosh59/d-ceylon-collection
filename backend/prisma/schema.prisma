@@ -1,0 +1,972 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["bookings", "catalogue", "customers_travellers", "identity_access", "itineraries_travel_planning", "organisations_agents", "payments", "quotes", "supplier_operations"]
+}
+
+// Generated from the final EF Core model snapshots at the NestJS cutover baseline.
+// Refresh with `node scripts/generate-prisma-baseline.mjs --write` only while the legacy
+// snapshots remain authoritative; review every migration diff before applying it.
+
+model AgentAccount {
+  id                            String @id(map: "PK_agents") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  isActive                      Boolean @map("is_active") @db.Boolean
+  organisationId                String @map("organisation_id") @db.Uuid
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  userId                        String @map("user_id") @db.Uuid
+  organisation                  Organisation @relation(fields: [organisationId], references: [id], onDelete: Restrict, map: "FK_agents_organisations_organisation_id")
+  @@unique([userId], map: "ux_agents_user_id")
+  @@index([organisationId, isActive], map: "ix_agents_organisation_active")
+  @@map("agents")
+  @@schema("organisations_agents")
+}
+
+model ApplicationUser {
+  id                            String @id(map: "PK_users") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  displayName                   String @map("display_name") @db.VarChar(200)
+  email                         String? @db.VarChar(320)
+  isActive                      Boolean @map("is_active") @db.Boolean
+  issuer                        String @db.VarChar(500)
+  lastAuthenticatedAtUtc        DateTime? @map("last_authenticated_at_utc") @db.Timestamptz(6)
+  subject                       String @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  customerAccountRecords        CustomerAccount?
+  userRoles                     UserRole[]
+  @@index([email], map: "ix_users_email")
+  @@index([isActive], map: "ix_users_is_active")
+  @@unique([issuer, subject], map: "ux_users_issuer_subject")
+  @@map("users")
+  @@schema("identity_access")
+}
+
+model Arrival {
+  id                            String @id(map: "PK_arrivals") @map("Id") @db.Uuid
+  airport                       String @map("Airport") @db.VarChar(120)
+  arrivalAtUtc                  DateTime @map("ArrivalAtUtc") @db.Timestamptz(6)
+  bookingId                     String @map("BookingId") @db.Uuid
+  concurrencyToken              String @map("ConcurrencyToken") @db.Uuid
+  createdAtUtc                  DateTime @map("CreatedAtUtc") @db.Timestamptz(6)
+  flightNumber                  String? @map("FlightNumber") @db.VarChar(30)
+  notes                         String? @map("Notes") @db.VarChar(1000)
+  status                        String @map("Status") @db.VarChar(20)
+  updatedAtUtc                  DateTime @map("UpdatedAtUtc") @db.Timestamptz(6)
+  @@index([bookingId, arrivalAtUtc], map: "IX_arrivals_BookingId_ArrivalAtUtc")
+  @@index([status, arrivalAtUtc], map: "IX_arrivals_Status_ArrivalAtUtc")
+  @@map("arrivals")
+  @@schema("supplier_operations")
+}
+
+model Booking {
+  id                            String @id(map: "PK_bookings") @db.Uuid
+  bookingReference              String @map("booking_reference") @db.VarChar(30)
+  cancelledAtUtc                DateTime? @map("cancelled_at_utc") @db.Timestamptz(6)
+  cancellationReason            String? @map("cancellation_reason") @db.VarChar(500)
+  confirmedAtUtc                DateTime? @map("confirmed_at_utc") @db.Timestamptz(6)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  currency                      String @db.VarChar(3)
+  customerNotes                 String? @map("customer_notes") @db.VarChar(2000)
+  customerId                    String @map("customer_id") @db.Uuid
+  internalNotes                 String? @map("internal_notes") @db.VarChar(2000)
+  itineraryTitle                String @map("itinerary_title") @db.VarChar(200)
+  organisationId                String? @map("organisation_id") @db.Uuid
+  paidAmount                    Decimal @map("paid_amount") @db.Decimal(18, 2)
+  quoteId                       String @map("quote_id") @db.Uuid
+  quoteVersionId                String @map("quote_version_id") @db.Uuid
+  status                        String @db.VarChar(40)
+  totalAmount                   Decimal @map("total_amount") @db.Decimal(18, 2)
+  travelEndDate                 DateTime @map("travel_end_date") @db.Date
+  travelStartDate               DateTime @map("travel_start_date") @db.Date
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  items                         BookingItem[]
+  invoices                      Invoice[]
+  vouchers                      Voucher[]
+  @@unique([bookingReference], map: "ux_bookings_reference")
+  @@unique([quoteId], map: "ux_bookings_quote")
+  @@index([customerId, status, updatedAtUtc], map: "ix_bookings_customer_status_updated")
+  @@index([organisationId, status, updatedAtUtc], map: "ix_bookings_organisation_status_updated")
+  @@index([status, travelStartDate], map: "ix_bookings_status_start_date")
+  @@map("bookings")
+  @@schema("bookings")
+}
+
+model BookingItem {
+  id                            String @id(map: "PK_booking_items") @db.Uuid
+  bookingId                     String @map("booking_id") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  description                   String? @db.VarChar(1000)
+  lineTotal                     Decimal @map("line_total") @db.Decimal(18, 2)
+  position                      Int @db.Integer
+  quantity                      Decimal @db.Decimal(12, 2)
+  title                         String @db.VarChar(200)
+  unitAmount                    Decimal @map("unit_amount") @db.Decimal(18, 2)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  booking                       Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade, map: "FK_booking_items_bookings_booking_id")
+  @@unique([bookingId, position], map: "ux_booking_items_order")
+  @@map("booking_items")
+  @@schema("bookings")
+}
+
+model BookingOperationTask {
+  id                            String @id(map: "PK_booking_operation_tasks") @map("Id") @db.Uuid
+  bookingId                     String @map("BookingId") @db.Uuid
+  concurrencyToken              String @map("ConcurrencyToken") @db.Uuid
+  createdAtUtc                  DateTime @map("CreatedAtUtc") @db.Timestamptz(6)
+  dueDate                       DateTime? @map("DueDate") @db.Date
+  notes                         String? @map("Notes") @db.VarChar(2000)
+  status                        String @map("Status") @db.VarChar(20)
+  supplierId                    String? @map("SupplierId") @db.Uuid
+  title                         String @map("Title") @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("UpdatedAtUtc") @db.Timestamptz(6)
+  @@index([bookingId, status], map: "IX_booking_operation_tasks_BookingId_Status")
+  @@index([supplierId, status], map: "IX_booking_operation_tasks_SupplierId_Status")
+  @@map("booking_operation_tasks")
+  @@schema("supplier_operations")
+}
+
+model BookingResourceAssignment {
+  id                            String @id(map: "PK_booking_resource_assignments") @map("Id") @db.Uuid
+  bookingId                     String @map("BookingId") @db.Uuid
+  concurrencyToken              String @map("ConcurrencyToken") @db.Uuid
+  createdAtUtc                  DateTime @map("CreatedAtUtc") @db.Timestamptz(6)
+  driverId                      String? @map("DriverId") @db.Uuid
+  guideId                       String? @map("GuideId") @db.Uuid
+  notes                         String? @map("Notes") @db.VarChar(1000)
+  serviceDate                   DateTime @map("ServiceDate") @db.Date
+  status                        String @map("Status") @db.VarChar(20)
+  updatedAtUtc                  DateTime @map("UpdatedAtUtc") @db.Timestamptz(6)
+  vehicleId                     String? @map("VehicleId") @db.Uuid
+  @@index([bookingId, serviceDate], map: "IX_booking_resource_assignments_BookingId_ServiceDate")
+  @@index([driverId, serviceDate], map: "IX_booking_resource_assignments_DriverId_ServiceDate")
+  @@index([guideId, serviceDate], map: "IX_booking_resource_assignments_GuideId_ServiceDate")
+  @@index([vehicleId, serviceDate], map: "IX_booking_resource_assignments_VehicleId_ServiceDate")
+  @@map("booking_resource_assignments")
+  @@schema("supplier_operations")
+}
+
+model Category {
+  id                            String @id(map: "PK_categories") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  name                          String @db.VarChar(120)
+  slug                          String @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  productCategories             ProductCategory[]
+  @@index([name], map: "ix_categories_name")
+  @@unique([slug], map: "ux_categories_slug")
+  @@index([updatedAtUtc], map: "ix_categories_updated_at_utc")
+  @@map("categories")
+  @@schema("catalogue")
+}
+
+model CustomerAccount {
+  id                            String @id(map: "PK_customers") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  userId                        String @map("user_id") @db.Uuid
+  user                          ApplicationUser @relation(fields: [userId], references: [id], onDelete: Restrict, map: "FK_customers_users_user_id")
+  @@unique([userId], map: "ux_customers_user_id")
+  @@map("customers")
+  @@schema("identity_access")
+}
+
+model CustomerProfile {
+  id                            String @id(map: "PK_customer_profiles") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  contactEmail                  String? @map("contact_email") @db.VarChar(320)
+  contactPhone                  String? @map("contact_phone") @db.VarChar(40)
+  countryCode                   String? @map("country_code") @db.Char(2)
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  customerId                    String @map("customer_id") @db.Uuid
+  familyName                    String @map("family_name") @db.VarChar(100)
+  givenName                     String @map("given_name") @db.VarChar(100)
+  marketingConsent              Boolean @map("marketing_consent") @db.Boolean
+  preferredContactMethod        String @map("preferred_contact_method") @db.VarChar(20)
+  preferredLocale               String @map("preferred_locale") @db.VarChar(20)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  @@index([contactEmail], map: "ix_customer_profiles_contact_email")
+  @@unique([customerId], map: "ux_customer_profiles_customer_id")
+  @@index([updatedAtUtc], map: "ix_customer_profiles_updated_at")
+  @@map("customer_profiles")
+  @@schema("customers_travellers")
+}
+
+model Destination {
+  id                            String @id(map: "PK_destinations") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  description                   String? @db.VarChar(4000)
+  heroMediaId                   String? @map("hero_media_id") @db.Uuid
+  name                          String @db.VarChar(160)
+  publicationState              String @map("publication_state") @db.VarChar(32)
+  slug                          String @db.VarChar(200)
+  summary                       String? @db.VarChar(500)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  productDestinations           ProductDestination[]
+  @@index([heroMediaId], map: "ix_destinations_hero_media_id")
+  @@index([name], map: "ix_destinations_name")
+  @@index([publicationState], map: "ix_destinations_publication_state")
+  @@unique([slug], map: "ux_destinations_slug")
+  @@index([updatedAtUtc], map: "ix_destinations_updated_at_utc")
+  @@map("destinations")
+  @@schema("catalogue")
+}
+
+model Driver {
+  id                            String @id(map: "PK_drivers") @map("Id") @db.Uuid
+  concurrencyToken              String @map("ConcurrencyToken") @db.Uuid
+  createdAtUtc                  DateTime @map("CreatedAtUtc") @db.Timestamptz(6)
+  licenceNumber                 String? @map("LicenceNumber") @db.VarChar(80)
+  name                          String @map("Name") @db.VarChar(160)
+  phone                         String @map("Phone") @db.VarChar(40)
+  status                        String @map("Status") @db.VarChar(20)
+  updatedAtUtc                  DateTime @map("UpdatedAtUtc") @db.Timestamptz(6)
+  @@unique([licenceNumber], map: "IX_drivers_LicenceNumber")
+  @@index([status, name], map: "IX_drivers_Status_Name")
+  @@map("drivers")
+  @@schema("supplier_operations")
+}
+
+model Guide {
+  id                            String @id(map: "PK_guides") @map("Id") @db.Uuid
+  concurrencyToken              String @map("ConcurrencyToken") @db.Uuid
+  createdAtUtc                  DateTime @map("CreatedAtUtc") @db.Timestamptz(6)
+  languages                     String? @map("Languages") @db.VarChar(300)
+  name                          String @map("Name") @db.VarChar(160)
+  phone                         String @map("Phone") @db.VarChar(40)
+  status                        String @map("Status") @db.VarChar(20)
+  updatedAtUtc                  DateTime @map("UpdatedAtUtc") @db.Timestamptz(6)
+  @@index([status, name], map: "IX_guides_Status_Name")
+  @@map("guides")
+  @@schema("supplier_operations")
+}
+
+model Invoice {
+  id                            String @id(map: "PK_invoices") @db.Uuid
+  adjustmentTotal               Decimal @map("adjustment_total") @db.Decimal(18, 2)
+  bookingId                     String @map("booking_id") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  currency                      String @db.VarChar(3)
+  documentKey                   String? @map("document_key") @db.VarChar(500)
+  dueAtUtc                      DateTime? @map("due_at_utc") @db.Timestamptz(6)
+  grandTotal                    Decimal @map("grand_total") @db.Decimal(18, 2)
+  invoiceNumber                 String @map("invoice_number") @db.VarChar(30)
+  issuedAtUtc                   DateTime? @map("issued_at_utc") @db.Timestamptz(6)
+  paidAtUtc                     DateTime? @map("paid_at_utc") @db.Timestamptz(6)
+  status                        String @db.VarChar(20)
+  subtotal                      Decimal @db.Decimal(18, 2)
+  taxTotal                      Decimal @map("tax_total") @db.Decimal(18, 2)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  booking                       Booking @relation(fields: [bookingId], references: [id], onDelete: Restrict, map: "FK_invoices_bookings_booking_id")
+  @@unique([invoiceNumber], map: "ux_invoices_number")
+  @@index([bookingId, status], map: "ix_invoices_booking_status")
+  @@map("invoices")
+  @@schema("bookings")
+}
+
+model ItineraryDay {
+  id                            String @id(map: "PK_itinerary_days") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  date                          DateTime @db.Date
+  dayNumber                     Int @map("day_number") @db.Integer
+  itineraryRevisionId           String @map("itinerary_revision_id") @db.Uuid
+  title                         String @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  itineraryRevision             ItineraryRevision @relation(fields: [itineraryRevisionId], references: [id], onDelete: Cascade, map: "FK_itinerary_days_itinerary_revisions_itinerary_revision_id")
+  items                         ItineraryItem[]
+  @@unique([itineraryRevisionId, dayNumber], map: "ux_itinerary_days_revision_order")
+  @@map("itinerary_days")
+  @@schema("itineraries_travel_planning")
+}
+
+model ItineraryItem {
+  id                            String @id(map: "PK_itinerary_items") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  destinationSlug               String @map("destination_slug") @db.VarChar(200)
+  durationMinutes               Int? @map("duration_minutes") @db.Integer
+  itineraryDayId                String @map("itinerary_day_id") @db.Uuid
+  notes                         String? @db.VarChar(2000)
+  position                      Int @db.Integer
+  productSlug                   String? @map("product_slug") @db.VarChar(200)
+  source                        String @db.VarChar(20)
+  title                         String @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  itineraryDay                  ItineraryDay @relation(fields: [itineraryDayId], references: [id], onDelete: Cascade, map: "FK_itinerary_items_itinerary_days_itinerary_day_id")
+  @@index([destinationSlug], map: "ix_itinerary_items_destination_slug")
+  @@index([productSlug], map: "ix_itinerary_items_product_slug")
+  @@index([itineraryDayId, position], map: "ix_itinerary_items_day_order")
+  @@map("itinerary_items")
+  @@schema("itineraries_travel_planning")
+}
+
+model ItineraryRevision {
+  id                            String @id(map: "PK_itinerary_revisions") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  generatedAtUtc                DateTime @map("generated_at_utc") @db.Timestamptz(6)
+  inputFingerprint              String @map("input_fingerprint") @db.VarChar(64)
+  revisionNumber                Int @map("revision_number") @db.Integer
+  ruleVersion                   String @map("rule_version") @db.VarChar(100)
+  travelPlanId                  String @map("travel_plan_id") @db.Uuid
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  travelPlan                    TravelPlan @relation(fields: [travelPlanId], references: [id], onDelete: Cascade, map: "FK_itinerary_revisions_travel_plans_travel_plan_id")
+  days                          ItineraryDay[]
+  @@unique([travelPlanId, revisionNumber], map: "ux_itinerary_revisions_plan_number")
+  @@map("itinerary_revisions")
+  @@schema("itineraries_travel_planning")
+}
+
+model MediaAsset {
+  id                            String @id(map: "PK_media_assets") @db.Uuid
+  altText                       String @map("alt_text") @db.VarChar(300)
+  assetKey                      String @map("asset_key") @db.VarChar(200)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  height                        Int @db.Integer
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  width                         Int @db.Integer
+  productMedia                  ProductMedia[]
+  @@unique([assetKey], map: "ux_media_assets_asset_key")
+  @@index([updatedAtUtc], map: "ix_media_assets_updated_at_utc")
+  @@map("media_assets")
+  @@schema("catalogue")
+}
+
+model Organisation {
+  id                            String @id(map: "PK_organisations") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  isActive                      Boolean @map("is_active") @db.Boolean
+  name                          String @db.VarChar(200)
+  slug                          String @db.VarChar(160)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  agentAccountRecords           AgentAccount[]
+  users                         OrganisationUser[]
+  @@index([isActive], map: "ix_organisations_is_active")
+  @@unique([slug], map: "ux_organisations_slug")
+  @@map("organisations")
+  @@schema("organisations_agents")
+}
+
+model OrganisationUser {
+  id                            String @id(map: "PK_organisation_users") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  isActive                      Boolean @map("is_active") @db.Boolean
+  membershipRole                String @map("membership_role") @db.VarChar(100)
+  organisationId                String @map("organisation_id") @db.Uuid
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  userId                        String @map("user_id") @db.Uuid
+  organisation                  Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade, map: "FK_organisation_users_organisations_organisation_id")
+  @@index([userId], map: "ix_organisation_users_user_id")
+  @@index([organisationId, isActive], map: "ix_organisation_users_organisation_active")
+  @@unique([organisationId, userId], map: "ux_organisation_users_organisation_user")
+  @@map("organisation_users")
+  @@schema("organisations_agents")
+}
+
+model Payment {
+  id                            String @id(map: "PK_payments") @db.Uuid
+  amount                        Decimal @db.Decimal(18, 2)
+  bookingId                     String @map("booking_id") @db.Uuid
+  capturedAtUtc                 DateTime? @map("captured_at_utc") @db.Timestamptz(6)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  currency                      String @db.VarChar(3)
+  customerId                    String @map("customer_id") @db.Uuid
+  failedReason                  String? @map("failed_reason") @db.VarChar(500)
+  gateway                       String @db.VarChar(30)
+  idempotencyKey                String @map("idempotency_key") @db.VarChar(64)
+  kind                          String @db.VarChar(30)
+  paymentLinkExpiresAtUtc       DateTime? @map("payment_link_expires_at_utc") @db.Timestamptz(6)
+  paymentLinkUrl                String? @map("payment_link_url") @db.VarChar(500)
+  reconciliationStatus          String @map("reconciliation_status") @db.VarChar(20)
+  status                        String @db.VarChar(20)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  transactions                  PaymentTransaction[]
+  refunds                       Refund[]
+  @@unique([idempotencyKey], map: "ux_payments_idempotency_key")
+  @@index([customerId, bookingId, status], map: "ix_payments_customer_booking_status")
+  @@index([bookingId, status], map: "ix_payments_booking_status")
+  @@index([reconciliationStatus, status], map: "ix_payments_reconciliation_status")
+  @@map("payments")
+  @@schema("payments")
+}
+
+model PaymentTransaction {
+  id                            String @id(map: "PK_payment_transactions") @db.Uuid
+  amount                        Decimal @db.Decimal(18, 2)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  currency                      String @db.VarChar(3)
+  eventType                     String @map("event_type") @db.VarChar(50)
+  gateway                       String @db.VarChar(30)
+  gatewayReference              String @map("gateway_reference") @db.VarChar(200)
+  occurredAtUtc                 DateTime @map("occurred_at_utc") @db.Timestamptz(6)
+  paymentId                     String @map("payment_id") @db.Uuid
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  webhookSignatureVerified      Boolean @map("webhook_signature_verified") @db.Boolean
+  payment                       Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict, map: "FK_payment_transactions_payments_payment_id")
+  @@index([paymentId, occurredAtUtc], map: "ix_payment_transactions_payment_occurred")
+  @@index([gatewayReference], map: "ix_payment_transactions_gateway_reference")
+  @@map("payment_transactions")
+  @@schema("payments")
+}
+
+model PermissionGrant {
+  id                            String @id(map: "PK_permissions") @db.Uuid
+  code                          String @db.VarChar(160)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  name                          String @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  rolePermissions               RolePermissionGrant[]
+  @@unique([code], map: "ux_permissions_code")
+  @@map("permissions")
+  @@schema("identity_access")
+}
+
+model Product {
+  id                            String @id(map: "PK_products") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  currency                      String @db.Char(3)
+  description                   String @db.VarChar(4000)
+  durationMinutes               Int? @map("duration_minutes") @db.Integer
+  name                          String @db.VarChar(200)
+  productTypeId                 String @map("product_type_id") @db.Uuid
+  publicationState              String @map("publication_state") @db.VarChar(32)
+  searchVector                  Unsupported("tsvector") @map("search_vector")
+  shortDescription              String @map("short_description") @db.VarChar(500)
+  slug                          String @db.VarChar(200)
+  startingPrice                 Decimal? @map("starting_price") @db.Decimal(18, 2)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  productType                   ProductType @relation(fields: [productTypeId], references: [id], onDelete: Restrict, map: "FK_products_product_types_product_type_id")
+  productCategories             ProductCategory[]
+  productCollections            ProductCollectionLink[]
+  productDestinations           ProductDestination[]
+  productMedia                  ProductMedia[]
+  productTags                   ProductTag[]
+  @@index([name], map: "ix_products_name")
+  @@index([productTypeId], map: "ix_products_product_type_id")
+  @@index([publicationState], map: "ix_products_publication_state")
+  @@index([searchVector], map: "ix_products_search_vector", type: Gin)
+  @@unique([slug], map: "ux_products_slug")
+  @@index([updatedAtUtc], map: "ix_products_updated_at_utc")
+  @@index([publicationState, name], map: "ix_products_publication_state_name")
+  @@map("products")
+  @@schema("catalogue")
+}
+
+model ProductCategory {
+  productId                     String @map("product_id") @db.Uuid
+  categoryId                    String @map("category_id") @db.Uuid
+  category                      Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "FK_product_categories_categories_category_id")
+  product                       Product @relation(fields: [productId], references: [id], onDelete: Cascade, map: "FK_product_categories_products_product_id")
+  @@id([productId, categoryId], map: "PK_product_categories")
+  @@index([categoryId], map: "ix_product_categories_category_id")
+  @@map("product_categories")
+  @@schema("catalogue")
+}
+
+model ProductCollectionLink {
+  productId                     String @map("product_id") @db.Uuid
+  collectionId                  String @map("collection_id") @db.Uuid
+  collection                    TravelCollectionEntry @relation(fields: [collectionId], references: [id], onDelete: Cascade, map: "FK_product_collections_collections_collection_id")
+  product                       Product @relation(fields: [productId], references: [id], onDelete: Cascade, map: "FK_product_collections_products_product_id")
+  @@id([productId, collectionId], map: "PK_product_collections")
+  @@index([collectionId], map: "ix_product_collections_collection_id")
+  @@map("product_collections")
+  @@schema("catalogue")
+}
+
+model ProductDestination {
+  productId                     String @map("product_id") @db.Uuid
+  destinationId                 String @map("destination_id") @db.Uuid
+  destination                   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade, map: "FK_product_destinations_destinations_destination_id")
+  product                       Product @relation(fields: [productId], references: [id], onDelete: Cascade, map: "FK_product_destinations_products_product_id")
+  @@id([productId, destinationId], map: "PK_product_destinations")
+  @@index([destinationId], map: "ix_product_destinations_destination_id")
+  @@map("product_destinations")
+  @@schema("catalogue")
+}
+
+model ProductMedia {
+  productId                     String @map("product_id") @db.Uuid
+  mediaAssetId                  String @map("media_asset_id") @db.Uuid
+  sortOrder                     Int @map("sort_order") @db.Integer
+  mediaAsset                    MediaAsset @relation(fields: [mediaAssetId], references: [id], onDelete: Restrict, map: "FK_product_media_media_assets_media_asset_id")
+  product                       Product @relation(fields: [productId], references: [id], onDelete: Cascade, map: "FK_product_media_products_product_id")
+  @@id([productId, mediaAssetId], map: "PK_product_media")
+  @@index([mediaAssetId], map: "ix_product_media_media_asset_id")
+  @@index([productId, sortOrder], map: "ix_product_media_product_id_sort_order")
+  @@map("product_media")
+  @@schema("catalogue")
+}
+
+model ProductTag {
+  productId                     String @map("product_id") @db.Uuid
+  tagId                         String @map("tag_id") @db.Uuid
+  product                       Product @relation(fields: [productId], references: [id], onDelete: Cascade, map: "FK_product_tags_products_product_id")
+  tag                           Tag @relation(fields: [tagId], references: [id], onDelete: Cascade, map: "FK_product_tags_tags_tag_id")
+  @@id([productId, tagId], map: "PK_product_tags")
+  @@index([tagId], map: "ix_product_tags_tag_id")
+  @@map("product_tags")
+  @@schema("catalogue")
+}
+
+model ProductType {
+  id                            String @id(map: "PK_product_types") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  name                          String @db.VarChar(120)
+  slug                          String @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  products                      Product[]
+  @@index([name], map: "ix_product_types_name")
+  @@unique([slug], map: "ux_product_types_slug")
+  @@index([updatedAtUtc], map: "ix_product_types_updated_at_utc")
+  @@map("product_types")
+  @@schema("catalogue")
+}
+
+model Quote {
+  id                            String @id(map: "PK_quotes") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  currency                      String? @db.VarChar(3)
+  currentExpiresAtUtc           DateTime? @map("current_expires_at_utc") @db.Timestamptz(6)
+  currentVersionId              String? @map("current_version_id") @db.Uuid
+  currentVersionNumber          Int @map("current_version_number") @db.Integer
+  customerId                    String @map("customer_id") @db.Uuid
+  draftTerms                    String? @map("draft_terms") @db.VarChar(5000)
+  internalNotes                 String? @map("internal_notes") @db.VarChar(2000)
+  organisationId                String? @map("organisation_id") @db.Uuid
+  requestId                     String @map("request_id") @db.Uuid
+  status                        String @db.VarChar(20)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  request                       QuoteRequest @relation(fields: [requestId], references: [id], onDelete: Restrict, map: "FK_quotes_quote_requests_request_id")
+  draftLines                    QuoteDraftLine[]
+  draftComponents               QuoteDraftPriceComponent[]
+  versions                      QuoteVersion[]
+  @@unique([requestId], map: "ux_quotes_request")
+  @@index([status, currentExpiresAtUtc], map: "ix_quotes_status_expiry")
+  @@index([customerId, status, updatedAtUtc], map: "ix_quotes_customer_status_updated")
+  @@index([organisationId, status, updatedAtUtc], map: "ix_quotes_organisation_status_updated")
+  @@map("quotes")
+  @@schema("quotes")
+}
+
+model QuoteDraftLine {
+  id                            String @id(map: "PK_quote_draft_lines") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  description                   String? @db.VarChar(1000)
+  position                      Int @db.Integer
+  quantity                      Decimal @db.Decimal(12, 2)
+  quoteId                       String @map("quote_id") @db.Uuid
+  title                         String @db.VarChar(200)
+  unitAmount                    Decimal @map("unit_amount") @db.Decimal(18, 2)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  quote                         Quote @relation(fields: [quoteId], references: [id], onDelete: Cascade, map: "FK_quote_draft_lines_quotes_quote_id")
+  @@unique([quoteId, position], map: "ux_quote_draft_lines_order")
+  @@map("quote_draft_lines")
+  @@schema("quotes")
+}
+
+model QuoteDraftPriceComponent {
+  id                            String @id(map: "PK_quote_draft_price_components") @db.Uuid
+  amount                        Decimal @db.Decimal(18, 2)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  kind                          String @db.VarChar(20)
+  label                         String @db.VarChar(200)
+  position                      Int @db.Integer
+  quoteId                       String @map("quote_id") @db.Uuid
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  quote                         Quote @relation(fields: [quoteId], references: [id], onDelete: Cascade, map: "FK_quote_draft_price_components_quotes_quote_id")
+  @@unique([quoteId, position], map: "ux_quote_draft_components_order")
+  @@map("quote_draft_price_components")
+  @@schema("quotes")
+}
+
+model QuoteRequest {
+  id                            String @id(map: "PK_quote_requests") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  customerId                    String @map("customer_id") @db.Uuid
+  customerNotes                 String? @map("customer_notes") @db.VarChar(2000)
+  itineraryFingerprint          String @map("itinerary_fingerprint") @db.VarChar(64)
+  itineraryRevisionId           String @map("itinerary_revision_id") @db.Uuid
+  itineraryRevisionNumber       Int @map("itinerary_revision_number") @db.Integer
+  itineraryTitle                String @map("itinerary_title") @db.VarChar(200)
+  ruleVersion                   String @map("rule_version") @db.VarChar(100)
+  travelEndDate                 DateTime @map("travel_end_date") @db.Date
+  travelPlanId                  String @map("travel_plan_id") @db.Uuid
+  travelStartDate               DateTime @map("travel_start_date") @db.Date
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  quote                         Quote?
+  @@index([travelPlanId], map: "ix_quote_requests_travel_plan")
+  @@unique([customerId, itineraryRevisionId], map: "ux_quote_requests_customer_revision")
+  @@map("quote_requests")
+  @@schema("quotes")
+}
+
+model QuoteVersion {
+  id                            String @id(map: "PK_quote_versions") @db.Uuid
+  adjustmentTotal               Decimal @map("adjustment_total") @db.Decimal(18, 2)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  createdBySubject              String @map("created_by_subject") @db.VarChar(200)
+  currency                      String @db.VarChar(3)
+  expiresAtUtc                  DateTime @map("expires_at_utc") @db.Timestamptz(6)
+  grandTotal                    Decimal @map("grand_total") @db.Decimal(18, 2)
+  quoteId                       String @map("quote_id") @db.Uuid
+  sentAtUtc                     DateTime @map("sent_at_utc") @db.Timestamptz(6)
+  subtotal                      Decimal @db.Decimal(18, 2)
+  taxTotal                      Decimal @map("tax_total") @db.Decimal(18, 2)
+  terms                         String @db.VarChar(5000)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  versionNumber                 Int @map("version_number") @db.Integer
+  quote                         Quote @relation(fields: [quoteId], references: [id], onDelete: Restrict, map: "FK_quote_versions_quotes_quote_id")
+  lines                         QuoteVersionLine[]
+  components                    QuoteVersionPriceComponent[]
+  @@index([expiresAtUtc], map: "ix_quote_versions_expiry")
+  @@unique([quoteId, versionNumber], map: "ux_quote_versions_quote_number")
+  @@map("quote_versions")
+  @@schema("quotes")
+}
+
+model QuoteVersionLine {
+  id                            String @id(map: "PK_quote_version_lines") @db.Uuid
+  description                   String? @db.VarChar(1000)
+  lineTotal                     Decimal @map("line_total") @db.Decimal(18, 2)
+  position                      Int @db.Integer
+  quantity                      Decimal @db.Decimal(12, 2)
+  quoteVersionId                String @map("quote_version_id") @db.Uuid
+  title                         String @db.VarChar(200)
+  unitAmount                    Decimal @map("unit_amount") @db.Decimal(18, 2)
+  quoteVersion                  QuoteVersion @relation(fields: [quoteVersionId], references: [id], onDelete: Restrict, map: "FK_quote_version_lines_quote_versions_quote_version_id")
+  @@unique([quoteVersionId, position], map: "ux_quote_version_lines_order")
+  @@map("quote_version_lines")
+  @@schema("quotes")
+}
+
+model QuoteVersionPriceComponent {
+  id                            String @id(map: "PK_quote_version_price_components") @db.Uuid
+  amount                        Decimal @db.Decimal(18, 2)
+  kind                          String @db.VarChar(20)
+  label                         String @db.VarChar(200)
+  position                      Int @db.Integer
+  quoteVersionId                String @map("quote_version_id") @db.Uuid
+  quoteVersion                  QuoteVersion @relation(fields: [quoteVersionId], references: [id], onDelete: Restrict, map: "FK_quote_version_price_components_quote_versions_quote_version_")
+  @@unique([quoteVersionId, position], map: "ux_quote_version_components_order")
+  @@map("quote_version_price_components")
+  @@schema("quotes")
+}
+
+model Refund {
+  id                            String @id(map: "PK_refunds") @db.Uuid
+  amount                        Decimal @db.Decimal(18, 2)
+  approvedBySubject             String? @map("approved_by_subject") @db.VarChar(200)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  currency                      String @db.VarChar(3)
+  gatewayReference              String? @map("gateway_reference") @db.VarChar(200)
+  idempotencyKey                String @map("idempotency_key") @db.VarChar(64)
+  initiatedBySubject            String @map("initiated_by_subject") @db.VarChar(200)
+  paymentId                     String @map("payment_id") @db.Uuid
+  reason                        String? @db.VarChar(500)
+  status                        String @db.VarChar(20)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  payment                       Payment @relation(fields: [paymentId], references: [id], onDelete: Restrict, map: "FK_refunds_payments_payment_id")
+  @@unique([idempotencyKey], map: "ux_refunds_idempotency_key")
+  @@index([paymentId, status], map: "ix_refunds_payment_status")
+  @@map("refunds")
+  @@schema("payments")
+}
+
+model Role {
+  id                            String @id(map: "PK_roles") @db.Uuid
+  code                          String @db.VarChar(100)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  name                          String @db.VarChar(160)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  rolePermissions               RolePermissionGrant[]
+  userRoles                     UserRole[]
+  @@unique([code], map: "ux_roles_code")
+  @@map("roles")
+  @@schema("identity_access")
+}
+
+model RolePermissionGrant {
+  roleId                        String @map("role_id") @db.Uuid
+  permissionId                  String @map("permission_id") @db.Uuid
+  permission                    PermissionGrant @relation(fields: [permissionId], references: [id], onDelete: Cascade, map: "FK_role_permissions_permissions_permission_id")
+  role                          Role @relation(fields: [roleId], references: [id], onDelete: Cascade, map: "FK_role_permissions_roles_role_id")
+  @@id([roleId, permissionId], map: "PK_role_permissions")
+  @@index([permissionId], map: "ix_role_permissions_permission_id")
+  @@map("role_permissions")
+  @@schema("identity_access")
+}
+
+model SavedItinerary {
+  id                            String @id(map: "PK_saved_itineraries") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  customerId                    String @map("customer_id") @db.Uuid
+  isArchived                    Boolean @map("is_archived") @db.Boolean
+  primaryDestinationSlug        String? @map("primary_destination_slug") @db.VarChar(200)
+  summary                       String? @db.VarChar(2000)
+  title                         String @db.VarChar(200)
+  travelEndDate                 DateTime? @map("travel_end_date") @db.Date
+  travelStartDate               DateTime? @map("travel_start_date") @db.Date
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  @@index([primaryDestinationSlug], map: "ix_saved_itineraries_destination_slug")
+  @@index([updatedAtUtc], map: "ix_saved_itineraries_updated_at")
+  @@index([customerId, isArchived, updatedAtUtc], map: "ix_saved_itineraries_customer_archived_updated")
+  @@map("saved_itineraries")
+  @@schema("customers_travellers")
+}
+
+model SecurityAuditEvent {
+  id                            String @id(map: "PK_security_audit_events") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  correlationId                 String @map("correlation_id") @db.VarChar(128)
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  eventType                     String @map("event_type") @db.VarChar(120)
+  occurredAtUtc                 DateTime @map("occurred_at_utc") @db.Timestamptz(6)
+  outcome                       String @db.VarChar(40)
+  subject                       String? @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  @@index([correlationId], map: "ix_security_audit_events_correlation_id")
+  @@index([occurredAtUtc], map: "ix_security_audit_events_occurred_at")
+  @@index([subject, occurredAtUtc], map: "ix_security_audit_events_subject_occurred_at")
+  @@map("security_audit_events")
+  @@schema("identity_access")
+}
+
+model Supplier {
+  id                            String @id(map: "PK_suppliers") @map("Id") @db.Uuid
+  category                      String @map("Category") @db.VarChar(60)
+  concurrencyToken              String @map("ConcurrencyToken") @db.Uuid
+  contactEmail                  String? @map("ContactEmail") @db.VarChar(320)
+  contactName                   String? @map("ContactName") @db.VarChar(120)
+  createdAtUtc                  DateTime @map("CreatedAtUtc") @db.Timestamptz(6)
+  name                          String @map("Name") @db.VarChar(200)
+  status                        String @map("Status") @db.VarChar(20)
+  updatedAtUtc                  DateTime @map("UpdatedAtUtc") @db.Timestamptz(6)
+  @@index([status, name], map: "IX_suppliers_Status_Name")
+  @@map("suppliers")
+  @@schema("supplier_operations")
+}
+
+model Tag {
+  id                            String @id(map: "PK_tags") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  name                          String @db.VarChar(120)
+  slug                          String @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  productTags                   ProductTag[]
+  @@index([name], map: "ix_tags_name")
+  @@unique([slug], map: "ux_tags_slug")
+  @@index([updatedAtUtc], map: "ix_tags_updated_at_utc")
+  @@map("tags")
+  @@schema("catalogue")
+}
+
+model TravelCollectionEntry {
+  id                            String @id(map: "PK_collections") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  description                   String? @db.VarChar(4000)
+  heroMediaId                   String? @map("hero_media_id") @db.Uuid
+  name                          String @db.VarChar(120)
+  publicationState              String @map("publication_state") @db.VarChar(32)
+  slug                          String @db.VarChar(200)
+  summary                       String? @db.VarChar(500)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  productCollections            ProductCollectionLink[]
+  @@index([heroMediaId], map: "ix_collections_hero_media_id")
+  @@index([name], map: "ix_collections_name")
+  @@index([publicationState], map: "ix_collections_publication_state")
+  @@unique([slug], map: "ux_collections_slug")
+  @@index([updatedAtUtc], map: "ix_collections_updated_at_utc")
+  @@map("collections")
+  @@schema("catalogue")
+}
+
+model Traveller {
+  id                            String @id(map: "PK_travellers") @db.Uuid
+  accessibilityNeeds            String? @map("accessibility_needs") @db.VarChar(1000)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  customerId                    String @map("customer_id") @db.Uuid
+  dateOfBirth                   DateTime? @map("date_of_birth") @db.Date
+  dietaryNeeds                  String? @map("dietary_needs") @db.VarChar(1000)
+  emergencyContactName          String? @map("emergency_contact_name") @db.VarChar(200)
+  emergencyContactPhone         String? @map("emergency_contact_phone") @db.VarChar(40)
+  familyName                    String @map("family_name") @db.VarChar(100)
+  givenName                     String @map("given_name") @db.VarChar(100)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  @@index([customerId], map: "ix_travellers_customer_id")
+  @@index([updatedAtUtc], map: "ix_travellers_updated_at")
+  @@index([customerId, familyName, givenName], map: "ix_travellers_customer_name")
+  @@map("travellers")
+  @@schema("customers_travellers")
+}
+
+model TravelPlan {
+  id                            String @id(map: "PK_travel_plans") @db.Uuid
+  accessibilityConsiderations   String? @map("accessibility_considerations") @db.VarChar(1000)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  currentRevisionNumber         Int @map("current_revision_number") @db.Integer
+  customerId                    String @map("customer_id") @db.Uuid
+  dietaryConsiderations         String? @map("dietary_considerations") @db.VarChar(1000)
+  inputFingerprint              String @map("input_fingerprint") @db.VarChar(64)
+  pace                          String @db.VarChar(20)
+  ruleVersion                   String @map("rule_version") @db.VarChar(100)
+  savedItineraryId              String? @map("saved_itinerary_id") @db.Uuid
+  status                        String @db.VarChar(30)
+  title                         String @db.VarChar(200)
+  travelEndDate                 DateTime @map("travel_end_date") @db.Date
+  travelStartDate               DateTime @map("travel_start_date") @db.Date
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  revisions                     ItineraryRevision[]
+  destinations                  TravelPlanDestination[]
+  interests                     TravelPlanInterest[]
+  preferences                   TravelPlanPreference[]
+  travellers                    TravelPlanTraveller[]
+  @@index([customerId, savedItineraryId], map: "ix_travel_plans_customer_saved_itinerary")
+  @@index([ruleVersion, inputFingerprint], map: "ix_travel_plans_rule_fingerprint")
+  @@index([customerId, status, updatedAtUtc], map: "ix_travel_plans_customer_status_updated")
+  @@map("travel_plans")
+  @@schema("itineraries_travel_planning")
+}
+
+model TravelPlanDestination {
+  travelPlanId                  String @map("travel_plan_id") @db.Uuid
+  slug                          String @map("destination_slug") @db.VarChar(200)
+  position                      Int @db.Integer
+  travelPlan                    TravelPlan @relation(fields: [travelPlanId], references: [id], onDelete: Cascade, map: "FK_travel_plan_destinations_travel_plans_travel_plan_id")
+  @@id([travelPlanId, slug], map: "PK_travel_plan_destinations")
+  @@index([slug], map: "ix_travel_plan_destinations_slug")
+  @@unique([travelPlanId, position], map: "ux_travel_plan_destinations_order")
+  @@map("travel_plan_destinations")
+  @@schema("itineraries_travel_planning")
+}
+
+model TravelPlanInterest {
+  travelPlanId                  String @map("travel_plan_id") @db.Uuid
+  slug                          String @map("interest_slug") @db.VarChar(200)
+  position                      Int @db.Integer
+  travelPlan                    TravelPlan @relation(fields: [travelPlanId], references: [id], onDelete: Cascade, map: "FK_travel_plan_interests_travel_plans_travel_plan_id")
+  @@id([travelPlanId, slug], map: "PK_travel_plan_interests")
+  @@map("travel_plan_interests")
+  @@schema("itineraries_travel_planning")
+}
+
+model TravelPlanPreference {
+  travelPlanId                  String @map("travel_plan_id") @db.Uuid
+  kind                          String @db.VarChar(30)
+  slug                          String @db.VarChar(200)
+  position                      Int @db.Integer
+  travelPlan                    TravelPlan @relation(fields: [travelPlanId], references: [id], onDelete: Cascade, map: "FK_travel_plan_preferences_travel_plans_travel_plan_id")
+  @@id([travelPlanId, kind, slug], map: "PK_travel_plan_preferences")
+  @@index([kind, slug], map: "ix_travel_plan_preferences_lookup")
+  @@map("travel_plan_preferences")
+  @@schema("itineraries_travel_planning")
+}
+
+model TravelPlanTraveller {
+  travelPlanId                  String @map("travel_plan_id") @db.Uuid
+  travellerId                   String @map("traveller_id") @db.Uuid
+  position                      Int @db.Integer
+  travelPlan                    TravelPlan @relation(fields: [travelPlanId], references: [id], onDelete: Cascade, map: "FK_travel_plan_travellers_travel_plans_travel_plan_id")
+  @@id([travelPlanId, travellerId], map: "PK_travel_plan_travellers")
+  @@index([travellerId], map: "ix_travel_plan_travellers_traveller")
+  @@map("travel_plan_travellers")
+  @@schema("itineraries_travel_planning")
+}
+
+model UserRole {
+  userId                        String @map("user_id") @db.Uuid
+  roleId                        String @map("role_id") @db.Uuid
+  role                          Role @relation(fields: [roleId], references: [id], onDelete: Cascade, map: "FK_user_roles_roles_role_id")
+  user                          ApplicationUser @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FK_user_roles_users_user_id")
+  @@id([userId, roleId], map: "PK_user_roles")
+  @@index([roleId], map: "ix_user_roles_role_id")
+  @@map("user_roles")
+  @@schema("identity_access")
+}
+
+model Vehicle {
+  id                            String @id(map: "PK_vehicles") @map("Id") @db.Uuid
+  capacity                      Int @map("Capacity") @db.Integer
+  concurrencyToken              String @map("ConcurrencyToken") @db.Uuid
+  createdAtUtc                  DateTime @map("CreatedAtUtc") @db.Timestamptz(6)
+  name                          String @map("Name") @db.VarChar(160)
+  notes                         String? @map("Notes") @db.VarChar(1000)
+  registrationNumber            String @map("RegistrationNumber") @db.VarChar(40)
+  status                        String @map("Status") @db.VarChar(20)
+  supplierId                    String? @map("SupplierId") @db.Uuid
+  updatedAtUtc                  DateTime @map("UpdatedAtUtc") @db.Timestamptz(6)
+  @@unique([registrationNumber], map: "IX_vehicles_RegistrationNumber")
+  @@index([supplierId, status], map: "IX_vehicles_SupplierId_Status")
+  @@map("vehicles")
+  @@schema("supplier_operations")
+}
+
+model Voucher {
+  id                            String @id(map: "PK_vouchers") @db.Uuid
+  bookingId                     String @map("booking_id") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  description                   String? @db.VarChar(2000)
+  documentKey                   String? @map("document_key") @db.VarChar(500)
+  issuedAtUtc                   DateTime @map("issued_at_utc") @db.Timestamptz(6)
+  redeemedAtUtc                 DateTime? @map("redeemed_at_utc") @db.Timestamptz(6)
+  status                        String @db.VarChar(20)
+  title                         String @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  validFrom                     DateTime @map("valid_from") @db.Date
+  validUntil                    DateTime @map("valid_until") @db.Date
+  voucherCode                   String @map("voucher_code") @db.VarChar(50)
+  booking                       Booking @relation(fields: [bookingId], references: [id], onDelete: Restrict, map: "FK_vouchers_bookings_booking_id")
+  @@unique([voucherCode], map: "ux_vouchers_code")
+  @@index([bookingId, status], map: "ix_vouchers_booking_status")
+  @@map("vouchers")
+  @@schema("bookings")
+}
+
+model WishlistEntry {
+  id                            String @id(map: "PK_wishlist_entries") @db.Uuid
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  customerId                    String @map("customer_id") @db.Uuid
+  note                          String? @db.VarChar(500)
+  productSlug                   String @map("product_slug") @db.VarChar(200)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  @@index([updatedAtUtc], map: "ix_wishlist_entries_updated_at")
+  @@index([customerId, createdAtUtc], map: "ix_wishlist_entries_customer_created_at")
+  @@unique([customerId, productSlug], map: "ux_wishlist_entries_customer_product")
+  @@map("wishlist_entries")
+  @@schema("customers_travellers")
+}
+

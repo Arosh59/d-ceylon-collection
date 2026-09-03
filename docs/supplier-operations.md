@@ -6,10 +6,10 @@ supplier portal or an administration application.
 
 ## Module boundary
 
-`D.Ceylon.Modules.SupplierOperations` owns the `supplier_operations` PostgreSQL schema and its
+The NestJS `OperationsModule` owns access to the `supplier_operations` PostgreSQL schema and its
 `Supplier`, `Vehicle`, `Driver`, `Guide`, `Arrival`, `BookingResourceAssignment`, and
-`BookingOperationTask` records. It references booking data only through the stable
-`IBookingOperationsSources` contract; it does not access Booking persistence entities or tables.
+`BookingOperationTask` records. It performs a narrow, read-only booking status lookup before
+creating booking-linked operational records.
 
 The versioned API is restricted to the `staff` policy:
 

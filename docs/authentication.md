@@ -1,7 +1,7 @@
 # Authentication and Authorization
 
 Phase 5 integrates standards-based external OpenID Connect authentication. The identity provider
-authenticates users and issues access tokens; the ASP.NET Core API remains authoritative for
+authenticates users and issues access tokens; the NestJS API remains authoritative for
 authorization, organisation isolation, customer ownership, and security audit records. D Ceylon does
 not store passwords.
 
@@ -41,7 +41,7 @@ only same-origin or application-relative targets. Customer and agent layouts che
 before rendering, then call the generated API client so the API independently validates the token
 and ownership boundary. Logout clears the session and returns to the public site.
 
-Required server-only web settings are documented in `apps/web/.env.example`. `AUTH_SECRET`,
+Required server-only web settings are documented in `frontend/web/.env.example`. `AUTH_SECRET`,
 `AUTH_CLIENT_SECRET`, and provider credentials must come from a secret store and must never use
 `NEXT_PUBLIC_*`.
 
@@ -49,7 +49,7 @@ Required server-only web settings are documented in `apps/web/.env.example`. `AU
 
 Deterministic customer, agent, staff, and administrator personas exist only for automated tests:
 
-- ASP.NET registers the HMAC test issuer and token endpoint only when
+- NestJS registers the HMAC test issuer and token endpoint only when
   `ASPNETCORE_ENVIRONMENT=Testing`;
 - Next.js registers the test credentials provider only when `APP_ENVIRONMENT=Testing`;
 - both sides require independent keys of at least 32 characters;

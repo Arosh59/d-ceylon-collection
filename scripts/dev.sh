@@ -20,7 +20,7 @@ api_ready() {
 }
 
 if ! api_ready; then
-    echo "Starting the pinned API container at ${api_origin}..."
+    echo "Starting the NestJS API at ${api_origin}..."
     "${script_directory}/api.sh" run &
     api_process=$!
 

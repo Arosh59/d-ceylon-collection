@@ -21,15 +21,15 @@ repository.
 
 ## Public artwork
 
-`apps/web/public/images/hill-country-hero.png` is original, generated editorial artwork used only as
+`frontend/web/public/images/hill-country-hero.png` is original, generated editorial artwork used only as
 the public-home hero. It has no depicted people, logos, text, or third-party stock licence claim.
 Product and destination-specific imagery remains owned by the editorial workflow and needs rights
 metadata before publication.
 
-Approved GeoJSON province and district boundaries belong in `apps/web/src/data/geo/` only after
+Approved GeoJSON province and district boundaries belong in `frontend/web/src/data/geo/` only after
 their licence, provenance, update cadence, and accessibility review are recorded. The six local
 destination photographs are a documented exception to the editorial workflow; their source, author,
-and licence are recorded in `apps/web/public/images/destinations/ATTRIBUTIONS.md`. Other media
+and licence are recorded in `frontend/web/public/images/destinations/ATTRIBUTIONS.md`. Other media
 belongs in the editorial system with alt text and rights metadata. A future map adapter may add
 province, district, guide, restaurant, weather, and product-type filtering without replacing the
 fallback.

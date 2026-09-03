@@ -1,0 +1,52 @@
+{
+  "name": "@dceylon/backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "node dist/main.js",
+    "start:dev": "nest start --watch",
+    "lint": "eslint src test --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "jest --runInBand",
+    "test:e2e": "jest --config test/jest-e2e.json --runInBand",
+    "prisma:generate": "prisma generate",
+    "prisma:pull": "prisma db pull",
+    "prisma:validate": "prisma validate"
+  },
+  "dependencies": {
+    "@nestjs/common": "11.2.3",
+    "@nestjs/config": "4.0.4",
+    "@nestjs/core": "11.2.3",
+    "@nestjs/platform-express": "11.2.3",
+    "@nestjs/swagger": "11.4.7",
+    "@prisma/client": "6.19.3",
+    "class-transformer": "0.5.1",
+    "class-validator": "0.14.4",
+    "express": "5.2.1",
+    "helmet": "8.3.0",
+    "jose": "6.2.10",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@nestjs/cli": "11.0.24",
+    "@nestjs/schematics": "11.1.0",
+    "@nestjs/testing": "11.2.3",
+    "@types/express": "5.0.6",
+    "@types/jest": "30.0.0",
+    "@types/node": "24.13.3",
+    "eslint": "10.8.0",
+    "globals": "17.8.0",
+    "jest": "30.5.1",
+    "prisma": "6.19.3",
+    "source-map-support": "0.5.21",
+    "supertest": "7.2.2",
+    "ts-jest": "29.4.12",
+    "ts-node": "10.9.2",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.65.0"
+  }
+}

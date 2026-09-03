@@ -47,8 +47,8 @@ export function SignInPanel({
           Secure {isSignUp ? "registration" : "sign-in"} is not configured on this server.
         </p>
         <p className="mt-2">
-          Add the server-only OIDC settings from <code>apps/web/.env.example</code> to an ignored
-          <code>apps/web/.env.local</code> file, then restart the web server.
+          Add the server-only OIDC settings from <code>frontend/web/.env.example</code> to an ignored
+          <code>frontend/web/.env.local</code> file, then restart the web server.
         </p>
         <p className="mt-2 text-ink-muted">Configuration detail: {configurationError}</p>
       </div>

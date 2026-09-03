@@ -28,12 +28,12 @@ npm run test:web
 npm run test:web:a11y
 ```
 
-## C#
+## NestJS backend
 
-- Enable nullable reference types.
-- Treat warnings as errors in CI where practical.
-- Expose DTOs rather than Entity Framework entities.
-- Use asynchronous APIs for I/O and accept cancellation tokens.
+- Keep strict TypeScript enabled and expose API DTOs rather than Prisma records.
+- Use parameterized Prisma queries and preserve database ownership boundaries.
+- Keep operation IDs and response behavior synchronized with the canonical OpenAPI document.
+- Use asynchronous APIs for I/O.
 - Enforce authorization and validation in the server boundary.
 
 ## Python

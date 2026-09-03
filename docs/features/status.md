@@ -7,7 +7,7 @@ only after its documented checks pass.
 | ----- | ------------------------------------------------------ | ----------- |
 | 0     | Repository and documentation baseline                  | Complete    |
 | 1     | Local PostgreSQL, Redis, and Directus                  | Complete    |
-| 2     | ASP.NET Core API and initial catalogue                 | Complete    |
+| 2     | NestJS API migration and initial catalogue             | Complete    |
 | 3     | Public Next.js foundation                              | Complete    |
 | 4     | Catalogue, destinations, search, and collection seeds  | Complete    |
 | 5     | Authentication, authorization, and portal foundations  | Complete    |

@@ -1,6 +1,37 @@
 name: ${COMPOSE_PROJECT_NAME:-d-ceylon-local}
 
 services:
+  api:
+    profiles: [application]
+    build:
+      context: ../..
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      directus:
+        condition: service_healthy
+    environment:
+      APP_ENVIRONMENT: ${APP_ENVIRONMENT:-Development}
+      API_PORT: 8080
+      DATABASE_URL: postgresql://${POSTGRES_APP_USER:?POSTGRES_APP_USER is required}:${POSTGRES_APP_PASSWORD:?POSTGRES_APP_PASSWORD is required}@postgres:5432/${POSTGRES_APP_DB:?POSTGRES_APP_DB is required}
+      AUTH_AUTHORITY: ${AUTH_AUTHORITY:-http://host.docker.internal:9090}
+      AUTH_ISSUER: ${AUTH_ISSUER:-http://host.docker.internal:9090}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-dceylon-api}
+      AUTH_ROLE_CLAIM: ${AUTH_ROLE_CLAIM:-roles}
+      AUTH_PERMISSION_CLAIM: ${AUTH_PERMISSION_CLAIM:-permissions}
+      AUTH_ORGANISATION_CLAIM: ${AUTH_ORGANISATION_CLAIM:-organisation_id}
+      AUTH_CUSTOMER_CLAIM: ${AUTH_CUSTOMER_CLAIM:-customer_id}
+      DIRECTUS_API_BASE_URL: http://directus:8055
+      DIRECTUS_STATIC_TOKEN: ${DIRECTUS_STATIC_TOKEN:-}
+    ports:
+      - 127.0.0.1:${API_PORT:-8080}:8080
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - backend
+
   postgres:
     image: postgres:18.3-alpine3.23
     restart: unless-stopped

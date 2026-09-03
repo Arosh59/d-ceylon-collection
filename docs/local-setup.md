@@ -2,137 +2,77 @@
 
 ## Prerequisites
 
-Phase 1 requires:
+- Node.js 24 and npm 11
+- Docker with Compose v2 for PostgreSQL, Redis, and Directus
+- Git and OpenSSL
 
-- Git;
-- Docker Desktop or Docker Engine;
-- Docker Compose v2 or later;
-- Bash, OpenSSL, and curl;
-- Node.js 24 LTS and npm 11 for the public web application.
+The NestJS runtime does not require a .NET SDK. The legacy `apps/api` source is retained only for
+comparison and rollback during cutover.
 
-The host .NET SDK remains optional because API commands use the pinned SDK container. Python is not
-required until the isolated AI-service phase.
-
-## First-time setup
-
-From the repository root:
+## Install and configure
 
 ```bash
+npm install
 ./scripts/create-local-env.sh
-./scripts/local-infrastructure.sh config
-./scripts/local-infrastructure.sh pull
+cp backend/.env.example backend/.env
+cp frontend/web/.env.example frontend/web/.env.local
+cp frontend/admin/.env.example frontend/admin/.env.local
+```
+
+Set `DATABASE_URL` in `backend/.env` to the existing application database, for example:
+
+```text
+postgresql://dceylon_app:<password>@127.0.0.1:5432/dceylon_app
+```
+
+Configure the same external OIDC issuer/audience and claim names used by the previous API. Configure
+the web and admin OIDC client values independently; they retain separate sessions and deployment
+boundaries.
+
+## Infrastructure and database
+
+```bash
 ./scripts/local-infrastructure.sh up
 ./scripts/local-infrastructure.sh verify
-```
-
-The environment generator refuses to overwrite an existing `.env`. It creates random, local-only
-passwords with restrictive file permissions. Review `DIRECTUS_ADMIN_EMAIL` in `.env` before using a
-shared development machine. Never commit `.env`.
-
-Directus Studio is available at <http://127.0.0.1:8055>. Sign in with the `DIRECTUS_ADMIN_EMAIL` and
-`DIRECTUS_ADMIN_PASSWORD` stored in your local `.env`. Replace the example email with a
-syntactically valid address before the first Directus start; Directus validates it during
-administrator bootstrap.
-
-The first Directus start bootstraps the administrator from those variables. Directus deliberately
-does not replace an existing administrator when `.env` changes. If a persisted local Directus
-database has no usable administrator, do not delete shared volumes or alter production-like content
-to recover it. Recreate only the disposable local Directus database/volume after taking a backup and
-an explicit data-loss decision, then start the stack with the intended values. The API container
-uses `DIRECTUS_API_BASE_URL=http://directus:8055` by default; set `DIRECTUS_STATIC_TOKEN` only when
-the Editorial service must read non-public content. Public Journal and promotion records should
-instead be exposed through the least-privilege Directus public policy.
-
-Provision the local-only Editorial schema and sample content after infrastructure is healthy:
-
-```bash
-set -a; source .env; set +a
-node scripts/provision-local-directus.mjs --seed
-```
-
-The script creates only the `journal_articles`, `promotions`, and `media_assets` collections, grants
-the Directus public policy read access limited to `status=published`, and seeds no licensed media
-files. `media_assets` records retain alternative-text and rights metadata for stable placeholder
-keys. The script is idempotent and never overwrites existing editorial records.
-
-## Everyday commands
-
-```bash
-# Show health and container status
-./scripts/local-infrastructure.sh status
-./scripts/local-infrastructure.sh verify
-
-# Follow service logs
-./scripts/local-infrastructure.sh logs
-
-# Stop containers but preserve data
-./scripts/local-infrastructure.sh down
-
-# Start them again
-./scripts/local-infrastructure.sh up
-```
-
-See the [infrastructure guide](../infrastructure/docker/README.md) for image versions, persistence,
-reset behavior, direct Compose commands, and troubleshooting.
-
-## Application status
-
-The Phase 7 ASP.NET Core API is runnable through a pinned SDK container; no host .NET installation
-is required:
-
-```bash
-./scripts/api.sh restore
-./scripts/api.sh build
-./scripts/api.sh test
 ./scripts/api.sh migrate
-./scripts/api.sh seed
+```
+
+The full Prisma baseline creates all preserved schemas when the database is empty. For an existing
+D Ceylon database, run `./scripts/api.sh baseline-existing` once instead of applying the baseline,
+then use `./scripts/api.sh migrate` for later migrations. Never run `prisma migrate reset` or
+`prisma db push` against an existing environment.
+
+## Run
+
+```bash
 ./scripts/api.sh run
+npm run dev:web
+npm run dev:admin
 ```
 
-The API is available at <http://127.0.0.1:8080>, its OpenAPI document at
-<http://127.0.0.1:8080/openapi/v1.json>, and readiness at <http://127.0.0.1:8080/health/ready>.
+The default origins are API `http://127.0.0.1:8080`, web `http://127.0.0.1:3000`, admin
+`http://127.0.0.1:3001`, and Directus `http://127.0.0.1:8055`.
 
-The API command runs in the foreground and stops with `Ctrl+C`. Phase 1 PostgreSQL, Redis, and
-Directus remain managed separately through `local-infrastructure.sh`.
+`npm run dev` starts the NestJS API, waits for `/health/ready`, and then starts the public web host.
 
-## Public web application
-
-Install the locked frontend dependencies from the repository root:
+## Verify
 
 ```bash
-npm ci
-```
-
-Start the public application and its pinned API workflow together:
-
-```bash
-npm run dev
-```
-
-The launcher starts `./scripts/api.sh run` only when the API readiness endpoint is unavailable and
-stops the API process it started when the web host exits. The public application is available at
-<http://127.0.0.1:3000>. Configuration is server-only and must use HTTP or HTTPS origins without
-credentials, query strings, or fragments. Authentication settings are also server-only. Production
-issuer URLs require HTTPS; copy `apps/web/.env.example` and supply provider and session secrets
-through local ignored configuration or a managed secret store.
-
-Common checks are:
-
-```bash
-npm run format:check
+npm run typecheck:backend
+npm run lint:backend
+npm run test:backend
+npm run build:backend
+npm run prisma:baseline:verify
+npm run prisma:migration:verify
 npm run typecheck:web
 npm run lint:web
 npm run test:web
 npm run test:web:a11y
-./scripts/web-acceptance.sh
+npm run build:web
+npm run typecheck:admin
+npm run lint:admin
+npm run build:admin
 ```
 
-The acceptance script verifies infrastructure and all five module migration sets, starts the API
-with isolated random Testing keys, compares its live OpenAPI document with the committed SDK
-snapshot, builds and starts the production web application, and runs public and protected
-desktop/mobile Chrome flows. It also verifies missing-token denial, security headers, authentication
-rate limiting, and deterministic planner generation/editing boundaries, then stops temporary API and
-web processes.
-
-See the [public web guide](../apps/web/README.md) for routes, SDK regeneration, environment rules,
-and troubleshooting.
+Run `API_BASE_URL=http://127.0.0.1:8080 npm run sdk:verify` while the API is running to compare the
+served OpenAPI document with the committed SDK contract.

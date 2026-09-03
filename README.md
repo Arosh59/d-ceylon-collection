@@ -2,9 +2,9 @@
 
 > Discover Ceylon. Rediscover Yourself.
 
-D Ceylon Collection is a planned premium Sri Lankan travel-commerce platform. This repository will
-contain the public website, administration application, modular ASP.NET Core API, shared packages,
-local infrastructure, and an isolated future AI service.
+D Ceylon Collection is a premium Sri Lankan travel-commerce platform. This monorepo contains two
+Next.js applications, a modular NestJS API, shared packages, local infrastructure, and an isolated
+AI service.
 
 ## Status
 
@@ -16,11 +16,12 @@ described in the release checklist.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.
 
-## Planned architecture
+## Architecture
 
-- `apps/web` — accessible public Next.js App Router application
-- `apps/admin` — administration Next.js App Router application
-- `apps/api` — modular-monolith ASP.NET Core Web API
+- `frontend/web` — accessible public Next.js App Router application
+- `frontend/admin` — separately deployed administration Next.js application
+- `backend` — NestJS modular-monolith API with Prisma
+- `apps/api` — temporary legacy C# comparison and rollback source
 - `apps/ai-service` — isolated future FastAPI service
 - `packages/ui` — accessible shared React components
 - `packages/types` — shared TypeScript types
@@ -37,20 +38,16 @@ The expected toolchain is:
 
 - Git
 - Node.js 24 LTS and npm 11
-- .NET SDK, or Docker for the pinned SDK-container workflow
 - Docker with Docker Compose
 - Python 3
 - GitHub CLI (recommended for repository workflows)
-
-Exact dependency and runtime versions will be selected only when their implementation phase begins,
-after compatibility and deprecation checks.
 
 ## Getting started
 
 Review [local setup](docs/local-setup.md) to generate local credentials, run the infrastructure,
 apply migrations, and start the API and public frontend.
 
-For the public site, run `npm run dev`; it starts the pinned API workflow, waits for API readiness,
+For the public site, run `npm run dev`; it starts the NestJS API, waits for API readiness,
 then starts the web host at <http://127.0.0.1:3000>. Use `npm run dev:web` only when the API is
 already running. The separate administration host uses `npm run dev:admin` at
 <http://127.0.0.1:3001> and requires configured administrator OIDC access.

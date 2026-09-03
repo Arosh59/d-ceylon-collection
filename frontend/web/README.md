@@ -1,6 +1,6 @@
 # Public Web Application
 
-`apps/web` is the accessible public Next.js App Router host for D Ceylon Collection. Phases 3
+`frontend/web` is the accessible public Next.js App Router host for D Ceylon Collection. Phases 3
 through 7 establish the visual foundation, public catalogue discovery, external OIDC session,
 protected customer and agent boundaries, and customer-owned profile, traveller, wishlist, and
 saved-itinerary foundations plus deterministic draft planning. Quotes, administration, and commerce
@@ -17,7 +17,7 @@ npm ci
 
 The server requires:
 
-- `API_BASE_URL` — server-only origin of the ASP.NET Core API; and
+- `API_BASE_URL` — server-only origin of the NestJS API; and
 - `SITE_URL` — canonical public origin used by metadata, robots, and sitemap generation;
 - `APP_ENVIRONMENT` — `Development`, `Production`, or isolated `Testing` (omitting it defaults to
   `Development`; casing is accepted);
@@ -25,7 +25,7 @@ The server requires:
   integration; and
 - `AUTH_SECRET` — at least 32 random characters for encrypted session state.
 
-Copy `apps/web/.env.example` to `apps/web/.env.local` for normal local development. Real environment
+Copy `frontend/web/.env.example` to `frontend/web/.env.local` for normal local development. Real environment
 files are ignored. None of these values is exposed through a `NEXT_PUBLIC_*` variable. Production
 requires an HTTPS issuer. `AUTH_TEST_ENDPOINT_KEY` is accepted only in `Testing`.
 

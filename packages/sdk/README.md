@@ -1,6 +1,6 @@
 # TypeScript API SDK
 
-This workspace contains the server-side TypeScript client for the versioned ASP.NET Core API. Its
+This workspace contains the server-side TypeScript client for the versioned NestJS API. Its
 public response types are derived from the committed OpenAPI v1 snapshot rather than handwritten
 domain models.
 

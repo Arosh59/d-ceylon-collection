@@ -1,8 +1,9 @@
 # Local Infrastructure
 
-Phase 1 provides local PostgreSQL, Redis, and Directus services. It does not
-create the ASP.NET Core API, a frontend, production deployment configuration,
-or optional object-storage and mail-testing services.
+The default Compose profile provides local PostgreSQL, Redis, and Directus services. The optional
+`application` profile also builds the NestJS API; frontend hosts continue to run separately. This
+file is not a production deployment configuration and does not include optional object-storage or
+mail-testing services.
 
 ## Pinned images
 

@@ -13,7 +13,7 @@ The production design must cover:
 - managed PostgreSQL, Redis, private object storage, and secret management;
 - private networking and least-privilege managed identities;
 - TLS, security headers, health probes, scaling, and structured telemetry;
-- controlled EF Core migration execution;
+- controlled, reviewed Prisma migration execution;
 - immutable, scanned build artifacts;
 - reviewed promotion between environments; and
 - rollback, disaster recovery, and release verification.

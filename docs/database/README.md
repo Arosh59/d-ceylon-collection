@@ -1,130 +1,68 @@
 # Database Guide
 
-PostgreSQL will be the primary transactional database and Entity Framework Core migrations will be
-the only supported schema-change mechanism.
+PostgreSQL remains the transactional database. NestJS accesses it through Prisma while preserving
+the database created by the former EF Core migration chain.
 
-## Modelling baseline
+## Preserved baseline
 
-- UUID primary identifiers
-- UTC timestamps
-- created and updated metadata on important records
-- optimistic concurrency fields where updates can conflict
-- explicit foreign keys and ownership boundaries
-- indexes for slugs, foreign keys, status, publication state, dates, search fields, customer
-  ownership, and organisation ownership
-- parameterized access through Entity Framework Core
+The Prisma schema maps all 55 tables in these existing schemas:
 
-Production schemas must never be changed manually. Migration creation, application, rollback, seed,
-backup, and restore commands will be added as the corresponding infrastructure and API phases are
-implemented.
+- `catalogue`
+- `identity_access`
+- `organisations_agents`
+- `customers_travellers`
+- `itineraries_travel_planning`
+- `quotes`
+- `bookings`
+- `payments`
+- `supplier_operations`
 
-## Local Phase 1 databases
+The mapping preserves table and column names, UUID identifiers, native PostgreSQL types, primary and
+foreign-key names, indexes, relations, and optimistic-concurrency columns. The baseline migration
+also preserves database check constraints and the generated catalogue full-text search vector,
+which Prisma cannot fully express in its schema DSL.
 
-The local PostgreSQL container initializes two separately owned databases:
-
-- `POSTGRES_APP_DB`, reserved for the future ASP.NET Core application; and
-- `DIRECTUS_DB`, owned by the dedicated Directus database role.
-
-The initialization script runs only when the named PostgreSQL volume is empty. Changing database
-names or credentials in `.env` does not mutate an existing volume. Follow the guarded reset
-procedure in the [local infrastructure guide](../../infrastructure/docker/README.md) when a fresh
-local database is intentionally required.
-
-## Phase 2 application schema
-
-The initial EF Core migration creates a dedicated `catalogue` schema containing:
-
-- product types and products;
-- categories, travel collections, and destinations; and
-- normalized product-category, product-collection, and product-destination relations.
-
-The model includes UUID keys, UTC audit fields, explicit concurrency tokens, foreign keys, check
-constraints, unique slugs, and indexes for names, publication state, relationships, and update
-dates.
-
-Apply and inspect migrations with:
+Verify the generated mapping and migration coverage with:
 
 ```bash
+npm run prisma:baseline:verify
+npm run prisma:migration:verify
+npm run prisma:validate
+```
+
+## Existing databases
+
+Do not execute the full baseline SQL against an existing D Ceylon database. Record it as already
+applied once, then deploy only later migrations:
+
+```bash
+./scripts/api.sh baseline-existing
 ./scripts/api.sh migrations-list
 ./scripts/api.sh migrate
 ```
 
-API startup does not apply migrations automatically. Integration tests create and destroy an
-isolated PostgreSQL database and run the real migration against it.
+`baseline-existing` only adds Prisma migration-history metadata; it does not recreate schemas or
+modify application data. Take the normal database backup before the production cutover and verify
+the target is the expected database before running it.
 
-## Phase 4 catalogue discovery schema
+## New empty databases
 
-Migration `20260728040227_Phase4CatalogueDiscovery` adds:
+For a new local or isolated test database, `./scripts/api.sh migrate` applies the complete baseline
+and creates all preserved schemas and constraints. API startup never applies migrations
+automatically.
 
-- product descriptions and an English generated `search_vector`;
-- a GIN full-text index plus publication/name and relationship indexes;
-- publication state, descriptions, and hero-media references for collections and destinations;
-- tag and media-asset tables; and
-- normalized product-tag and ordered product-media relationships.
+## Future schema changes
 
-Media assets store metadata and stable `placeholder:*` keys only. The public web application maps
-the six seeded destination keys to documented local image files. Apply the schema and deterministic
-Development-only catalogue data explicitly:
+After the baseline has been recorded, create and review changes with:
 
 ```bash
-./scripts/api.sh migrate
-./scripts/api.sh seed
+./scripts/api.sh migration-add descriptive_change_name
 ./scripts/api.sh migrations-check
 ```
 
-The seeder is idempotent and uses fixed identifiers. It creates five collections, six destinations,
-three product types, five categories, five tags, and ten published products. It never runs during
-normal API startup.
+Commit both the Prisma schema and generated migration. Review SQL before applying it, especially
+changes involving check constraints or PostgreSQL generated/full-text columns. Never run
+`prisma migrate reset` or `prisma db push` against an existing environment.
 
-## Phase 6 customer records schema
-
-Migration `20260728054220_AddCustomerRecords` creates the `customers_travellers` schema with:
-
-- one profile/contact-preference record per customer;
-- owner-scoped traveller records with optional, bounded accessibility, dietary, and
-  emergency-contact fields;
-- owner/product-unique wishlist entries; and
-- owner-scoped saved-itinerary metadata with a travel-date check constraint.
-
-Owner/list, name, destination, created/updated, contact, and uniqueness indexes support protected
-queries. All mutable records carry UUID concurrency tokens and UTC audit timestamps. The schema does
-not store passport documents, generated plans, quotes, bookings, or payments.
-
-## Phase 7 deterministic planning schema
-
-Migration `20260728075115_AddDeterministicTravelPlanning` creates the `itineraries_travel_planning`
-schema with:
-
-- customer-owned travel-plan roots and normalized destination, traveller, interest, and Catalogue
-  preference inputs;
-- versioned draft-itinerary revisions with deterministic rule and input/Catalogue fingerprint
-  metadata;
-- ordered itinerary days and items with stable Catalogue product and destination references; and
-- UTC creation/update/generation fields plus UUID optimistic-concurrency tokens.
-
-Indexes cover customer/status/update lists, optional saved-itinerary lookups, rule/fingerprint
-inspection, destination and traveller associations, preferences, unique revision and day ordering,
-item ordering, and Catalogue product/destination references. Travel dates have a database check
-constraint. Historical revisions remain available in the aggregate; no Catalogue entity,
-availability, price, quote, booking, or payment record is duplicated.
-
-## Phase 8 quotes and pricing schema
-
-Migration `20260728092831_AddQuoteWorkflow` creates the `quotes` schema with customer quote
-requests, quote roots, mutable agent draft lines/components, immutable sent-version snapshots, and
-versioned line/component snapshots. Quote requests retain stable itinerary revision identifiers,
-rule version, and fingerprint without duplicating planning entities.
-
-Amounts use `numeric(18,2)` with explicit three-letter currency codes. Ownership/status/update,
-organisation/status/update, expiry, quote/version, line ordering, component ordering, and
-customer/revision uniqueness indexes support queue access, expiry processing, and immutable history.
-Each mutable quote root uses a UUID concurrency token and UTC audit timestamps. No card data,
-payment credential, booking, invoice, or voucher table is introduced.
-
-All six module migration sets are explicit:
-
-```bash
-./scripts/api.sh migrations-list
-./scripts/api.sh migrate
-./scripts/api.sh migrations-check
-```
+Integration tests use `DATABASE_URL` and never apply a destructive reset. Point them only at an
+isolated database created from the baseline.

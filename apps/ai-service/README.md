@@ -2,7 +2,7 @@
 
 This Phase 14 service is an authenticated FastAPI boundary for Gemini-assisted **draft** itinerary
 suggestions. It has no database driver, database connection setting, booking/payment operation, or
-direct customer access. The ASP.NET Core API must authenticate and authorise every request before
+direct customer access. The NestJS API must authenticate and authorise every request before
 forwarding minimum-necessary, approved context to this service.
 
 The gateway sends only the provided destinations, interests, dates, and approved catalogue metadata
