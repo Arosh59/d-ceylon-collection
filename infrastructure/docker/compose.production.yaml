@@ -1,0 +1,217 @@
+name: ${COMPOSE_PROJECT_NAME:-d-ceylon-production}
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "5"
+
+services:
+  api:
+    build:
+      context: ../..
+      dockerfile: backend/Dockerfile
+      target: runtime
+    restart: unless-stopped
+    init: true
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      directus:
+        condition: service_healthy
+        restart: true
+    environment:
+      APP_ENVIRONMENT: Production
+      API_PORT: 8080
+      DATABASE_URL:
+        postgresql://${POSTGRES_APP_USER:?POSTGRES_APP_USER is
+        required}:${POSTGRES_APP_PASSWORD:?POSTGRES_APP_PASSWORD is
+        required}@postgres:5432/${POSTGRES_APP_DB:?POSTGRES_APP_DB is required}
+      AUTH_AUTHORITY: ${AUTH_AUTHORITY:?AUTH_AUTHORITY is required}
+      AUTH_ISSUER: ${AUTH_ISSUER:?AUTH_ISSUER is required}
+      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-dceylon-api}
+      AUTH_ROLE_CLAIM: ${AUTH_ROLE_CLAIM:-roles}
+      AUTH_PERMISSION_CLAIM: ${AUTH_PERMISSION_CLAIM:-permissions}
+      AUTH_ORGANISATION_CLAIM: ${AUTH_ORGANISATION_CLAIM:-organisation_id}
+      AUTH_CUSTOMER_CLAIM: ${AUTH_CUSTOMER_CLAIM:-customer_id}
+      DIRECTUS_API_BASE_URL: http://directus:8055
+      DIRECTUS_STATIC_TOKEN: ${DIRECTUS_STATIC_TOKEN:-}
+    expose:
+      - "8080"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - >-
+          fetch('http://127.0.0.1:8080/health/ready') .then(r=>{if(!r.ok)process.exit(1)})
+          .catch(()=>process.exit(1))
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_interval: 3s
+      start_period: 30s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+    logging: *default-logging
+    networks:
+      - backend
+
+  migrate:
+    build:
+      context: ../..
+      dockerfile: backend/Dockerfile
+      target: migration
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL:
+        postgresql://${POSTGRES_APP_USER:?POSTGRES_APP_USER is
+        required}:${POSTGRES_APP_PASSWORD:?POSTGRES_APP_PASSWORD is
+        required}@postgres:5432/${POSTGRES_APP_DB:?POSTGRES_APP_DB is required}
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    security_opt:
+      - no-new-privileges:true
+    logging: *default-logging
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:18.3-alpine3.23
+    restart: unless-stopped
+    shm_size: 128mb
+    environment:
+      POSTGRES_USER: ${POSTGRES_ADMIN_USER:?POSTGRES_ADMIN_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?POSTGRES_ADMIN_PASSWORD is required}
+      POSTGRES_DB: postgres
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256 --data-checksums
+      APP_POSTGRES_DB: ${POSTGRES_APP_DB:?POSTGRES_APP_DB is required}
+      APP_POSTGRES_USER: ${POSTGRES_APP_USER:?POSTGRES_APP_USER is required}
+      APP_POSTGRES_PASSWORD: ${POSTGRES_APP_PASSWORD:?POSTGRES_APP_PASSWORD is required}
+      DIRECTUS_DB: ${DIRECTUS_DB:?DIRECTUS_DB is required}
+      DIRECTUS_DB_USER: ${DIRECTUS_DB_USER:?DIRECTUS_DB_USER is required}
+      DIRECTUS_DB_PASSWORD: ${DIRECTUS_DB_PASSWORD:?DIRECTUS_DB_PASSWORD is required}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          pg_isready --username="$${POSTGRES_USER}" --dbname="$${POSTGRES_DB}" && test "$$(psql
+          --username="$${POSTGRES_USER}" --dbname="$${POSTGRES_DB}" --tuples-only --no-align
+          --command="SELECT count(*) FROM pg_database WHERE datname IN ('$${APP_POSTGRES_DB}',
+          '$${DIRECTUS_DB}');")" = "2"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_interval: 2s
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 60s
+    logging: *default-logging
+    networks:
+      - backend
+
+  redis:
+    image: redis:8.8.0-alpine3.23
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    command:
+      - sh
+      - -c
+      - >-
+        exec redis-server --appendonly yes --appendfsync everysec --requirepass "$$REDIS_PASSWORD"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - REDISCLI_AUTH="$$REDIS_PASSWORD" redis-cli ping | grep -q PONG
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_interval: 2s
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 20s
+    logging: *default-logging
+    networks:
+      - backend
+
+  directus:
+    image: directus/directus:11.17.4
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_healthy
+        restart: true
+    environment:
+      SECRET: ${DIRECTUS_SECRET:?DIRECTUS_SECRET is required}
+      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL:?DIRECTUS_ADMIN_EMAIL is required}
+      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD:?DIRECTUS_ADMIN_PASSWORD is required}
+      PUBLIC_URL: ${DIRECTUS_PUBLIC_URL:?DIRECTUS_PUBLIC_URL is required}
+      TELEMETRY: "false"
+      LOG_LEVEL: info
+      DB_CLIENT: pg
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${DIRECTUS_DB:?DIRECTUS_DB is required}
+      DB_USER: ${DIRECTUS_DB_USER:?DIRECTUS_DB_USER is required}
+      DB_PASSWORD: ${DIRECTUS_DB_PASSWORD:?DIRECTUS_DB_PASSWORD is required}
+      CACHE_ENABLED: "true"
+      CACHE_AUTO_PURGE: "true"
+      CACHE_STORE: redis
+      CACHE_NAMESPACE: dceylon-directus-cache
+      REDIS: redis://:${REDIS_PASSWORD:?REDIS_PASSWORD is required}@redis:6379/0
+      RATE_LIMITER_ENABLED: "true"
+      RATE_LIMITER_STORE: redis
+      HEALTHCHECK_ENABLED: "true"
+      HEALTHCHECK_SERVICES: database,redis,storage
+      STORAGE_LOCATIONS: local
+      STORAGE_LOCAL_DRIVER: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+    expose:
+      - "8055"
+    volumes:
+      - directus_uploads:/directus/uploads
+      - directus_extensions:/directus/extensions
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget --spider --quiet http://127.0.0.1:8055/server/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_interval: 3s
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 30s
+    logging: *default-logging
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  directus_extensions:
+  directus_uploads:
+  postgres_data:
+  redis_data:

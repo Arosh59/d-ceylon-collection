@@ -8,6 +8,9 @@ import { getWebEnvironment } from "@/lib/environment";
 
 import "./globals.css";
 
+// SITE_URL is deployment configuration supplied when the container starts.
+export const dynamic = "force-dynamic";
+
 export function generateMetadata(): Metadata {
   const { siteUrl } = getWebEnvironment();
 

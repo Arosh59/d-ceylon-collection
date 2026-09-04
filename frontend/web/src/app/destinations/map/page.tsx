@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DestinationMapPage() {
+  const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY?.trim();
   const catalogue = await getCatalogueClient();
   const destinations = await catalogue.getDestinations({ pageNumber: 1, pageSize: 100 });
   const regions = await Promise.all(
@@ -47,7 +48,7 @@ export default async function DestinationMapPage() {
             title="No map destinations are currently published."
           />
         ) : (
-          <DestinationMap destinations={regions} />
+          <DestinationMap apiKey={googleMapsApiKey} destinations={regions} />
         )}
       </section>
     </main>

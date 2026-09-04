@@ -36,7 +36,13 @@ type GoogleMapsWindow = Window & { google?: { maps?: GoogleMapsApi } };
 
 let googleMapsLoad: Promise<GoogleMapsApi> | undefined;
 
-export function DestinationMap({ destinations }: { destinations: MapDestination[] }) {
+export function DestinationMap({
+  apiKey,
+  destinations,
+}: {
+  apiKey?: string | undefined;
+  destinations: MapDestination[];
+}) {
   const [selectedSlug, setSelectedSlug] = useState(destinations[0]?.slug ?? "");
   const selected = destinations.find((destination) => destination.slug === selectedSlug);
 
@@ -50,6 +56,7 @@ export function DestinationMap({ destinations }: { destinations: MapDestination[
           provides an equivalent non-map experience.
         </p>
         <GoogleDestinationMap
+          apiKey={apiKey}
           destinations={destinations}
           onSelect={setSelectedSlug}
           selectedSlug={selectedSlug}
@@ -109,17 +116,18 @@ export function DestinationMap({ destinations }: { destinations: MapDestination[
 }
 
 function GoogleDestinationMap({
+  apiKey,
   destinations,
   onSelect,
   selectedSlug,
 }: {
+  apiKey?: string | undefined;
   destinations: MapDestination[];
   onSelect: (slug: string) => void;
   selectedSlug: string;
 }) {
   const mapElement = useRef<HTMLDivElement>(null);
   const mapReference = useRef<GoogleMapInstance | null>(null);
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
   const [mapLoadError, setMapLoadError] = useState(false);
 
   useEffect(() => {
@@ -178,7 +186,10 @@ function GoogleDestinationMap({
           {selectedSlug ? (
             <a
               className="font-semibold text-navy underline decoration-gold underline-offset-4"
-              href={googleMapsSearchUrl(destinations.find((destination) => destination.slug === selectedSlug)?.name ?? "Sri Lanka")}
+              href={googleMapsSearchUrl(
+                destinations.find((destination) => destination.slug === selectedSlug)?.name ??
+                  "Sri Lanka",
+              )}
               rel="noreferrer"
               target="_blank"
             >

@@ -40,6 +40,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  outputFileTracingRoot: path.resolve(import.meta.dirname, "../.."),
   images: {
     qualities: [70, 75, 90, 100],
   },
