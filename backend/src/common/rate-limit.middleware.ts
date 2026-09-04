@@ -14,8 +14,7 @@ export class RateLimitMiddleware implements NestMiddleware {
     const limit =
       request.path === "/api/v1/access/testing/token"
         ? 10
-        : request.path.startsWith("/api/v1/catalogue/") ||
-            request.path.startsWith("/api/v1/editorial/")
+        : request.path.startsWith("/api/v1/catalogue/")
           ? 120
           : undefined;
     if (!limit) return next();

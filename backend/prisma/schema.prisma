@@ -5,7 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["bookings", "catalogue", "customers_travellers", "identity_access", "itineraries_travel_planning", "organisations_agents", "payments", "quotes", "supplier_operations"]
+  schemas  = ["bookings", "catalogue", "customers_travellers", "editorial", "identity_access", "itineraries_travel_planning", "organisations_agents", "payments", "quotes", "supplier_operations"]
 }
 
 // Generated from the final EF Core model snapshots at the NestJS cutover baseline.
@@ -969,4 +969,3 @@ model WishlistEntry {
   @@map("wishlist_entries")
   @@schema("customers_travellers")
 }
-

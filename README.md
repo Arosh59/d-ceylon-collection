@@ -9,9 +9,9 @@ AI service.
 ## Status
 
 The repository now includes the modular API, public and administration Next.js hosts, generated SDK,
-protected customer/agent/operations foundations, Directus editorial boundary and Journal, accessible
+protected customer/agent/operations foundations, PostgreSQL-backed editorial Journal, accessible
 destination-map foundation, and an isolated Gemini-backed draft-only FastAPI gateway. Production deployment
-remains gated on external identity, Directus, payment, supplier, Azure, and operational approvals
+remains gated on external identity, payment, supplier, Azure, and operational approvals
 described in the release checklist.
 
 See the [feature-status matrix](docs/features/status.md) for phase progress.

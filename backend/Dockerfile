@@ -6,7 +6,7 @@ COPY backend/package.json backend/package.json
 COPY frontend/admin/package.json frontend/admin/package.json
 COPY frontend/web/package.json frontend/web/package.json
 COPY packages/sdk/package.json packages/sdk/package.json
-RUN npm ci --ignore-scripts
+RUN npm ci --ignore-scripts --no-audit --no-fund
 
 FROM dependencies AS build
 COPY backend backend

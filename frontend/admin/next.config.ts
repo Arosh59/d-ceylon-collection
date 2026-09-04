@@ -4,6 +4,8 @@ import path from "node:path";
 const developmentScriptSource = process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : "";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  outputFileTracingRoot: path.resolve(import.meta.dirname, "../.."),
   poweredByHeader: false,
   reactStrictMode: true,
   turbopack: { root: path.resolve(import.meta.dirname, "../..") },

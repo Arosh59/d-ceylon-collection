@@ -27,10 +27,7 @@ trap cleanup EXIT
 
 postgres_admin_password="$(openssl rand -hex 24)"
 postgres_app_password="$(openssl rand -hex 24)"
-directus_database_password="$(openssl rand -hex 24)"
 redis_password="$(openssl rand -hex 24)"
-directus_secret="$(openssl rand -hex 32)"
-directus_admin_password="$(openssl rand -hex 24)"
 
 while IFS= read -r line || [[ -n "${line}" ]]; do
     case "${line}" in
@@ -40,17 +37,8 @@ while IFS= read -r line || [[ -n "${line}" ]]; do
         POSTGRES_APP_PASSWORD=*)
             printf 'POSTGRES_APP_PASSWORD=%s\n' "${postgres_app_password}"
             ;;
-        DIRECTUS_DB_PASSWORD=*)
-            printf 'DIRECTUS_DB_PASSWORD=%s\n' "${directus_database_password}"
-            ;;
         REDIS_PASSWORD=*)
             printf 'REDIS_PASSWORD=%s\n' "${redis_password}"
-            ;;
-        DIRECTUS_SECRET=*)
-            printf 'DIRECTUS_SECRET=%s\n' "${directus_secret}"
-            ;;
-        DIRECTUS_ADMIN_PASSWORD=*)
-            printf 'DIRECTUS_ADMIN_PASSWORD=%s\n' "${directus_admin_password}"
             ;;
         *)
             printf '%s\n' "${line}"
@@ -63,4 +51,3 @@ chmod 600 "${environment_path}"
 trap - EXIT
 
 echo "Created ${environment_path} with generated local-only credentials."
-echo "Review DIRECTUS_ADMIN_EMAIL before sharing this development environment."

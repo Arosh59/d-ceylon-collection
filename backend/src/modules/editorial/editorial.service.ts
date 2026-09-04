@@ -1,95 +1,89 @@
-import { Injectable, NotFoundException, ServiceUnavailableException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
 
 import { page, pagination, type PageQuery } from "../../common/pagination";
+import { DatabaseService } from "../../database/database.service";
 
-interface DirectusList<T> {
-  data: T[];
-  meta?: { filter_count?: number };
-}
-
-interface DirectusArticle {
+interface EditorialArticle {
   slug: string;
   title: string;
-  summary?: string | null;
+  summary: string | null;
   content?: string | null;
-  hero_image?: string | null;
-  date_published?: string | null;
+  heroImage: string | null;
+  datePublished: Date | null;
 }
 
-interface DirectusPromotion {
+interface EditorialPromotion {
   id: string;
   title: string;
-  summary?: string | null;
-  cta_label?: string | null;
-  cta_url?: string | null;
-  image?: string | null;
+  summary: string | null;
+  callToActionLabel: string | null;
+  callToActionUrl: string | null;
+  image: string | null;
 }
 
 @Injectable()
 export class EditorialService {
+  public constructor(private readonly database: DatabaseService) {}
+
   public async journal(query: PageQuery): Promise<Record<string, unknown>> {
     const p = pagination(query);
-    const result = await this.get<DirectusList<DirectusArticle>>(
-      `items/journal_articles?filter[status][_eq]=published&sort=-date_published&limit=${p.pageSize}&offset=${p.skip}&meta=filter_count&fields=slug,title,summary,hero_image,date_published`,
-    );
-    return page(
-      result.data.map(summary),
-      result.meta?.filter_count ?? result.data.length,
-      p.pageNumber,
-      p.pageSize,
-    );
+    const [items, totalItems] = await Promise.all([
+      this.database.rows<EditorialArticle>(Prisma.sql`
+        SELECT slug, title, summary, hero_image AS "heroImage", date_published AS "datePublished"
+          FROM editorial.journal_articles
+         WHERE status = 'published'
+         ORDER BY date_published DESC NULLS LAST, slug
+         OFFSET ${p.skip} LIMIT ${p.pageSize}
+      `),
+      this.database.rows<{ count: bigint }>(Prisma.sql`
+        SELECT COUNT(*)::bigint AS count
+          FROM editorial.journal_articles
+         WHERE status = 'published'
+      `),
+    ]);
+    return page(items.map(summary), Number(totalItems[0]?.count ?? 0), p.pageNumber, p.pageSize);
   }
 
   public async article(slug: string): Promise<Record<string, unknown>> {
     if (!slug.trim()) throw new NotFoundException();
-    const result = await this.get<DirectusList<DirectusArticle>>(
-      `items/journal_articles?filter[status][_eq]=published&filter[slug][_eq]=${encodeURIComponent(slug)}&limit=1&fields=slug,title,summary,content,hero_image,date_published`,
-    );
-    const item = result.data[0];
+    const items = await this.database.rows<EditorialArticle>(Prisma.sql`
+      SELECT slug, title, summary, content, hero_image AS "heroImage", date_published AS "datePublished"
+        FROM editorial.journal_articles
+       WHERE status = 'published' AND slug = ${slug}
+       LIMIT 1
+    `);
+    const item = items[0];
     if (!item) throw new NotFoundException();
     return { ...summary(item), content: item.content ?? "" };
   }
 
   public async promotions(): Promise<Record<string, unknown>[]> {
-    const result = await this.get<DirectusList<DirectusPromotion>>(
-      "items/promotions?filter[status][_eq]=published&sort=sort&limit=20&fields=id,title,summary,cta_label,cta_url,image",
-    );
-    return result.data.map((item) => ({
+    const items = await this.database.rows<EditorialPromotion>(Prisma.sql`
+      SELECT id, title, summary, cta_label AS "callToActionLabel",
+             cta_url AS "callToActionUrl", image
+        FROM editorial.promotions
+       WHERE status = 'published'
+       ORDER BY sort, id
+       LIMIT 20
+    `);
+    return items.map((item) => ({
       id: item.id,
       title: item.title,
       summary: item.summary ?? null,
-      callToActionLabel: item.cta_label ?? null,
-      callToActionUrl: item.cta_url ?? null,
+      callToActionLabel: item.callToActionLabel ?? null,
+      callToActionUrl: item.callToActionUrl ?? null,
       imageUrl: item.image ?? null,
     }));
   }
-
-  private async get<T>(path: string): Promise<T> {
-    const baseUrl = process.env.DIRECTUS_API_BASE_URL?.trim();
-    if (!baseUrl) {
-      throw new ServiceUnavailableException(
-        "Editorial content is not configured for this environment.",
-      );
-    }
-    const response = await fetch(new URL(path, baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`), {
-      headers: process.env.DIRECTUS_STATIC_TOKEN
-        ? { Authorization: `Bearer ${process.env.DIRECTUS_STATIC_TOKEN}` }
-        : undefined,
-      signal: AbortSignal.timeout(5_000),
-    });
-    if (!response.ok) {
-      throw new ServiceUnavailableException("Editorial content is temporarily unavailable.");
-    }
-    return (await response.json()) as T;
-  }
 }
 
-function summary(item: DirectusArticle): Record<string, unknown> {
+function summary(item: EditorialArticle): Record<string, unknown> {
   return {
     slug: item.slug,
     title: item.title,
     summary: item.summary ?? null,
-    heroImageUrl: item.hero_image ?? null,
-    publishedAtUtc: item.date_published ?? null,
+    heroImageUrl: item.heroImage ?? null,
+    publishedAtUtc: item.datePublished?.toISOString() ?? null,
   };
 }

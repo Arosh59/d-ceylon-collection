@@ -6,7 +6,7 @@ only after its documented checks pass.
 | Phase | Scope                                                  | Status      |
 | ----- | ------------------------------------------------------ | ----------- |
 | 0     | Repository and documentation baseline                  | Complete    |
-| 1     | Local PostgreSQL, Redis, and Directus                  | Complete    |
+| 1     | Local PostgreSQL and Redis                             | Complete    |
 | 2     | NestJS API migration and initial catalogue             | Complete    |
 | 3     | Public Next.js foundation                              | Complete    |
 | 4     | Catalogue, destinations, search, and collection seeds  | Complete    |
@@ -16,7 +16,7 @@ only after its documented checks pass.
 | 8     | Quote workflow                                         | Complete    |
 | 9     | Booking, payments, invoices, and vouchers              | Complete    |
 | 10    | Suppliers and operations                               | Complete    |
-| 11    | Directus editorial integration                         | Complete    |
+| 11    | PostgreSQL-backed editorial integration                | Complete    |
 | 12    | Accessible interactive Sri Lanka map                   | Complete    |
 | 13    | Administration application                             | Complete    |
 | 14    | AI gateway and isolated FastAPI skeleton               | Complete    |
@@ -25,7 +25,7 @@ only after its documented checks pass.
 Phase 0 is marked complete only after repository structure and documentation validation pass.
 
 Phase 1 was verified with Compose rendering, container health checks, least-privilege database
-ownership checks, Redis authentication checks, Directus dependency health, and a
+ownership checks, Redis authentication checks, and a
 persistence-preserving stop/start cycle.
 
 Phase 2 was verified with a locked restore, dependency vulnerability audit, formatting check,
@@ -100,14 +100,14 @@ input validation, indexes, auditing, correlation IDs, and Problem Details; the p
 server-side portal uses generated SDK contracts and accessible empty summaries. Acceptance includes
 zero-warning API builds, no-pending-model checks, local migration application, OpenAPI
 regeneration/equality, strict TypeScript, lint, 43 frontend tests, 63 unit tests, and 31 isolated
-PostgreSQL integration tests. Supplier self-service, administration, Directus, live availability,
+PostgreSQL integration tests. Supplier self-service, administration, live availability,
 and payment capture remain explicitly outside Phase 10.
 
-Phase 11 is complete for local development: the configuration-driven, read-only Directus Editorial
-module serves Journal and promotion contracts. The repeatable local CMS provisioner creates
-published-only Journal, promotions, and rights/alt-text media metadata collections without image
-files; public-page list/detail rendering and idempotence are verified. Approved production content
-and media licensing remain release inputs, not missing repository functionality.
+Phase 11 is complete for local development: the NestJS Editorial module serves Journal and
+promotion contracts from the application PostgreSQL database. Editorial tables are created by a
+reviewed Prisma migration; public-page list/detail rendering remains compatible with the existing
+SDK contract. Approved production content and media licensing remain release inputs, not missing
+repository functionality.
 
 Phase 12 is complete with an accessible abstract destination map, keyboard selection, catalogue
 product counts, and a complete non-map list fallback. It exposes a documented adapter location for

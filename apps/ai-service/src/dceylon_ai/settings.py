@@ -24,7 +24,6 @@ class Settings:
             or "POSTGRES" in key
             or "SQL" in key
             or "REDIS" in key
-            or "DIRECTUS" in key
         ]
         if forbidden:
             raise RuntimeError("The AI service must not receive database configuration.")

@@ -25,7 +25,7 @@ The server requires:
   integration; and
 - `AUTH_SECRET` — at least 32 random characters for encrypted session state.
 
-## Docker and Dockploy
+## Docker and Dokploy
 
 Build the production image from the repository root because this application uses the root npm
 workspace and `packages/sdk`:
@@ -34,14 +34,18 @@ workspace and `packages/sdk`:
 docker build -f frontend/web/Dockerfile -t dceylon-web .
 ```
 
-In Dockploy, set the build context to `/`, the Dockerfile to `frontend/web/Dockerfile`, and the
+In Dokploy, set the build context to `/`, the Dockerfile to `frontend/web/Dockerfile`, and the
 container port to `3000`. Configure `API_BASE_URL`, `SITE_URL`, `APP_ENVIRONMENT`, `AUTH_MODE`,
 `AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_SCOPE`, and `AUTH_SECRET` as runtime
 environment variables. `GOOGLE_MAPS_API_KEY` is optional and browser-visible; restrict it to the
 production site's HTTP referrers. Do not upload or copy an `.env` file into the image.
 
+When the backend Compose stack is a separate Dokploy service, set `API_BASE_URL` to its public HTTPS
+origin, such as `https://api.example.com`. Do not use `http://api:8080`, because that hostname
+exists only inside the backend Compose network.
+
 The image uses Next.js standalone output, runs as an unprivileged user, and includes a container
-health check. Dockploy should terminate TLS at its reverse proxy and route the public hostname to
+health check. Dokploy should terminate TLS at its reverse proxy and route the public hostname to
 port `3000`.
 
 Copy `frontend/web/.env.example` to `frontend/web/.env.local` for normal local development. Real

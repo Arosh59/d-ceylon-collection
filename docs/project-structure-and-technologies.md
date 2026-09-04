@@ -28,7 +28,7 @@
 | API | NestJS 11 on Node.js 24 |
 | Data access | Prisma 6 with parameterized PostgreSQL queries |
 | Transactional database | PostgreSQL 18 locally; existing multi-schema model |
-| Editorial CMS | Directus 11 |
+| Editorial content | NestJS + PostgreSQL (`editorial` schema) |
 | Ephemeral storage | Redis 8 |
 | API contract | OpenAPI 3 and `packages/sdk` |
 | Tests | Jest for backend; Vitest, Testing Library, axe, and Playwright for web |
@@ -37,8 +37,9 @@
 
 The NestJS backend preserves `catalogue`, `identity_access`, `organisations_agents`,
 `customers_travellers`, `itineraries_travel_planning`, `quotes`, `bookings`, `payments`, and
-`supplier_operations`. Existing UUIDs, constraints, indexes, concurrency tokens, and data remain in
-place. Never use destructive Prisma reset or push commands on this database.
+`supplier_operations`, and owns editorial tables in `editorial`. Existing UUIDs, constraints,
+indexes, concurrency tokens, and data remain in place. Never use destructive Prisma reset or push
+commands on this database.
 
 ## Environment files
 
