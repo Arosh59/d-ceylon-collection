@@ -1,7 +1,7 @@
 # Backup and Restore Guide
 
-PostgreSQL transactional data, Directus content/storage, deployment configuration, and encryption
-key dependencies require distinct backup and restore plans. Application startup never changes a
+PostgreSQL transactional and editorial data, deployment configuration, and encryption key
+dependencies require a tested backup and restore plan. Application startup never changes a
 database; restore and migration actions are controlled operations.
 
 ## Local restore exercise
@@ -15,7 +15,7 @@ system temporary directory for inspection.
 DCEYLON_CONFIRM_LOCAL_RESTORE_EXERCISE=yes ./scripts/verify-local-backup-restore.sh
 ```
 
-It never drops the application or Directus database. It is not a substitute for a production
+It never drops the application database. It is not a substitute for a production
 restore exercise, which must use approved encrypted backups, separate infrastructure, and an
 observed application smoke test.
 

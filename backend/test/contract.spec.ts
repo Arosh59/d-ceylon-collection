@@ -25,16 +25,16 @@ describe("canonical API contract", () => {
         ["get", "post", "put", "patch", "delete"].includes(method),
       ),
     );
-    expect(Object.keys(canonical.paths)).toHaveLength(59);
-    expect(operations).toHaveLength(81);
-    expect(Object.keys(generated.paths)).toHaveLength(59);
+    expect(Object.keys(canonical.paths)).toHaveLength(60);
+    expect(operations).toHaveLength(82);
+    expect(Object.keys(generated.paths)).toHaveLength(60);
     expect(
       Object.values(generated.paths).flatMap((path) =>
         Object.keys(path ?? {}).filter((method) =>
           ["get", "post", "put", "patch", "delete"].includes(method),
         ),
       ),
-    ).toHaveLength(81);
+    ).toHaveLength(82);
     expect(missingCanonicalOperations(canonical, generated)).toEqual([]);
     await app.close();
   });

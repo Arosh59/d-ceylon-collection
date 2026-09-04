@@ -10,7 +10,7 @@ contract at `/api/v1` and publishes that contract at `/openapi/v1.json`.
 - Prisma supplies PostgreSQL connectivity and parameterized typed queries. It connects to the
   existing multi-schema database and does not recreate or erase application data.
 - The external OIDC provider remains the identity authority.
-- Directus remains authoritative for editorial content.
+- NestJS and PostgreSQL own editorial content through the `editorial` schema.
 - `packages/sdk/openapi/v1.json` is the reviewed public contract consumed by both Next.js hosts.
 
 The backend contains modules for access, catalogue, customers and travellers, editorial content,
@@ -37,7 +37,7 @@ Verify the baseline with `npm run prisma:baseline:verify`, `npm run prisma:migra
 At startup the Nest application generates a route document and checks every canonical path,
 HTTP method, operation ID, and success status. The canonical reviewed document is then served
 unchanged so the existing SDK remains backward-compatible. The Jest contract test independently
-verifies all 59 paths and 81 operations.
+verifies all 60 paths and 82 operations.
 
 Use `API_BASE_URL=http://127.0.0.1:8080 npm run sdk:verify` against a running backend. Refresh and
 regenerate the SDK only for an explicitly reviewed contract change.

@@ -37,5 +37,5 @@ empty states.
 ## Explicit limitations
 
 This foundation does not implement supplier login or self-service, supplier availability,
-assignment/fulfilment status changes, booking changes, payment capture, administration, Directus,
+assignment/fulfilment status changes, booking changes, payment capture, administration,
 or customer credentials. It must not be used to imply live availability or booking fulfilment.

@@ -44,7 +44,7 @@ export default async function OperationsPortalPage() {
         <h1 className="mt-3 text-5xl text-navy">Operations workspace</h1>
         <p className="mt-5 max-w-3xl text-lg text-ink-muted">
           Supplier directory and booking-operation coordination are protected staff capabilities.
-          This workspace never exposes administration, supplier self-service, Directus, live
+          This workspace never exposes administration, supplier self-service, live
           availability, payment capture, or customer credentials.
         </p>
         <div className="mt-10 grid gap-8 lg:grid-cols-2">

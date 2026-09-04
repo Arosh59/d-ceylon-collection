@@ -969,4 +969,3 @@ model WishlistEntry {
   @@map("wishlist_entries")
   @@schema("customers_travellers")
 }
-

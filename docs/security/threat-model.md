@@ -35,7 +35,7 @@ whenever payments, private documents, new external providers, or AI capabilities
 1. Browser or mobile client to the public/admin applications.
 2. Frontend applications to the versioned application API.
 3. Application API to PostgreSQL, Redis, private object storage, and providers.
-4. Editorial applications and integration code to Directus.
+4. Application API to editorial PostgreSQL tables and approved media storage.
 5. Payment providers to signed webhook endpoints.
 6. Private networks and cloud control planes to workloads and data services.
 7. Application API to the isolated AI service.
@@ -140,7 +140,7 @@ authorization, transport protection, safe logging, and bounded timeouts and reso
 - Object storage and malware-scanning providers
 - Data classification, jurisdiction, retention, and deletion schedules
 - Operational alert thresholds and incident response ownership
-- Directus deployment and editorial publishing controls
+- Editorial publishing controls and media-storage selection
 
 ## Review triggers
 

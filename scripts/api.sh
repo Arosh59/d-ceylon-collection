@@ -8,15 +8,15 @@ environment_file="${DCEYLON_ENV_FILE:-${repository_root}/.env}"
 
 if [[ -f "${environment_file}" ]]; then
     set -a
+    # Normalize CRLF files exported by some editors before sourcing them.
     # shellcheck disable=SC1090
-    source "${environment_file}"
+    source <(sed 's/\r$//' "${environment_file}")
     set +a
 fi
 
 export API_PORT="${API_PORT:-8080}"
 export APP_ENVIRONMENT="${APP_ENVIRONMENT:-Development}"
 export DATABASE_URL="${DATABASE_URL:-postgresql://${POSTGRES_APP_USER:-dceylon_app}:${POSTGRES_APP_PASSWORD:-replace-me}@127.0.0.1:${POSTGRES_PORT:-5432}/${POSTGRES_APP_DB:-dceylon_app}}"
-export DIRECTUS_API_BASE_URL="${DIRECTUS_API_BASE_URL:-http://127.0.0.1:${DIRECTUS_PORT:-8055}}"
 
 usage() {
     cat <<'USAGE'

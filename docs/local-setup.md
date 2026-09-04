@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Node.js 24 and npm 11
-- Docker with Compose v2 for PostgreSQL, Redis, and Directus
+- Docker with Compose v2 for PostgreSQL and Redis
 - Git and OpenSSL
 
 The NestJS runtime does not require a .NET SDK. The legacy `apps/api` source is retained only for
@@ -37,6 +37,17 @@ boundaries.
 ./scripts/api.sh migrate
 ```
 
+To run the API itself in Docker after the infrastructure is healthy:
+
+```bash
+docker compose --env-file .env --file infrastructure/docker/compose.yaml \
+  --profile application up --detach --wait
+```
+
+This publishes the API at `http://127.0.0.1:8080`. If port 5432 is already occupied, set
+`POSTGRES_PORT=55432` for both the infrastructure and application Compose commands, and use that
+port in `DATABASE_URL` for host-run Prisma commands.
+
 The full Prisma baseline creates all preserved schemas when the database is empty. For an existing
 D Ceylon database, run `./scripts/api.sh baseline-existing` once instead of applying the baseline,
 then use `./scripts/api.sh migrate` for later migrations. Never run `prisma migrate reset` or
@@ -50,8 +61,8 @@ npm run dev:web
 npm run dev:admin
 ```
 
-The default origins are API `http://127.0.0.1:8080`, web `http://127.0.0.1:3000`, admin
-`http://127.0.0.1:3001`, and Directus `http://127.0.0.1:8055`.
+The default origins are API `http://127.0.0.1:8080`, web `http://127.0.0.1:3000`, and admin
+`http://127.0.0.1:3001`. Editorial content is stored in the application PostgreSQL database.
 
 `npm run dev` starts the NestJS API, waits for `/health/ready`, and then starts the public web host.
 

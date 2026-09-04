@@ -7,7 +7,7 @@
 - `backend` is the NestJS modular-monolith API.
 - `packages/sdk` contains the reviewed OpenAPI contract and shared TypeScript client.
 - `apps/ai-service` remains an isolated FastAPI service.
-- PostgreSQL owns transactional data, Directus owns editorial content, and Redis owns ephemeral data.
+- PostgreSQL owns transactional and editorial data, and Redis owns ephemeral data.
 
 The frontend hosts call only the versioned API. They do not connect directly to PostgreSQL or
 duplicate backend domain decisions.
@@ -19,7 +19,7 @@ NestJS host
 ├── access and external OIDC
 ├── catalogue
 ├── customers and travellers
-├── editorial / Directus
+├── editorial
 ├── travel planning
 ├── quotes and pricing
 ├── bookings
@@ -29,9 +29,10 @@ NestJS host
         └── Prisma → existing PostgreSQL schemas
 ```
 
-The backend uses the existing schema and table names. Prisma migrations are baselined against that
-database; startup never applies schema changes. New migrations must be reviewed and deployed as a
-separate operational step.
+The backend uses the existing schema and table names. Editorial content is in the new `editorial`
+PostgreSQL schema and is served directly by NestJS. Prisma migrations are baselined against the
+existing database; startup never applies schema changes. New migrations must be reviewed and
+deployed as a separate operational step.
 
 ## Contract and security
 

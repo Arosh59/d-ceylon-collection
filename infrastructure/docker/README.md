@@ -1,6 +1,6 @@
 # Local Infrastructure
 
-The default Compose profile provides local PostgreSQL, Redis, and Directus services. The optional
+The default Compose profile provides local PostgreSQL and Redis services. The optional
 `application` profile also builds the NestJS API; frontend hosts continue to run separately. This
 file is not a production deployment configuration and does not include optional object-storage or
 mail-testing services.
@@ -11,7 +11,6 @@ mail-testing services.
 | --- | --- | --- |
 | PostgreSQL | `postgres:18.3-alpine3.23` | Current supported PostgreSQL major and patch tag available from the official image catalogue when Phase 1 was implemented |
 | Redis | `redis:8.8.0-alpine3.23` | Current stable official Redis image; password authentication is enabled |
-| Directus | `directus/directus:11.17.4` | Current stable Directus 11 image; exact version pinned as recommended by Directus |
 
 The tags are exact for repeatable local setup. Production hardening will add
 digest pinning, image scanning, update policy, and license review. Redis 8 is
@@ -22,8 +21,6 @@ Version sources:
 
 - [PostgreSQL official image](https://hub.docker.com/_/postgres)
 - [Redis official image](https://hub.docker.com/_/redis)
-- [Directus image tags](https://hub.docker.com/r/directus/directus/tags)
-- [Directus deployment and health-check guidance](https://directus.com/docs/self-hosting/deploying)
 
 ## Topology
 
@@ -34,12 +31,10 @@ All services share a Compose bridge network. Published ports bind only to
 | --- | --- | --- |
 | PostgreSQL | `127.0.0.1:5432` | `postgres_data` |
 | Redis | `127.0.0.1:6379` | `redis_data` |
-| Directus | `http://127.0.0.1:8055` | `directus_uploads`, `directus_extensions` |
 
-PostgreSQL uses separate, non-superuser roles and databases for the future
-application and Directus. Redis requires a password. Directus uses Redis for
-caching and checks its database, Redis, and local storage through
-`/server/health`.
+PostgreSQL uses a separate, non-superuser application role. Transactional and
+editorial data share the application database; editorial data is isolated in
+the `editorial` schema. Redis requires a password.
 
 These are local-development controls, not a production security design.
 Environment variables are visible to the local Docker daemon. Production
@@ -92,11 +87,8 @@ healthy. `down` preserves named volumes.
 
 ## Health checks
 
-- PostgreSQL must accept connections and contain both expected databases.
+- PostgreSQL must accept connections and contain the expected application database.
 - Redis must return `PONG` with the configured password.
-- Directus container liveness uses `/server/ping`.
-- The verification command also calls `/server/health` to check the Directus
-  database, cache, and storage dependencies.
 
 Run:
 
@@ -106,8 +98,8 @@ Run:
 
 ## Data reset
 
-Deleting named volumes permanently removes all local PostgreSQL, Redis, and
-Directus upload data. The helper refuses this action without an explicit
+Deleting named volumes permanently removes all local PostgreSQL and Redis data.
+The helper refuses this action without an explicit
 confirmation variable:
 
 ```bash
@@ -129,10 +121,9 @@ docker info
 
 ### A port is already allocated
 
-Change `POSTGRES_PORT`, `REDIS_PORT`, or `DIRECTUS_PORT` in `.env`, then restart
-the stack. Keep `DIRECTUS_PUBLIC_URL` aligned with `DIRECTUS_PORT`.
+Change `POSTGRES_PORT` or `REDIS_PORT` in `.env`, then restart the stack.
 
-### Directus or PostgreSQL remains unhealthy
+### PostgreSQL or Redis remains unhealthy
 
 Inspect status and logs:
 
@@ -144,12 +135,6 @@ Inspect status and logs:
 Database initialization scripts run only for an empty volume. If credentials or
 database names changed after first startup, either restore the previous values
 or intentionally follow the guarded data-reset procedure.
-
-### Directus health returns 503
-
-Inspect the response and Directus logs. `/server/health` checks PostgreSQL,
-Redis, and local storage; a failed dependency is expected to make readiness
-fail even when `/server/ping` returns `pong`.
 
 ### Images fail to pull
 
