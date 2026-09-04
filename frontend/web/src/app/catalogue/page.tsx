@@ -42,6 +42,9 @@ export default async function CataloguePage({ searchParams }: CataloguePageProps
     collection: search.collection,
     destination: search.destination,
     tag: search.tag,
+    minimumPrice: search.minimumPrice,
+    maximumPrice: search.maximumPrice,
+    maximumDurationMinutes: search.maximumDurationMinutes,
     sort: search.sort,
   };
 
@@ -59,7 +62,7 @@ export default async function CataloguePage({ searchParams }: CataloguePageProps
           </p>
         </Container>
       </section>
-      <Container className="py-12 sm:py-20">
+      <Container className="py-10 sm:py-16">
         <CatalogueFilters
           categories={categories.items}
           collections={collections.items}

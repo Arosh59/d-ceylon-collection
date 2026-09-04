@@ -29,7 +29,7 @@ export default async function CollectionsPage() {
           </p>
         </Container>
       </section>
-      <Container className="py-16 sm:py-24">
+      <Container className="py-12 sm:py-20">
         {collections.items.length === 0 ? (
           <EmptyState
             description="Published collections will appear here when they are ready."

@@ -25,13 +25,22 @@ export function SiteFooter() {
             <li>
               <Link href="/catalogue">Catalogue</Link>
             </li>
+            <li>
+              <Link href="/contact">Contact us</Link>
+            </li>
           </ul>
         </nav>
         <div>
           <p className="text-xs tracking-[0.2em] text-gold uppercase">Plan ahead</p>
           <p className="mt-5 leading-7 text-white/64">
-            Quote requests and tailored planning arrive in later, secured phases.
+            Save the places you love, then shape a journey around the way you want to feel.
           </p>
+          <Link
+            className="mt-5 inline-block text-sm font-semibold text-white underline decoration-gold underline-offset-4 hover:text-gold-light"
+            href="/auth/sign-up"
+          >
+            Create your travel space
+          </Link>
         </div>
       </Container>
       <div className="border-t border-white/10">

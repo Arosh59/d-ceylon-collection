@@ -55,7 +55,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           media={product.media[0] ?? null}
         />
       </Container>
-      <Container className="grid gap-12 py-16 sm:py-24 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <Container className="grid gap-10 py-12 sm:py-20 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <section aria-labelledby="journey-overview">
           <p className="eyebrow">Journey overview</p>
           <h2 className="mt-4 text-4xl" id="journey-overview">

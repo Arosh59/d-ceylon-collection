@@ -1,4 +1,5 @@
 import { SignInButton } from "./sign-in-button";
+import { localAuthEnabled } from "@/lib/auth";
 
 export default function SignInPage() {
   return (
@@ -7,10 +8,11 @@ export default function SignInPage() {
         <p className="text-sm font-bold tracking-[0.16em] text-gold uppercase">Restricted access</p>
         <h1 className="mt-4 text-4xl font-serif">D Ceylon Administration</h1>
         <p className="mt-4 leading-7 text-slate-600">
-          Sign in with an approved administrator account. Customer, agent, and staff roles do not
-          receive administrative access.
+          {localAuthEnabled
+            ? "Use the local administrator credentials configured for this development workspace."
+            : "Sign in with an approved administrator account. Customer, agent, and staff roles do not receive administrative access."}
         </p>
-        <SignInButton />
+        <SignInButton localAuthEnabled={localAuthEnabled} />
       </section>
     </main>
   );

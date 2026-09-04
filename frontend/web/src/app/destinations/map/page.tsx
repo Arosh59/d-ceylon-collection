@@ -33,14 +33,14 @@ export default async function DestinationMapPage() {
   return (
     <main id="main-content">
       <section className="page-hero">
-        <div className="mx-auto max-w-6xl px-5 py-28 sm:py-36">
+        <div className="mx-auto max-w-6xl px-5">
           <p className="eyebrow text-gold-light">Sri Lanka map</p>
           <h1 className="mt-5 max-w-4xl text-5xl text-white sm:text-7xl">
             Follow the island by feeling, not just distance.
           </h1>
         </div>
       </section>
-      <section className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+      <section className="mx-auto max-w-6xl px-5 py-12 sm:py-20">
         {regions.length === 0 ? (
           <EmptyState
             description="Published destinations will appear on the accessible map when ready."

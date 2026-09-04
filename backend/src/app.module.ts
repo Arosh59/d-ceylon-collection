@@ -9,6 +9,7 @@ import { RateLimitMiddleware } from "./common/rate-limit.middleware";
 import { RequestLoggingMiddleware } from "./common/request-logging.middleware";
 import { DatabaseModule } from "./database/database.module";
 import { AccessModule } from "./modules/access/access.module";
+import { AdministrationModule } from "./modules/administration/administration.module";
 import { BookingsModule } from "./modules/bookings/bookings.module";
 import { CatalogueModule } from "./modules/catalogue/catalogue.module";
 import { CustomersModule } from "./modules/customers/customers.module";
@@ -24,6 +25,7 @@ import { validateEnvironment } from "./configuration";
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnvironment }),
     DatabaseModule,
     AccessModule,
+    AdministrationModule,
     CatalogueModule,
     CustomersModule,
     EditorialModule,

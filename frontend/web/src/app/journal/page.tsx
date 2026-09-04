@@ -33,14 +33,14 @@ export default async function JournalPage() {
   return (
     <main id="main-content">
       <section className="page-hero">
-        <div className="mx-auto max-w-6xl px-5 py-28 sm:py-36">
+        <div className="mx-auto max-w-6xl px-5">
           <p className="eyebrow text-gold-light">Travel Journal</p>
           <h1 className="mt-5 max-w-4xl text-5xl text-white sm:text-7xl">
             Stories that deepen the journey.
           </h1>
         </div>
       </section>
-      <section className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+      <section className="mx-auto max-w-6xl px-5 py-12 sm:py-20">
         {page.items.length === 0 ? (
           <EmptyState
             description="Published stories will appear here when they are ready."
@@ -75,14 +75,14 @@ function JournalUnavailable() {
   return (
     <main id="main-content">
       <section className="page-hero">
-        <div className="mx-auto max-w-6xl px-5 py-28 sm:py-36">
+        <div className="mx-auto max-w-6xl px-5">
           <p className="eyebrow text-gold-light">Travel Journal</p>
           <h1 className="mt-5 max-w-4xl text-5xl text-white sm:text-7xl">
             Stories that deepen the journey.
           </h1>
         </div>
       </section>
-      <section className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+      <section className="mx-auto max-w-6xl px-5 py-12 sm:py-20">
         <EmptyState
           description="Editorial stories are being prepared. Please return soon."
           title="The journal is taking a brief pause."

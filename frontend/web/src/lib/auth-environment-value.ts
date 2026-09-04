@@ -1,7 +1,9 @@
 export type ApplicationEnvironment = "Development" | "Production" | "Testing";
+export type AuthenticationMode = "local" | "oidc";
 
 export interface AuthenticationEnvironment {
   applicationEnvironment: ApplicationEnvironment;
+  authenticationMode: AuthenticationMode;
   clientId: string;
   clientSecret: string;
   issuer: string;
@@ -12,6 +14,7 @@ export interface AuthenticationEnvironment {
 
 interface EnvironmentInput {
   readonly APP_ENVIRONMENT?: string;
+  readonly AUTH_MODE?: string;
   readonly AUTH_CLIENT_ID?: string;
   readonly AUTH_CLIENT_SECRET?: string;
   readonly AUTH_ISSUER?: string;
@@ -24,8 +27,19 @@ export function readAuthenticationEnvironment(
   environment: EnvironmentInput,
 ): AuthenticationEnvironment {
   const applicationEnvironment = readApplicationEnvironment(environment.APP_ENVIRONMENT);
-  const issuer = readIssuer(environment.AUTH_ISSUER, applicationEnvironment);
-  const scope = required("AUTH_SCOPE", environment.AUTH_SCOPE);
+  const authenticationMode = readAuthenticationMode(environment.AUTH_MODE);
+  if (authenticationMode === "local" && applicationEnvironment !== "Development") {
+    throw new Error("AUTH_MODE=local is only available in Development.");
+  }
+
+  const issuer =
+    authenticationMode === "oidc"
+      ? readIssuer(environment.AUTH_ISSUER, applicationEnvironment)
+      : "http://127.0.0.1";
+  const scope =
+    authenticationMode === "oidc"
+      ? required("AUTH_SCOPE", environment.AUTH_SCOPE)
+      : "openid profile email";
   if (!scope.split(/\s+/u).includes("openid")) {
     throw new Error("AUTH_SCOPE must include openid.");
   }
@@ -45,13 +59,25 @@ export function readAuthenticationEnvironment(
 
   return {
     applicationEnvironment,
-    clientId: required("AUTH_CLIENT_ID", environment.AUTH_CLIENT_ID),
-    clientSecret: required("AUTH_CLIENT_SECRET", environment.AUTH_CLIENT_SECRET),
+    authenticationMode,
+    clientId:
+      authenticationMode === "oidc" ? required("AUTH_CLIENT_ID", environment.AUTH_CLIENT_ID) : "",
+    clientSecret:
+      authenticationMode === "oidc"
+        ? required("AUTH_CLIENT_SECRET", environment.AUTH_CLIENT_SECRET)
+        : "",
     issuer,
     scope,
     sessionSecret,
     testEndpointKey,
   };
+}
+
+function readAuthenticationMode(value: string | undefined): AuthenticationMode {
+  const normalized = value?.trim().toLowerCase();
+  if (!normalized || normalized === "oidc") return "oidc";
+  if (normalized === "local") return "local";
+  throw new Error("AUTH_MODE must be oidc or local.");
 }
 
 function readApplicationEnvironment(value: string | undefined): ApplicationEnvironment {

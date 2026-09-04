@@ -64,15 +64,19 @@ export function DestinationMotionGallery({
       >
         <div
           className="destination-motion-gallery__track"
-          style={{ transform: `translateX(-${activeSlide * 100}%)` }}
         >
           {gallerySlides.map((slide, index) => (
-            <div className="destination-motion-gallery__slide" key={slide.src}>
+            <div
+              className="destination-motion-gallery__slide"
+              data-active={index === activeSlide}
+              key={slide.src}
+            >
               <Image
                 alt={index === activeSlide ? slide.alt : ""}
                 className="destination-motion-gallery__image object-cover"
                 fill
                 priority={index === 0}
+                quality={90}
                 sizes="(min-width: 1024px) 1120px, 100vw"
                 src={slide.src}
               />

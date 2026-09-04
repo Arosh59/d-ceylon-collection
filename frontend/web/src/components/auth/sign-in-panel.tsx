@@ -2,10 +2,12 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import type { FormEvent } from "react";
 
 interface SignInPanelProps {
   callbackUrl: string;
   configurationError?: string | undefined;
+  localAuthEnabled?: boolean;
   mode?: "sign-in" | "sign-up" | undefined;
   testingEnabled: boolean;
 }
@@ -13,10 +15,16 @@ interface SignInPanelProps {
 export function SignInPanel({
   callbackUrl,
   configurationError,
+  localAuthEnabled = false,
   mode = "sign-in",
   testingEnabled,
 }: SignInPanelProps) {
   const [busy, setBusy] = useState(false);
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [persona, setPersona] = useState("customer");
   const [testKey, setTestKey] = useState("");
   const isSignUp = mode === "sign-up";
@@ -35,6 +43,38 @@ export function SignInPanel({
     setBusy(true);
     await signIn("testing", { callbackUrl, persona, testKey });
     setBusy(false);
+  }
+
+  async function startLocalAuth(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    if (isSignUp && password !== passwordConfirmation) {
+      setError("The passwords do not match.");
+      return;
+    }
+
+    setBusy(true);
+    if (isSignUp) {
+      const response = await fetch("/api/local-auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name, password }),
+      });
+      if (!response.ok) {
+        const body = (await response.json().catch(() => null)) as { error?: string } | null;
+        setError(body?.error ?? "Unable to create the account.");
+        setBusy(false);
+        return;
+      }
+    }
+
+    const result = await signIn("local", { callbackUrl, email, password, redirect: false });
+    if (!result?.ok) {
+      setError("Those credentials could not be verified.");
+      setBusy(false);
+      return;
+    }
+    window.location.assign(result.url ?? callbackUrl);
   }
 
   if (configurationError) {
@@ -57,20 +97,82 @@ export function SignInPanel({
 
   return (
     <div className="grid gap-6">
-      <button
-        className="button-primary w-full disabled:cursor-wait disabled:opacity-60"
-        disabled={busy}
-        onClick={startExternalSignIn}
-        type="button"
-      >
-        {busy
-          ? `Opening secure ${isSignUp ? "registration" : "sign-in"}…`
-          : isSignUp
-            ? "Create your account securely"
-            : "Continue to secure sign-in"}
-      </button>
+      {localAuthEnabled ? (
+        <form aria-label={isSignUp ? "Create account" : "Sign in"} className="grid gap-4" onSubmit={startLocalAuth}>
+          {isSignUp ? (
+            <label className="filter-field">
+              <span>Your name</span>
+              <input
+                autoComplete="name"
+                minLength={2}
+                onChange={(event) => setName(event.target.value)}
+                required
+                value={name}
+              />
+            </label>
+          ) : null}
+          <label className="filter-field">
+            <span>Email address</span>
+            <input
+              autoComplete="email"
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              type="email"
+              value={email}
+            />
+          </label>
+          <label className="filter-field">
+            <span>Password</span>
+            <input
+              autoComplete={isSignUp ? "new-password" : "current-password"}
+              minLength={8}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              type="password"
+              value={password}
+            />
+          </label>
+          {isSignUp ? (
+            <label className="filter-field">
+              <span>Confirm password</span>
+              <input
+                autoComplete="new-password"
+                minLength={8}
+                onChange={(event) => setPasswordConfirmation(event.target.value)}
+                required
+                type="password"
+                value={passwordConfirmation}
+              />
+            </label>
+          ) : null}
+          {error ? (
+            <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
+              {error}
+            </p>
+          ) : null}
+          <button className="button-primary w-full disabled:cursor-wait disabled:opacity-60" disabled={busy} type="submit">
+            {busy ? "Please wait…" : isSignUp ? "Create your account" : "Sign in"}
+          </button>
+          <p className="text-xs leading-5 text-ink-muted">
+            Local development mode is active. Passwords are hashed and stored only on this machine.
+          </p>
+        </form>
+      ) : (
+        <button
+          className="button-primary w-full disabled:cursor-wait disabled:opacity-60"
+          disabled={busy}
+          onClick={startExternalSignIn}
+          type="button"
+        >
+          {busy
+            ? `Opening secure ${isSignUp ? "registration" : "sign-in"}…`
+            : isSignUp
+              ? "Create your account securely"
+              : "Continue to secure sign-in"}
+        </button>
+      )}
 
-      {testingEnabled && !isSignUp ? (
+      {testingEnabled && !isSignUp && !localAuthEnabled ? (
         <form
           aria-label="Testing identity sign-in"
           className="grid gap-4 border-t border-navy/10 pt-6"

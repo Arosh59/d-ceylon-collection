@@ -152,7 +152,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
           />
         )}
       </Container>
-      <Container className="py-16 sm:py-24">
+      <Container className="py-12 sm:py-20">
         <p className="max-w-3xl text-xl leading-9 text-ink-muted">{destination.description}</p>
         <section aria-labelledby="destination-products" className="mt-16">
           <h2 className="mb-8 text-4xl" id="destination-products">

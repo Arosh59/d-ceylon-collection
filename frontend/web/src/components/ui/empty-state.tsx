@@ -16,7 +16,7 @@ export function EmptyState({
   return (
     <section
       aria-labelledby="empty-state-title"
-      className="rounded-[2rem] border border-navy/10 bg-white px-6 py-16 text-center shadow-soft sm:px-12"
+      className="rounded-[1.5rem] border border-navy/10 bg-white px-6 py-12 text-center shadow-soft sm:px-12 sm:py-14"
     >
       <p className="eyebrow">The journey is taking shape</p>
       <h2 className="mt-4 text-3xl" id="empty-state-title">

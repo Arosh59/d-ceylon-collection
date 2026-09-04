@@ -28,7 +28,7 @@ export async function ProductTypePage({
           <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">{description}</p>
         </Container>
       </section>
-      <Container className="py-16 sm:py-24">
+      <Container className="py-12 sm:py-20">
         <ProductListing
           emptyDescription="No published catalogue entries currently match this product type."
           emptyTitle={`No ${productType} entries are available yet.`}

@@ -4757,10 +4757,101 @@
           }
         }
       }
+    },
+    "/api/v1/administration/summary": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "summary": "Gets live administrator dashboard totals and recent audit activity.",
+        "operationId": "GetAdministrationSummaryV1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "counts",
+                    "recentActivity",
+                    "bookingStatuses",
+                    "quoteStatuses"
+                  ],
+                  "properties": {
+                    "counts": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "integer",
+                        "format": "int64"
+                      }
+                    },
+                    "recentActivity": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "bookingStatuses": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdministrationStatusCount"
+                      }
+                    },
+                    "quoteStatuses": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdministrationStatusCount"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AdministrationStatusCount": {
+        "type": "object",
+        "required": [
+          "status",
+          "count"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
       "AgentQuoteDraftResponse": {
         "required": [
           "currency",

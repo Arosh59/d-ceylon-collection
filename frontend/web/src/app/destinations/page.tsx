@@ -30,7 +30,7 @@ export default async function DestinationsPage() {
           </p>
         </Container>
       </section>
-      <Container className="py-16 sm:py-24">
+      <Container className="py-12 sm:py-20">
         <Link
           className="mb-8 inline-block font-semibold text-navy underline decoration-gold"
           href="/destinations/map"

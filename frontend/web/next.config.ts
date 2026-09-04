@@ -40,6 +40,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    qualities: [70, 75, 90, 100],
+  },
   poweredByHeader: false,
   reactStrictMode: true,
   transpilePackages: ["@dceylon/sdk"],

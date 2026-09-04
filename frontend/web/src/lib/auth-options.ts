@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { getAuthenticationEnvironment } from "./auth-environment";
 import { getWebEnvironment } from "./environment";
+import { authenticateLocalCustomer } from "./local-auth-store";
 import { safeRedirectTarget } from "./safe-redirect";
 
 interface ProviderProfile extends Profile {
@@ -27,41 +28,67 @@ interface TestingTokenResponse {
 
 const authEnvironment = getAuthenticationEnvironment();
 
-const providers: NextAuthOptions["providers"] = [
-  {
-    id: "dceylon",
-    name: "D Ceylon identity",
-    type: "oauth",
-    wellKnown: `${authEnvironment.issuer}/.well-known/openid-configuration`,
-    issuer: authEnvironment.issuer,
-    clientId: authEnvironment.clientId,
-    clientSecret: authEnvironment.clientSecret,
-    authorization: {
-      params: {
-        scope: authEnvironment.scope,
-      },
-    },
-    idToken: true,
-    checks: ["pkce", "state", "nonce"],
-    profile(profile: ProviderProfile) {
-      if (!profile.sub) {
-        throw new Error("The identity provider profile omitted the required sub claim.");
-      }
+const providers: NextAuthOptions["providers"] =
+  authEnvironment.authenticationMode === "local"
+    ? [
+        CredentialsProvider({
+          id: "local",
+          name: "D Ceylon credentials",
+          credentials: {
+            email: { label: "Email", type: "email" },
+            password: { label: "Password", type: "password" },
+          },
+          async authorize(credentials) {
+            const email = typeof credentials?.email === "string" ? credentials.email : "";
+            const password = typeof credentials?.password === "string" ? credentials.password : "";
+            if (!email || !password) return null;
 
-      return {
-        id: profile.sub,
-        name:
-          (typeof profile.name === "string" ? profile.name : undefined) ??
-          profile.preferred_username ??
-          profile.sub,
-        roles: readStringArray(profile.roles),
-        ...(profile.email ? { email: profile.email } : {}),
-        ...(profile.customer_id ? { customerId: profile.customer_id } : {}),
-        ...(profile.organisation_id ? { organisationId: profile.organisation_id } : {}),
-      };
-    },
-  },
-];
+            const user = await authenticateLocalCustomer(email, password);
+            if (!user) return null;
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              roles: user.roles,
+            };
+          },
+        }),
+      ]
+    : [
+        {
+          id: "dceylon",
+          name: "D Ceylon identity",
+          type: "oauth",
+          wellKnown: `${authEnvironment.issuer}/.well-known/openid-configuration`,
+          issuer: authEnvironment.issuer,
+          clientId: authEnvironment.clientId,
+          clientSecret: authEnvironment.clientSecret,
+          authorization: {
+            params: {
+              scope: authEnvironment.scope,
+            },
+          },
+          idToken: true,
+          checks: ["pkce", "state", "nonce"],
+          profile(profile: ProviderProfile) {
+            if (!profile.sub) {
+              throw new Error("The identity provider profile omitted the required sub claim.");
+            }
+
+            return {
+              id: profile.sub,
+              name:
+                (typeof profile.name === "string" ? profile.name : undefined) ??
+                profile.preferred_username ??
+                profile.sub,
+              roles: readStringArray(profile.roles),
+              ...(profile.email ? { email: profile.email } : {}),
+              ...(profile.customer_id ? { customerId: profile.customer_id } : {}),
+              ...(profile.organisation_id ? { organisationId: profile.organisation_id } : {}),
+            };
+          },
+        },
+      ];
 
 if (authEnvironment.applicationEnvironment === "Testing") {
   providers.push(

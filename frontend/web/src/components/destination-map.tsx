@@ -65,12 +65,22 @@ export function DestinationMap({ destinations }: { destinations: MapDestination[
               {selected.productCount} published{" "}
               {selected.productCount === 1 ? "product" : "products"}
             </p>
-            <Link
-              className="mt-6 inline-block font-semibold text-gold-light underline"
-              href={`/destinations/${selected.slug}`}
-            >
-              Explore {selected.name}
-            </Link>
+            <div className="mt-6 flex flex-wrap gap-4">
+              <Link
+                className="font-semibold text-gold-light underline underline-offset-4"
+                href={`/destinations/${selected.slug}`}
+              >
+                Explore {selected.name}
+              </Link>
+              <a
+                className="font-semibold text-white underline decoration-gold underline-offset-4"
+                href={googleMapsSearchUrl(selected.name)}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Open in Google Maps
+              </a>
+            </div>
           </>
         ) : null}
       </aside>
@@ -110,11 +120,13 @@ function GoogleDestinationMap({
   const mapElement = useRef<HTMLDivElement>(null);
   const mapReference = useRef<GoogleMapInstance | null>(null);
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
+  const [mapLoadError, setMapLoadError] = useState(false);
 
   useEffect(() => {
     if (!apiKey || !mapElement.current) return;
 
     let cancelled = false;
+    setMapLoadError(false);
     void (async () => {
       try {
         const maps = await loadGoogleMapsApi(apiKey);
@@ -139,7 +151,8 @@ function GoogleDestinationMap({
           marker.addListener("click", () => onSelect(destination.slug));
         });
       } catch {
-        mapElement.current?.setAttribute("data-map-load-error", "true");
+        googleMapsLoad = undefined;
+        setMapLoadError(true);
       }
     })();
 
@@ -153,13 +166,32 @@ function GoogleDestinationMap({
     if (position) mapReference.current?.panTo(position);
   }, [selectedSlug]);
 
-  if (!apiKey) {
+  if (!apiKey || mapLoadError) {
     return (
-      <AbstractDestinationMap
-        destinations={destinations}
-        onSelect={onSelect}
-        selectedSlug={selectedSlug}
-      />
+      <div>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-mist px-4 py-3 text-sm text-ink-muted">
+          <p>
+            {mapLoadError
+              ? "Google Maps could not load with this key. Showing the accessible destination map instead."
+              : "Showing the accessible destination map. Add a Google Maps browser key to enable live mapping."}
+          </p>
+          {selectedSlug ? (
+            <a
+              className="font-semibold text-navy underline decoration-gold underline-offset-4"
+              href={googleMapsSearchUrl(destinations.find((destination) => destination.slug === selectedSlug)?.name ?? "Sri Lanka")}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Open selected place ↗
+            </a>
+          ) : null}
+        </div>
+        <AbstractDestinationMap
+          destinations={destinations}
+          onSelect={onSelect}
+          selectedSlug={selectedSlug}
+        />
+      </div>
     );
   }
 
@@ -172,6 +204,10 @@ function GoogleDestinationMap({
       role="region"
     />
   );
+}
+
+function googleMapsSearchUrl(name: string) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${name}, Sri Lanka`)}`;
 }
 
 function loadGoogleMapsApi(apiKey: string): Promise<GoogleMapsApi> {

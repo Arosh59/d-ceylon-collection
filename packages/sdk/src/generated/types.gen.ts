@@ -4,6 +4,11 @@ export type ClientOptions = {
   baseUrl: "http://127.0.0.1:8080/" | (string & {});
 };
 
+export type AdministrationStatusCount = {
+  status: string;
+  count: number;
+};
+
 export type AgentQuoteDraftResponse = {
   currency: null | string;
   assumptions: Array<string>;
@@ -3580,3 +3585,43 @@ export type CreateOperationBookingResourceAssignmentV1Responses = {
 
 export type CreateOperationBookingResourceAssignmentV1Response =
   CreateOperationBookingResourceAssignmentV1Responses[keyof CreateOperationBookingResourceAssignmentV1Responses];
+
+export type GetAdministrationSummaryV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/administration/summary";
+};
+
+export type GetAdministrationSummaryV1Errors = {
+  /**
+   * Unauthorized
+   */
+  401: ProblemDetails;
+  /**
+   * Forbidden
+   */
+  403: ProblemDetails;
+};
+
+export type GetAdministrationSummaryV1Error =
+  GetAdministrationSummaryV1Errors[keyof GetAdministrationSummaryV1Errors];
+
+export type GetAdministrationSummaryV1Responses = {
+  /**
+   * OK
+   */
+  200: {
+    counts: {
+      [key: string]: number;
+    };
+    recentActivity: Array<{
+      [key: string]: unknown;
+    }>;
+    bookingStatuses: Array<AdministrationStatusCount>;
+    quoteStatuses: Array<AdministrationStatusCount>;
+  };
+};
+
+export type GetAdministrationSummaryV1Response =
+  GetAdministrationSummaryV1Responses[keyof GetAdministrationSummaryV1Responses];

@@ -18,6 +18,10 @@ export function parseCatalogueSearchParams(parameters: SearchParameters): Catalo
     collection: slug(value(parameters.collection)),
     destination: slug(value(parameters.destination)),
     tag: slug(value(parameters.tag)),
+    minimumPrice: nonNegativeNumber(value(parameters.minimumPrice)),
+    maximumPrice: nonNegativeNumber(value(parameters.maximumPrice)),
+    minimumDurationMinutes: positiveIntegerOrUndefined(value(parameters.minimumDurationMinutes)),
+    maximumDurationMinutes: positiveIntegerOrUndefined(value(parameters.maximumDurationMinutes)),
     sort: sort && sorts.has(sort) ? sort : "name",
   };
 }
@@ -30,6 +34,12 @@ export function catalogueQueryRecord(search: CatalogueSearch): Record<string, st
     collection: search.collection,
     destination: search.destination,
     tag: search.tag,
+    minimumPrice: search.minimumPrice === undefined ? undefined : String(search.minimumPrice),
+    maximumPrice: search.maximumPrice === undefined ? undefined : String(search.maximumPrice),
+    minimumDurationMinutes:
+      search.minimumDurationMinutes === undefined ? undefined : String(search.minimumDurationMinutes),
+    maximumDurationMinutes:
+      search.maximumDurationMinutes === undefined ? undefined : String(search.maximumDurationMinutes),
     sort: search.sort === "name" ? undefined : search.sort,
   };
 }
@@ -51,4 +61,16 @@ function positiveInteger(input: string | undefined, fallback: number): number {
 
   const parsed = Number(input);
   return Number.isSafeInteger(parsed) && parsed >= 1 && parsed <= 100_000 ? parsed : fallback;
+}
+
+function positiveIntegerOrUndefined(input: string | undefined): number | undefined {
+  if (!input || !/^\d+$/.test(input)) return undefined;
+  const parsed = Number(input);
+  return Number.isSafeInteger(parsed) && parsed >= 1 && parsed <= 100_000 ? parsed : undefined;
+}
+
+function nonNegativeNumber(input: string | undefined): number | undefined {
+  if (!input || !/^\d+(?:\.\d{1,2})?$/.test(input)) return undefined;
+  const parsed = Number(input);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
 }
