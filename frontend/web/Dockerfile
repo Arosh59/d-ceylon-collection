@@ -27,6 +27,7 @@ COPY packages/sdk packages/sdk
 # Dokploy runtime variables replace these when the standalone server starts.
 RUN API_BASE_URL=http://127.0.0.1:8080 \
     SITE_URL=http://127.0.0.1:3000 \
+    NEXTAUTH_URL=http://127.0.0.1:3000 \
     APP_ENVIRONMENT=Production \
     AUTH_MODE=oidc \
     AUTH_ISSUER=https://identity.invalid \
@@ -51,10 +52,15 @@ COPY --from=builder --chown=nextjs:nodejs /workspace/frontend/web/public ./front
 COPY --from=builder --chown=nextjs:nodejs /workspace/frontend/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /workspace/frontend/web/.next/static ./frontend/web/.next/static
 
+# Fail the image build instead of silently deploying without the checked-in public assets.
+RUN test -s ./frontend/web/public/images/destinations/sigiriya.jpg
+
 USER nextjs
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD ["node", "-e", "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/robots.txt').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+  CMD ["node", "-e", "Promise.all(['/robots.txt','/images/destinations/sigiriya.jpg'].map(path=>fetch('http://127.0.0.1:'+(process.env.PORT||3000)+path).then(r=>{if(!r.ok)throw Error(String(r.status))}))).catch(()=>process.exit(1))"]
 
-CMD ["node", "frontend/web/server.js"]
+# NextAuth v4 requires NEXTAUTH_URL. Keep one canonical site setting while allowing an explicit
+# NEXTAUTH_URL override when a deployment needs it.
+CMD ["sh", "-c", "export NEXTAUTH_URL=\"${NEXTAUTH_URL:-$SITE_URL}\"; exec node frontend/web/server.js"]

@@ -54,6 +54,7 @@ services:
     environment:
       API_BASE_URL: http://api:8080
       SITE_URL: ${SITE_URL:-http://127.0.0.1:3000}
+      NEXTAUTH_URL: ${SITE_URL:-http://127.0.0.1:3000}
       APP_ENVIRONMENT: ${APP_ENVIRONMENT:-Development}
       AUTH_MODE: ${AUTH_MODE:-oidc}
       AUTH_ISSUER: ${AUTH_ISSUER:-https://identity.example.test}

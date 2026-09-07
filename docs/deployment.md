@@ -37,6 +37,8 @@ The Compose stack does not publish PostgreSQL or Redis ports. The one-shot `migr
 ```dotenv
 API_BASE_URL=https://api.example.com
 SITE_URL=https://www.example.com
+# Optional: the container derives this from SITE_URL when it is omitted.
+NEXTAUTH_URL=https://www.example.com
 APP_ENVIRONMENT=Production
 AUTH_MODE=oidc
 AUTH_ISSUER=https://identity.example.com
@@ -51,6 +53,17 @@ GOOGLE_MAPS_API_KEY=
 Because the frontend and backend are separate Dokploy services, `API_BASE_URL` must use the public
 HTTPS API origin. The Compose-only hostname `http://api:8080` is not resolvable from the standalone
 frontend container unless a shared Docker network is configured manually.
+
+Verify both URLs before redeploying the frontend:
+
+```text
+https://api.example.com/health/ready
+https://api.example.com/api/v1/catalogue/destinations?pageSize=1
+```
+
+Both must return HTTP 200. If the catalogue URL returns 404, `API_BASE_URL` points to the wrong
+origin or contains the wrong route. If it returns 502, fix the API domain routing to service `api`
+and container port `8080`, then confirm that the API health check and migration are successful.
 
 For an existing database, review the baseline and run `./scripts/api.sh baseline-existing` once
 before deploying the new editorial migration. Never use `prisma migrate reset` or `prisma db push`

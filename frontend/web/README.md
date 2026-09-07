@@ -18,7 +18,8 @@ npm ci
 The server requires:
 
 - `API_BASE_URL` — server-only origin of the NestJS API; and
-- `SITE_URL` — canonical public origin used by metadata, robots, and sitemap generation;
+- `SITE_URL` — canonical public origin used by metadata, robots, sitemap generation, and as the
+  default NextAuth callback origin;
 - `APP_ENVIRONMENT` — `Development`, `Production`, or isolated `Testing` (omitting it defaults to
   `Development`; casing is accepted);
 - `AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, and `AUTH_SCOPE` — external OIDC
@@ -40,13 +41,20 @@ container port to `3000`. Configure `API_BASE_URL`, `SITE_URL`, `APP_ENVIRONMENT
 environment variables. `GOOGLE_MAPS_API_KEY` is optional and browser-visible; restrict it to the
 production site's HTTP referrers. Do not upload or copy an `.env` file into the image.
 
+`NEXTAUTH_URL` is derived from `SITE_URL` by the container. It may be set explicitly to the same
+public origin if required by the deployment platform.
+
 When the backend Compose stack is a separate Dokploy service, set `API_BASE_URL` to its public HTTPS
 origin, such as `https://api.example.com`. Do not use `http://api:8080`, because that hostname
 exists only inside the backend Compose network.
 
+Before deploying the frontend, both `${API_BASE_URL}/health/ready` and
+`${API_BASE_URL}/api/v1/catalogue/destinations?pageSize=1` must return HTTP 200. A 404 means the
+wrong origin/path was configured; a 502 means Dokploy cannot route to a healthy API container.
+
 The image uses Next.js standalone output, runs as an unprivileged user, and includes a container
-health check. Dokploy should terminate TLS at its reverse proxy and route the public hostname to
-port `3000`.
+health check for both Next.js and a checked-in destination image. Dokploy should terminate TLS at
+its reverse proxy and route the public hostname to port `3000`.
 
 Copy `frontend/web/.env.example` to `frontend/web/.env.local` for normal local development. Real
 environment files are ignored. None of these values is exposed through a `NEXT_PUBLIC_*` variable.
