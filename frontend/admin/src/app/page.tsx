@@ -15,36 +15,42 @@ export default async function DashboardPage() {
       value: dashboard.counts.publishedProducts,
       href: "/modules/products",
       detail: "Live catalogue",
+      unavailableLabel: "Catalogue API unavailable",
     },
     {
       label: "Destinations",
       value: dashboard.counts.publishedDestinations,
       href: "/modules/destinations",
       detail: "Published places",
+      unavailableLabel: "Catalogue API unavailable",
     },
     {
       label: "Customers",
       value: dashboard.counts.customers,
       href: "/modules/customers",
       detail: "Protected records",
+      unavailableLabel: "Managed access required",
     },
     {
       label: "Bookings",
       value: dashboard.counts.bookings,
       href: "/modules/bookings",
       detail: "All booking states",
+      unavailableLabel: "Managed access required",
     },
     {
       label: "Pending quotes",
       value: dashboard.counts.pendingQuotes,
       href: "/modules/quotes",
       detail: "Draft or sent",
+      unavailableLabel: "Managed access required",
     },
     {
       label: "Open tasks",
       value: dashboard.counts.openTasks,
       href: "/modules/tasks",
       detail: "Operations queue",
+      unavailableLabel: "Managed access required",
     },
   ] as const;
 
@@ -63,13 +69,19 @@ export default async function DashboardPage() {
         role="status"
       >
         <span className="source-icon" aria-hidden="true">
-          {dashboard.source === "administrator-api" ? "✓" : "i"}
+          {dashboard.source === "administrator-api"
+            ? "✓"
+            : dashboard.source === "unavailable"
+              ? "!"
+              : "i"}
         </span>
         <span>
           <strong>
             {dashboard.source === "administrator-api"
               ? "Operational data is live"
-              : "Catalogue-only development view"}
+              : dashboard.source === "unavailable"
+                ? "Signed in · backend data unavailable"
+                : "Catalogue-only development view"}
           </strong>
           <small>
             {dashboard.warning ??
@@ -96,7 +108,7 @@ export default async function DashboardPage() {
                 <span aria-hidden="true">↗</span>
               </span>
               {stat.value === null ? (
-                <span className="stat-unavailable">Managed access required</span>
+                <span className="stat-unavailable">{stat.unavailableLabel}</span>
               ) : (
                 <strong className="stat-value">{stat.value.toLocaleString("en-LK")}</strong>
               )}

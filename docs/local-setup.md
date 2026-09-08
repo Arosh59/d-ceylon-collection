@@ -66,6 +66,11 @@ npm run dev:web
 npm run dev:admin
 ```
 
+Use `npm run dev:backend` instead when you want the API in watch mode. This command loads the root
+`.env` and derives the Prisma connection string from the generated PostgreSQL application
+credentials. Running `npm run start:dev --workspace=@dceylon/backend` directly instead requires a
+separately configured `backend/.env`.
+
 If the admin host reports that authentication setup is required, confirm `frontend/admin/.env.local`
 exists and restart the development server after changing it. The local admin dashboard intentionally
 shows published catalogue data only; operational totals require a managed OIDC access token.

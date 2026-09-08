@@ -29,7 +29,7 @@
     "build:web": "npm run build --workspace=@dceylon/web",
     "dev": "./scripts/dev.sh",
     "dev:admin": "npm run dev --workspace=@dceylon/admin",
-    "dev:backend": "npm run start:dev --workspace=@dceylon/backend",
+    "dev:backend": "./scripts/api.sh run-dev",
     "dev:web": "npm run dev --workspace=@dceylon/web",
     "format": "prettier --write --ignore-unknown backend frontend packages/sdk package.json package-lock.json",
     "format:check": "prettier --check --ignore-unknown backend frontend packages/sdk package.json package-lock.json",

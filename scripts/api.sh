@@ -7,11 +7,18 @@ repository_root="$(cd -- "${script_directory}/.." && pwd)"
 environment_file="${DCEYLON_ENV_FILE:-${repository_root}/.env}"
 
 if [[ -f "${environment_file}" ]]; then
+    normalized_environment_file="$(mktemp "${TMPDIR:-/tmp}/dceylon-api-env.XXXXXX")"
+    cleanup_environment() {
+        rm -f -- "${normalized_environment_file}"
+    }
+    trap cleanup_environment EXIT
+    sed 's/\r$//' "${environment_file}" > "${normalized_environment_file}"
     set -a
-    # Normalize CRLF files exported by some editors before sourcing them.
     # shellcheck disable=SC1090
-    source <(sed 's/\r$//' "${environment_file}")
+    source "${normalized_environment_file}"
     set +a
+    cleanup_environment
+    trap - EXIT
 fi
 
 export API_PORT="${API_PORT:-8080}"
@@ -39,6 +46,7 @@ Commands:
   migrate              Apply committed Prisma migrations (never resets data)
   seed                 Explain the preserved-data seed policy
   run                  Run the NestJS API at API_PORT
+  run-dev              Run the NestJS API in watch mode at API_PORT
 USAGE
 }
 
@@ -102,6 +110,9 @@ case "${command_name}" in
     run)
         npm run build:backend
         npm run start --workspace=@dceylon/backend
+        ;;
+    run-dev)
+        npm run start:dev --workspace=@dceylon/backend
         ;;
     -h|--help|help|"")
         usage
