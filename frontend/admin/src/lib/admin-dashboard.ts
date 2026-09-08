@@ -1,9 +1,5 @@
 import "server-only";
 
-import { getServerSession } from "next-auth";
-
-import { getAuthOptions } from "./auth";
-
 export interface DashboardActivity {
   eventType: string;
   outcome: string;
@@ -35,16 +31,15 @@ export interface DashboardData {
   warning?: string;
 }
 
-export async function getDashboardData(): Promise<DashboardData> {
-  const session = await getServerSession(getAuthOptions());
+export async function getDashboardData(accessToken: string): Promise<DashboardData> {
   const apiBaseUrl = required("API_BASE_URL");
   let administratorWarning: string | undefined;
 
-  if (session?.accessToken) {
+  if (accessToken) {
     try {
       const response = await fetch(new URL("/api/v1/administration/summary", apiBaseUrl), {
         cache: "no-store",
-        headers: { Accept: "application/json", Authorization: `Bearer ${session.accessToken}` },
+        headers: { Accept: "application/json", Authorization: `Bearer ${accessToken}` },
         signal: AbortSignal.timeout(5_000),
       });
       if (response.ok) {
@@ -52,7 +47,9 @@ export async function getDashboardData(): Promise<DashboardData> {
         return { ...data, source: "administrator-api" };
       }
       administratorWarning =
-        "The protected operational summary is unavailable. Published catalogue totals are shown instead.";
+        response.status === 403
+          ? "Your administrator account cannot access the operational summary. Published catalogue totals are shown instead."
+          : "The protected operational summary is unavailable. Published catalogue totals are shown instead.";
     } catch {
       administratorWarning =
         "The protected operational summary could not be reached. Published catalogue totals are shown instead.";
@@ -84,7 +81,7 @@ export async function getDashboardData(): Promise<DashboardData> {
     warning: catalogueUnavailable
       ? "You are signed in, but the backend catalogue is unavailable. Start the API with `npm run dev:backend`, then refresh this page."
       : (administratorWarning ??
-        "Local administrator credentials provide catalogue review only. Use managed identity for customer, booking, quote, task, and audit data."),
+        "The operational summary is unavailable, so published catalogue totals are shown."),
   };
 }
 

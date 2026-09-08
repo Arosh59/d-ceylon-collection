@@ -25,8 +25,7 @@ only after its documented checks pass.
 Phase 0 is marked complete only after repository structure and documentation validation pass.
 
 Phase 1 was verified with Compose rendering, container health checks, least-privilege database
-ownership checks, Redis authentication checks, and a
-persistence-preserving stop/start cycle.
+ownership checks, Redis authentication checks, and a persistence-preserving stop/start cycle.
 
 Phase 2 was verified with a locked restore, dependency vulnerability audit, formatting check,
 zero-warning release build, unit and database-backed integration tests, applied migration discovery,
@@ -71,42 +70,41 @@ optimistic-concurrency, and audit checks, live OpenAPI regeneration and equality
 probes, frontend unit/component/accessibility tests, and planner generation, draft review, edit,
 validation, forbidden, not-found, logout, and responsive browser flows on desktop and mobile.
 
-Phase 8 was verified with locked NuGet and npm restores, zero-advisory dependency audits, a
-reviewed Quotes and Pricing migration (AddQuoteWorkflow), no-pending-model checks, zero-warning
-API and web builds, 9 deterministic Pricing unit tests, 12 Quote lifecycle integration tests
-covering request, prepare, draft CRUD, send (immutable version), accept, decline, withdraw,
-revise, conflict, ownership denial, and concurrency checks; OpenAPI spec updated with full quote
-schema (including the previously missing AgentQuoteQueueResponse.concurrencyToken), SDK
-regenerated, TypeScript type check and ESLint pass with zero warnings, Prettier formatting clean,
-and customer/agent portal quote pages (list, detail, request, accept, decline, prepare, draft
-editor, send, revise, withdraw) verified. The acceptance harness seeds deterministic test
-organisations and the responsive browser suite covers customer request, agent claim/draft/send,
-customer acceptance, both portal-forbidden paths, and logout. No booking, payment, or AI involvement
-in this phase.
+Phase 8 was verified with locked NuGet and npm restores, zero-advisory dependency audits, a reviewed
+Quotes and Pricing migration (AddQuoteWorkflow), no-pending-model checks, zero-warning API and web
+builds, 9 deterministic Pricing unit tests, 12 Quote lifecycle integration tests covering request,
+prepare, draft CRUD, send (immutable version), accept, decline, withdraw, revise, conflict,
+ownership denial, and concurrency checks; OpenAPI spec updated with full quote schema (including the
+previously missing AgentQuoteQueueResponse.concurrencyToken), SDK regenerated, TypeScript type check
+and ESLint pass with zero warnings, Prettier formatting clean, and customer/agent portal quote pages
+(list, detail, request, accept, decline, prepare, draft editor, send, revise, withdraw) verified.
+The acceptance harness seeds deterministic test organisations and the responsive browser suite
+covers customer request, agent claim/draft/send, customer acceptance, both portal-forbidden paths,
+and logout. No booking, payment, or AI involvement in this phase.
 
 Phase 9 was verified with locked restores, zero-warning API build, 63 backend unit tests and 28
 isolated PostgreSQL integration tests, reviewed `AddBookingWorkflow` and `AddPaymentWorkflow`
 migrations, no-pending-model and index checks, live OpenAPI regeneration/equality, readiness checks,
-and a zero-vulnerability production npm audit. The generated SDK, strict TypeScript check, lint,
-41 frontend unit/component tests, 20 accessibility tests, production build, and authenticated
+and a zero-vulnerability production npm audit. The generated SDK, strict TypeScript check, lint, 41
+frontend unit/component tests, 20 accessibility tests, production build, and authenticated
 desktop/mobile browser flows passed. Customer flows cover accepted immutable quote to booking and
 server-priced idempotent payment instruction; agent views are organisation-scoped. Supplier
 operations, payment capture, card storage, live availability, and administration remain excluded.
 
 Phase 10 is complete. Its reviewed `InitialSupplierOperations` and `AddOperationalResources`
-migrations provide suppliers, vehicles, drivers, guides, arrivals, booking-resource assignments,
-and booking-operation tasks. The staff-only versioned API uses stable Booking contract lookup,
-input validation, indexes, auditing, correlation IDs, and Problem Details; the protected
-server-side portal uses generated SDK contracts and accessible empty summaries. Acceptance includes
-zero-warning API builds, no-pending-model checks, local migration application, OpenAPI
-regeneration/equality, strict TypeScript, lint, 43 frontend tests, 63 unit tests, and 31 isolated
-PostgreSQL integration tests. Supplier self-service, administration, live availability,
-and payment capture remain explicitly outside Phase 10.
+migrations provide suppliers, vehicles, drivers, guides, arrivals, booking-resource assignments, and
+booking-operation tasks. The staff-only versioned API uses stable Booking contract lookup, input
+validation, indexes, auditing, correlation IDs, and Problem Details; the protected server-side
+portal uses generated SDK contracts and accessible empty summaries. Acceptance includes zero-warning
+API builds, no-pending-model checks, local migration application, OpenAPI regeneration/equality,
+strict TypeScript, lint, 43 frontend tests, 63 unit tests, and 31 isolated PostgreSQL integration
+tests. Supplier self-service, administration, live availability, and payment capture remain
+explicitly outside Phase 10.
 
-Phase 11 is complete for local development: the NestJS Editorial module serves Journal and
-promotion contracts from the application PostgreSQL database. Editorial tables are created by a
-reviewed Prisma migration; public-page list/detail rendering remains compatible with the existing
-SDK contract. Approved production content and media licensing remain release inputs, not missing
+Phase 11 is complete for local development: the NestJS Editorial module serves Journal and promotion
+contracts from the application PostgreSQL database. Editorial tables are created by a reviewed
+Prisma migration; public-page list/detail rendering remains compatible with the existing SDK
+contract. Approved production content and media licensing remain release inputs, not missing
 repository functionality.
 
 Phase 12 is complete with an accessible abstract destination map, keyboard selection, catalogue
@@ -114,10 +112,9 @@ product counts, and a complete non-map list fallback. It exposes a documented ad
 approved province/district GeoJSON, weather, guide, restaurant, and editorial-media data without
 committing unlicensed data.
 
-Phase 13 is complete with a separately hosted, administrator-only Next.js application, role-aware
-external-OIDC session boundary, validated redirects, protected navigation across the required
-administration modules, and passing type, lint, and production-build checks. Production role
-assignments remain an identity-provider deployment concern.
+Phase 13 is complete with a separately hosted, administrator-only Next.js application, a
+NestJS-owned role-aware session boundary, validated redirects, and protected navigation across the
+required administration modules. Role assignments remain PostgreSQL-backed.
 
 Phase 14 is complete as an isolated Gemini-backed FastAPI draft gateway. It rejects database-like
 configuration, requires an authenticated backend secret and server-only Gemini API key, requests
@@ -128,6 +125,5 @@ backend-to-gateway call are intentionally separate production release work.
 Phase 15 is in progress. Locked-install CI, Dependabot, Azure-compatible managed-environment
 baseline, release checklist, security guidance, and a tested local application-database backup/
 restore exercise are committed. It remains open for Azure/Key Vault configuration, performance
-testing against approved infrastructure, a production encrypted-backup restore exercise, payment
-and supplier certification, monitoring/on-call assignment, and formal security/privacy/release
-approval.
+testing against approved infrastructure, a production encrypted-backup restore exercise, payment and
+supplier certification, monitoring/on-call assignment, and formal security/privacy/release approval.

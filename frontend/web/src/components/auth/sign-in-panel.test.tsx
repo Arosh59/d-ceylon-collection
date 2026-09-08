@@ -1,30 +1,49 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { signIn } from "next-auth/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SignInPanel } from "./sign-in-panel";
 
-vi.mock("next-auth/react", () => ({
-  signIn: vi.fn().mockResolvedValue(undefined),
+vi.mock("firebase/auth", () => ({
+  getRedirectResult: vi.fn().mockResolvedValue(null),
+  signInWithRedirect: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock("@/lib/firebase-client", () => ({
+  firebaseGoogleAuthentication: () => ({ auth: {}, provider: {} }),
+  hasFirebaseGoogleConfiguration: () => true,
 }));
 
 describe("SignInPanel", () => {
-  it("starts Auth0 Universal Login registration without collecting a password", async () => {
+  beforeEach(() => vi.restoreAllMocks());
+
+  it("submits customer registration to the BFF without exposing tokens", async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(
+        new Response(JSON.stringify({ error: "Email already registered." }), { status: 409 }),
+      );
     const user = userEvent.setup();
     render(<SignInPanel callbackUrl="/portal/customer" mode="sign-up" testingEnabled={false} />);
 
-    await user.click(screen.getByRole("button", { name: "Create your account securely" }));
+    await user.type(screen.getByLabelText("Your name"), "Test Customer");
+    await user.type(screen.getByLabelText("Email address"), "customer@example.test");
+    await user.type(screen.getByLabelText("Password", { selector: "input" }), "password123");
+    await user.type(screen.getByLabelText("Confirm password"), "password123");
+    await user.click(screen.getByRole("button", { name: "Create your account" }));
 
-    expect(signIn).toHaveBeenCalledWith(
-      "dceylon",
-      { callbackUrl: "/portal/customer" },
-      { prompt: "login", screen_hint: "signup" },
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/auth/register",
+      expect.objectContaining({ method: "POST" }),
     );
-    expect(screen.queryByRole("form", { name: "Testing identity sign-in" })).toBeNull();
+    expect(await screen.findByRole("alert")).toHaveTextContent("Email already registered.");
   });
 
-  it("starts the testing flow without exposing a provider secret in markup", async () => {
+  it("keeps testing authentication isolated behind the testing UI", async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(
+        new Response(JSON.stringify({ error: "Invalid testing identity." }), { status: 401 }),
+      );
     const user = userEvent.setup();
     render(<SignInPanel callbackUrl="/portal/agent" testingEnabled />);
 
@@ -32,10 +51,9 @@ describe("SignInPanel", () => {
     await user.type(screen.getByLabelText("Testing access key"), "runner-key");
     await user.click(screen.getByRole("button", { name: "Sign in with test identity" }));
 
-    expect(signIn).toHaveBeenCalledWith("testing", {
-      callbackUrl: "/portal/agent",
-      persona: "agent",
-      testKey: "runner-key",
-    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/auth/testing",
+      expect.objectContaining({ method: "POST" }),
+    );
   });
 });

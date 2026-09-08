@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nest build",
+    "auth:bootstrap-admin": "ts-node src/scripts/bootstrap-administrator.ts",
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",
@@ -25,8 +26,10 @@
     "class-transformer": "0.5.1",
     "class-validator": "0.14.4",
     "express": "5.2.1",
+    "firebase-admin": "14.3.0",
     "helmet": "8.3.0",
     "jose": "6.2.10",
+    "nodemailer": "7.0.13",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2"
   },
@@ -38,6 +41,7 @@
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
     "@types/node": "24.13.3",
+    "@types/nodemailer": "8.0.1",
     "eslint": "10.8.0",
     "globals": "17.8.0",
     "jest": "30.5.1",

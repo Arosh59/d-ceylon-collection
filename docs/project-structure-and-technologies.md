@@ -22,16 +22,16 @@
 
 ## Core technologies
 
-| Boundary | Technology |
-| --- | --- |
-| Public and admin UI | Next.js 16, React 19, TypeScript 5.9 |
-| API | NestJS 11 on Node.js 24 |
-| Data access | Prisma 6 with parameterized PostgreSQL queries |
-| Transactional database | PostgreSQL 18 locally; existing multi-schema model |
-| Editorial content | NestJS + PostgreSQL (`editorial` schema) |
-| Ephemeral storage | Redis 8 |
-| API contract | OpenAPI 3 and `packages/sdk` |
-| Tests | Jest for backend; Vitest, Testing Library, axe, and Playwright for web |
+| Boundary               | Technology                                                             |
+| ---------------------- | ---------------------------------------------------------------------- |
+| Public and admin UI    | Next.js 16, React 19, TypeScript 5.9                                   |
+| API                    | NestJS 11 on Node.js 24                                                |
+| Data access            | Prisma 6 with parameterized PostgreSQL queries                         |
+| Transactional database | PostgreSQL 18 locally; existing multi-schema model                     |
+| Editorial content      | NestJS + PostgreSQL (`editorial` schema)                               |
+| Ephemeral storage      | Redis 8                                                                |
+| API contract           | OpenAPI 3 and `packages/sdk`                                           |
+| Tests                  | Jest for backend; Vitest, Testing Library, axe, and Playwright for web |
 
 ## PostgreSQL schemas
 
@@ -43,15 +43,15 @@ commands on this database.
 
 ## Environment files
 
-| File | Consumer |
-| --- | --- |
-| `.env` | local infrastructure and helper scripts |
-| `backend/.env` | NestJS API when run directly |
-| `frontend/web/.env.local` | public/customer/agent Next.js server |
-| `frontend/admin/.env.local` | administrator Next.js server |
+| File                        | Consumer                                |
+| --------------------------- | --------------------------------------- |
+| `.env`                      | local infrastructure and helper scripts |
+| `backend/.env`              | NestJS API when run directly            |
+| `frontend/web/.env.local`   | public/customer/agent Next.js server    |
+| `frontend/admin/.env.local` | administrator Next.js server            |
 
-The web and admin apps keep OIDC tokens on their server boundaries. Only non-sensitive browser
-configuration may use `NEXT_PUBLIC_*` names.
+The web and admin apps keep NestJS-issued tokens in HTTP-only BFF cookies. Only Firebase Web
+configuration and other non-sensitive browser values may use `NEXT_PUBLIC_*` names.
 
 ## Common commands
 

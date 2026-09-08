@@ -50,8 +50,8 @@ apply migrations, and start the API and public frontend.
 For the public site, run `npm run dev`; it starts the NestJS API, waits for API readiness, then
 starts the web host at <http://127.0.0.1:3000>. Use `npm run dev:web` only when the API is already
 running. The separate administration host uses `npm run dev:admin` at <http://127.0.0.1:3001>. Local
-development uses the credentials configured in `frontend/admin/.env.local`; production
-administration requires configured OIDC access.
+development and production both authenticate against NestJS. Use the controlled administrator
+bootstrap command documented in `docs/authentication.md` to assign initial access.
 
 ## Documentation
 

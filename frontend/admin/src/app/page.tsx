@@ -3,12 +3,10 @@ import Link from "next/link";
 import { AdminShell } from "@/components/admin-shell";
 import { getDashboardData } from "@/lib/admin-dashboard";
 import { requireAdministrator } from "@/lib/auth";
-import { getAdminAuthenticationEnvironment } from "@/lib/auth-environment";
 
 export default async function DashboardPage() {
   const session = await requireAdministrator();
-  const environment = getAdminAuthenticationEnvironment();
-  const dashboard = await getDashboardData();
+  const dashboard = await getDashboardData(session.accessToken);
   const stats = [
     {
       label: "Published products",
@@ -56,7 +54,6 @@ export default async function DashboardPage() {
 
   return (
     <AdminShell
-      authenticationMode={environment.authenticationMode}
       description="A focused view of catalogue health, customer activity, and operational work."
       eyebrow="Workspace overview"
       title={`Good day, ${session.user.name ?? "Administrator"}`}

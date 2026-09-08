@@ -974,6 +974,140 @@ export type WishlistEntryResponse = {
   updatedAtUtc: string;
 };
 
+export type RegisterData = {
+  body: {
+    name: string;
+    email: string;
+    password: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/register";
+};
+
+export type RegisterResponses = {
+  /**
+   * Authenticated customer session tokens and identity.
+   */
+  200: unknown;
+};
+
+export type LoginData = {
+  body: {
+    email: string;
+    password: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/login";
+};
+
+export type LoginResponses = {
+  /**
+   * Authenticated application session tokens and identity.
+   */
+  200: unknown;
+};
+
+export type GoogleData = {
+  body: {
+    idToken: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/google";
+};
+
+export type GoogleResponses = {
+  /**
+   * Application session tokens issued after Firebase Google verification.
+   */
+  200: unknown;
+};
+
+export type RefreshData = {
+  body: {
+    refreshToken: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/refresh";
+};
+
+export type RefreshResponses = {
+  /**
+   * Rotated application session tokens and current identity.
+   */
+  200: unknown;
+};
+
+export type LogoutData = {
+  body: {
+    refreshToken: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/logout";
+};
+
+export type LogoutResponses = {
+  /**
+   * Refresh session revoked.
+   */
+  204: void;
+};
+
+export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
+
+export type ForgotPasswordData = {
+  body: {
+    email: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/forgot-password";
+};
+
+export type ForgotPasswordResponses = {
+  /**
+   * Password recovery request accepted.
+   */
+  202: unknown;
+};
+
+export type ResetPasswordData = {
+  body: {
+    token: string;
+    password: string;
+  };
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/reset-password";
+};
+
+export type ResetPasswordResponses = {
+  /**
+   * Password changed and active refresh sessions revoked.
+   */
+  204: void;
+};
+
+export type ResetPasswordResponse = ResetPasswordResponses[keyof ResetPasswordResponses];
+
+export type MeData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/me";
+};
+
+export type MeResponses = {
+  /**
+   * Current user, roles, permissions, customer, and organisation identity.
+   */
+  200: unknown;
+};
+
 export type GetProductsV1Data = {
   body?: never;
   path?: never;

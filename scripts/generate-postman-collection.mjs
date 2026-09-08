@@ -445,7 +445,7 @@ const collection = {
     _postman_id: "ca0ab651-c832-4b96-a35d-0e01a84b533f",
     name: "D Ceylon Backend API",
     description:
-      "Complete D Ceylon v1 API collection generated from packages/sdk/openapi/v1.json. Request bodies contain realistic Sri Lankan travel examples. Run the testing-token requests only against APP_ENVIRONMENT=Testing; for production, paste OIDC bearer tokens into the matching environment variables. Requests capture created IDs and concurrency tokens. Accept, decline, revise, withdraw, cancellation, and delete requests are alternative/destructive transitions and should be run deliberately rather than by running the entire collection in one pass.",
+      "Complete D Ceylon v1 API collection generated from packages/sdk/openapi/v1.json. Request bodies contain realistic Sri Lankan travel examples. Run the testing-token requests only against APP_ENVIRONMENT=Testing; otherwise, paste NestJS-issued bearer tokens into the matching environment variables. Requests capture created IDs and concurrency tokens. Accept, decline, revise, withdraw, cancellation, and delete requests are alternative/destructive transitions and should be run deliberately rather than by running the entire collection in one pass.",
     schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
   },
   item: [
@@ -690,7 +690,7 @@ function createAuthenticationFolder() {
   return {
     name: "00 - Testing authentication",
     description:
-      "Available only when the backend runs with APP_ENVIRONMENT=Testing. In production, obtain tokens from the configured OIDC provider and paste them into the environment.",
+      "Available only when the backend runs with APP_ENVIRONMENT=Testing. Otherwise, obtain application tokens from the NestJS authentication endpoints and paste them into the environment.",
     item: personas.map(([persona, tokenVariable, identityVariable, identityProperty]) => ({
       name: `Get ${persona} testing token`,
       request: {

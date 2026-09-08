@@ -2,22 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { SignInPanel } from "@/components/auth/sign-in-panel";
-import {
-  getAuthenticationConfigurationError,
-  getAuthenticationEnvironment,
-} from "@/lib/auth-environment";
 import { safeRedirectTarget } from "@/lib/safe-redirect";
 
 interface SignInPageProps {
-  searchParams: Promise<{ callbackUrl?: string | string[] }>;
+  searchParams: Promise<{ callbackUrl?: string | string[]; reason?: string | string[] }>;
 }
 
 export default async function SignInPage({ searchParams }: SignInPageProps) {
-  const value = (await searchParams).callbackUrl;
+  const parameters = await searchParams;
+  const value = parameters.callbackUrl;
   const callbackUrl = safeRedirectTarget(Array.isArray(value) ? value[0] : value);
-  const configurationError = getAuthenticationConfigurationError();
-  const authenticationEnvironment = configurationError ? undefined : getAuthenticationEnvironment();
-  const testingEnabled = authenticationEnvironment?.applicationEnvironment === "Testing";
+  const testingEnabled = process.env.APP_ENVIRONMENT === "Testing";
 
   return (
     <main className="min-h-screen bg-[#ece9e1] px-4 pt-28 pb-16 sm:px-8 sm:pt-36" id="main-content">
@@ -67,15 +62,19 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
             Sign in to your portal
           </h1>
           <p className="mt-5 max-w-xl leading-7 text-ink-muted">
-            Your identity provider verifies your account. D Ceylon does not store your password.
+            Sign in with your D Ceylon account or continue with Google. Your password is protected
+            by the D Ceylon API and is never stored in this browser.
           </p>
           <div className="mt-9">
-            <SignInPanel
-              callbackUrl={callbackUrl}
-              configurationError={configurationError}
-              localAuthEnabled={authenticationEnvironment?.authenticationMode === "local"}
-              testingEnabled={testingEnabled}
-            />
+            {parameters.reason === "expired" ? (
+              <p
+                className="mb-5 rounded-xl border border-gold/40 bg-gold/10 p-3 text-sm text-ink"
+                role="status"
+              >
+                Your session expired. Sign in again to continue.
+              </p>
+            ) : null}
+            <SignInPanel callbackUrl={callbackUrl} testingEnabled={testingEnabled} />
           </div>
           <p className="mt-7 text-sm text-ink-muted">
             New to D Ceylon?{" "}

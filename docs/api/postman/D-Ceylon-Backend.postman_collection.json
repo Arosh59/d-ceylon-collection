@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "ca0ab651-c832-4b96-a35d-0e01a84b533f",
     "name": "D Ceylon Backend API",
-    "description": "Complete D Ceylon v1 API collection generated from packages/sdk/openapi/v1.json. Request bodies contain realistic Sri Lankan travel examples. Run the testing-token requests only against APP_ENVIRONMENT=Testing; for production, paste OIDC bearer tokens into the matching environment variables. Requests capture created IDs and concurrency tokens. Accept, decline, revise, withdraw, cancellation, and delete requests are alternative/destructive transitions and should be run deliberately rather than by running the entire collection in one pass.",
+    "description": "Complete D Ceylon v1 API collection generated from packages/sdk/openapi/v1.json. Request bodies contain realistic Sri Lankan travel examples. Run the testing-token requests only against APP_ENVIRONMENT=Testing; otherwise, paste NestJS-issued bearer tokens into the matching environment variables. Requests capture created IDs and concurrency tokens. Accept, decline, revise, withdraw, cancellation, and delete requests are alternative/destructive transitions and should be run deliberately rather than by running the entire collection in one pass.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -59,7 +59,7 @@
     },
     {
       "name": "00 - Testing authentication",
-      "description": "Available only when the backend runs with APP_ENVIRONMENT=Testing. In production, obtain tokens from the configured OIDC provider and paste them into the environment.",
+      "description": "Available only when the backend runs with APP_ENVIRONMENT=Testing. Otherwise, obtain application tokens from the NestJS authentication endpoints and paste them into the environment.",
       "item": [
         {
           "name": "Get customer testing token",
@@ -3708,6 +3708,283 @@
               "path": ["api", "v1", "administration", "summary"]
             },
             "description": "Gets live administrator dashboard totals and recent audit activity.\n\nAuthentication: Bearer {{adminToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            },
+            "description": "register\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "login\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "google",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/google",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "google"]
+            },
+            "description": "google\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            },
+            "description": "refresh\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            },
+            "description": "logout\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "forgot-password"]
+            },
+            "description": "forgotPassword\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 202\", () => pm.response.to.have.status(202));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "reset-password"]
+            },
+            "description": "resetPassword\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "me",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "me"]
+            },
+            "description": "me\n\nAuthentication: Bearer {{customerToken}}."
           },
           "response": [],
           "event": [

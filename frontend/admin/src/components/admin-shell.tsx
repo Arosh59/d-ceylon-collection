@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { ADMIN_MODULES } from "@/lib/admin-modules";
-import type { AdminAuthenticationMode } from "@/lib/auth-environment-value";
 
 import { SignOutButton } from "./sign-out-button";
 
@@ -18,7 +17,6 @@ const navigationSlugs = [
 ] as const;
 
 interface AdminShellProps {
-  authenticationMode: AdminAuthenticationMode;
   children: ReactNode;
   currentModule?: string;
   description: string;
@@ -28,7 +26,6 @@ interface AdminShellProps {
 }
 
 export function AdminShell({
-  authenticationMode,
   children,
   currentModule,
   description,
@@ -96,9 +93,9 @@ export function AdminShell({
             <h1 className="page-heading">{title}</h1>
             <p className="page-description">{description}</p>
           </div>
-          <span className={authenticationMode === "local" ? "mode-badge local" : "mode-badge"}>
+          <span className="mode-badge">
             <span className="mode-dot" aria-hidden="true" />
-            {authenticationMode === "local" ? "Local development" : "Managed identity"}
+            NestJS authenticated
           </span>
         </header>
         {children}

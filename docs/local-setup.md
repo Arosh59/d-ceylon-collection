@@ -25,15 +25,9 @@ Set `DATABASE_URL` in `backend/.env` to the existing application database, for e
 postgresql://dceylon_app:<password>@127.0.0.1:5432/dceylon_app
 ```
 
-Configure the same external OIDC issuer/audience and claim names used by the previous API. Configure
-the web and admin OIDC client values independently; they retain separate sessions and deployment
-boundaries.
-
-The admin example uses development-only local credentials by default. After copying it, sign in at
-`http://127.0.0.1:3001/auth/sign-in` with the values in `frontend/admin/.env.local`. Change the
-example password if the machine or development environment is shared. Production admin deployments
-must use `APP_ENVIRONMENT=Production`, `AUTH_MODE=oidc`, and secret-store-backed OIDC values; local
-administrator authentication is rejected outside Development.
+Generate `JWT_ACCESS_SECRET` with `openssl rand -hex 32`. Add Firebase Web and Admin values only if
+Google login is needed locally. Email/password login works without Firebase. Configure SMTP to test
+password-reset delivery; otherwise the Development API accepts the request without sending mail.
 
 ## Infrastructure and database
 
@@ -41,6 +35,14 @@ administrator authentication is rejected outside Development.
 ./scripts/local-infrastructure.sh up
 ./scripts/local-infrastructure.sh verify
 ./scripts/api.sh migrate
+```
+
+Create or promote a local administrator through the controlled backend command:
+
+```bash
+BOOTSTRAP_ADMIN_EMAIL=admin@dceylon.local \
+BOOTSTRAP_ADMIN_PASSWORD='replace-with-a-long-local-password' \
+npm run auth:bootstrap-admin --workspace=@dceylon/backend
 ```
 
 To run the API and both Next.js hosts in Docker:
@@ -71,9 +73,9 @@ Use `npm run dev:backend` instead when you want the API in watch mode. This comm
 credentials. Running `npm run start:dev --workspace=@dceylon/backend` directly instead requires a
 separately configured `backend/.env`.
 
-If the admin host reports that authentication setup is required, confirm `frontend/admin/.env.local`
-exists and restart the development server after changing it. The local admin dashboard intentionally
-shows published catalogue data only; operational totals require a managed OIDC access token.
+If login fails, confirm the API is healthy, the authentication migration was applied, and the user
+has a password credential and the required database role. The admin UI never reads local frontend
+credentials; every login is verified by NestJS.
 
 The default origins are API `http://127.0.0.1:8080`, web `http://127.0.0.1:3000`, and admin
 `http://127.0.0.1:3001`. Editorial content is stored in the application PostgreSQL database.

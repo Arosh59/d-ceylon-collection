@@ -16,7 +16,7 @@ duplicate backend domain decisions.
 
 ```text
 NestJS host
-├── access and external OIDC
+├── authentication and database-backed access
 ├── catalogue
 ├── customers and travellers
 ├── editorial
@@ -36,10 +36,10 @@ deployed as a separate operational step.
 
 ## Contract and security
 
-The public contract remains backward-compatible under `/api/v1`. NestJS verifies its generated
-route inventory against `packages/sdk/openapi/v1.json` before listening. Cross-cutting behavior
-includes RFC 7807 responses, correlation IDs, structured JSON logs, security headers, bounded
-request bodies, rate limits, liveness/readiness, external JWT validation, claim-based roles, and
+The public contract remains backward-compatible under `/api/v1`. NestJS verifies its generated route
+inventory against `packages/sdk/openapi/v1.json` before listening. Cross-cutting behavior includes
+RFC 7807 responses, correlation IDs, structured JSON logs, security headers, bounded request bodies,
+rate limits, liveness/readiness, external JWT validation, claim-based roles, and
 customer/organisation ownership isolation.
 
 The legacy C# source remains temporarily under `apps/api` solely for staging comparison and

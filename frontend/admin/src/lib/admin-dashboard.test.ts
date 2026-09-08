@@ -1,19 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const { getServerSession } = vi.hoisted(() => ({
-  getServerSession: vi.fn(),
-}));
-
 vi.mock("server-only", () => ({}));
-vi.mock("next-auth", () => ({ getServerSession }));
-vi.mock("./auth", () => ({ getAuthOptions: () => ({}) }));
 
 import { getDashboardData } from "./admin-dashboard";
 
 describe("getDashboardData", () => {
   beforeEach(() => {
     process.env.API_BASE_URL = "http://api.example.test";
-    getServerSession.mockResolvedValue({ user: { name: "Administrator" } });
   });
 
   afterEach(() => {
@@ -27,6 +20,7 @@ describe("getDashboardData", () => {
       "fetch",
       vi
         .fn()
+        .mockResolvedValueOnce(new Response(null, { status: 503 }))
         .mockResolvedValueOnce(
           new Response(JSON.stringify({ pagination: { totalItems: 10 } }), { status: 200 }),
         )
@@ -35,7 +29,7 @@ describe("getDashboardData", () => {
         ),
     );
 
-    await expect(getDashboardData()).resolves.toMatchObject({
+    await expect(getDashboardData("access-token")).resolves.toMatchObject({
       counts: { publishedProducts: 10, publishedDestinations: 6 },
       source: "catalogue-api",
     });
@@ -46,11 +40,12 @@ describe("getDashboardData", () => {
       "fetch",
       vi
         .fn()
+        .mockResolvedValueOnce(new Response(null, { status: 503 }))
         .mockResolvedValueOnce(new Response(null, { status: 500 }))
         .mockRejectedValueOnce(new TypeError("connection refused")),
     );
 
-    await expect(getDashboardData()).resolves.toMatchObject({
+    await expect(getDashboardData("access-token")).resolves.toMatchObject({
       counts: { publishedProducts: null, publishedDestinations: null },
       source: "unavailable",
       warning: expect.stringContaining("backend catalogue is unavailable"),

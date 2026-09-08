@@ -5,7 +5,6 @@ import { AdminShell } from "@/components/admin-shell";
 import { getCatalogueModuleData, type CatalogueModule } from "@/lib/catalogue-data";
 import { ADMIN_MODULES } from "@/lib/admin-modules";
 import { requireAdministrator } from "@/lib/auth";
-import { getAdminAuthenticationEnvironment } from "@/lib/auth-environment";
 
 export default async function AdministrationModulePage({
   params,
@@ -18,9 +17,8 @@ export default async function AdministrationModulePage({
     sort?: string | string[];
   }>;
 }) {
-  const session = await requireAdministrator();
-  const environment = getAdminAuthenticationEnvironment();
   const { slug } = await params;
+  const session = await requireAdministrator(`/modules/${slug}`);
   const adminModule = ADMIN_MODULES.find((item) => item.slug === slug);
   if (!adminModule) notFound();
 
@@ -45,7 +43,6 @@ export default async function AdministrationModulePage({
 
   return (
     <AdminShell
-      authenticationMode={environment.authenticationMode}
       currentModule={slug}
       description={adminModule.description}
       eyebrow="Records and workflows"
@@ -172,9 +169,9 @@ export default async function AdministrationModulePage({
               Protected workflow
             </h2>
             <p className="mt-3 max-w-2xl leading-7 text-slate-700">
-              This workflow is available only to a managed administrator session with an API access
-              token. Local development credentials intentionally provide catalogue review without
-              bypassing protected operational data.
+              This workflow requires an administrator account and a healthy authenticated API
+              connection. Your role and organisation access are checked against PostgreSQL on each
+              protected request.
             </p>
           </div>
         </section>

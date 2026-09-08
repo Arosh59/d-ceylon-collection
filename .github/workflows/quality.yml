@@ -26,8 +26,10 @@ jobs:
       - run: npm run test:web
       - run: npm run test:web:a11y
       - run: npm audit --audit-level=high
-      - run: APP_ENVIRONMENT=Development AUTH_ISSUER=http://127.0.0.1:8080 AUTH_CLIENT_ID=dceylon-web-ci AUTH_CLIENT_SECRET=ci-client-secret AUTH_SCOPE='openid profile email dceylon.api' AUTH_SECRET=ci-session-secret-0123456789abcd API_BASE_URL=http://127.0.0.1:8080 SITE_URL=http://127.0.0.1:3000 npm run build:web
-      - run: APP_ENVIRONMENT=Development AUTH_ISSUER=http://127.0.0.1:8080 AUTH_CLIENT_ID=dceylon-admin-ci AUTH_CLIENT_SECRET=ci-client-secret AUTH_SECRET=ci-session-secret-0123456789abcd npm run build:admin
+      - run:
+          APP_ENVIRONMENT=Development API_BASE_URL=http://127.0.0.1:8080
+          SITE_URL=http://127.0.0.1:3000 npm run build:web
+      - run: APP_ENVIRONMENT=Development API_BASE_URL=http://127.0.0.1:8080 npm run build:admin
 
   ai-service:
     runs-on: ubuntu-24.04

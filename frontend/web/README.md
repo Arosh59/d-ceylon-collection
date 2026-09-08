@@ -1,7 +1,7 @@
 # Public Web Application
 
 `frontend/web` is the accessible public Next.js App Router host for D Ceylon Collection. Phases 3
-through 7 establish the visual foundation, public catalogue discovery, external OIDC session,
+through 7 establish the visual foundation, public catalogue discovery, NestJS authentication,
 protected customer and agent boundaries, and customer-owned profile, traveller, wishlist, and
 saved-itinerary foundations plus deterministic draft planning. Quotes, administration, and commerce
 remain later phases.
@@ -18,15 +18,12 @@ npm ci
 The server requires:
 
 - `API_BASE_URL` — server-only origin of the NestJS API; and
-- `SITE_URL` — canonical public origin used by metadata, robots, sitemap generation, and as the
-  default NextAuth callback origin;
+- `SITE_URL` — canonical public origin used by metadata, robots, and sitemap generation;
 - `APP_ENVIRONMENT` — `Development`, `Production`, or isolated `Testing` (omitting it defaults to
   `Development`; casing is accepted);
-- `AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, and `AUTH_SCOPE` — external OIDC
-  integration;
-- `AUTH_AUDIENCE` — optional provider-specific API audience (set this to the backend audience for
-  Auth0); and
-- `AUTH_SECRET` — at least 32 random characters for encrypted session state.
+- `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`,
+  `NEXT_PUBLIC_FIREBASE_PROJECT_ID`, and `NEXT_PUBLIC_FIREBASE_APP_ID` — Firebase Web values used
+  only for Google sign-in.
 
 ## Docker and Dokploy
 
@@ -38,14 +35,10 @@ docker build -f frontend/web/Dockerfile -t dceylon-web .
 ```
 
 In Dokploy, set the build context to `/`, the Dockerfile to `frontend/web/Dockerfile`, and the
-container port to `3000`. Configure `API_BASE_URL`, `SITE_URL`, `APP_ENVIRONMENT`, `AUTH_MODE`,
-`AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_SCOPE`, `AUTH_AUDIENCE`, and
-`AUTH_SECRET` as runtime environment variables. `GOOGLE_MAPS_API_KEY` is optional and
-browser-visible; restrict it to the production site's HTTP referrers. Do not upload or copy an
-`.env` file into the image.
-
-`NEXTAUTH_URL` is derived from `SITE_URL` by the container. It may be set explicitly to the same
-public origin if required by the deployment platform.
+container port to `3000`. Configure `API_BASE_URL`, `SITE_URL`, and `APP_ENVIRONMENT` as runtime
+variables and supply `NEXT_PUBLIC_FIREBASE_*` as image build arguments. `GOOGLE_MAPS_API_KEY` is
+optional and browser-visible; restrict it to the production site's HTTP referrers. Do not upload or
+copy an `.env` file into the image.
 
 When the backend Compose stack is a separate Dokploy service, set `API_BASE_URL` to its public HTTPS
 origin, such as `https://api.example.com`. Do not use `http://api:8080`, because that hostname
@@ -60,8 +53,8 @@ health check for both Next.js and a checked-in destination image. Dokploy should
 its reverse proxy and route the public hostname to port `3000`.
 
 Copy `frontend/web/.env.example` to `frontend/web/.env.local` for normal local development. Real
-environment files are ignored. None of these values is exposed through a `NEXT_PUBLIC_*` variable.
-Production requires an HTTPS issuer. `AUTH_TEST_ENDPOINT_KEY` is accepted only in `Testing`.
+environment files are ignored. Firebase Web values are browser-visible by design; restrict the API
+key and authorized domains. Firebase Admin credentials belong only in the backend secret store.
 
 ## Commands
 

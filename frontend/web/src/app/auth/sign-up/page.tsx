@@ -2,10 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { SignInPanel } from "@/components/auth/sign-in-panel";
-import {
-  getAuthenticationConfigurationError,
-  getAuthenticationEnvironment,
-} from "@/lib/auth-environment";
 import { safeRedirectTarget } from "@/lib/safe-redirect";
 
 interface SignUpPageProps {
@@ -14,13 +10,11 @@ interface SignUpPageProps {
 
 export default async function SignUpPage({ searchParams }: SignUpPageProps) {
   const value = (await searchParams).callbackUrl;
-  const configurationError = getAuthenticationConfigurationError();
-  const authenticationEnvironment = configurationError ? undefined : getAuthenticationEnvironment();
   const callbackUrl = safeRedirectTarget(
     Array.isArray(value) ? value[0] : value,
-    authenticationEnvironment?.authenticationMode === "local" ? "/" : "/portal/customer",
+    "/portal/customer",
   );
-  const testingEnabled = authenticationEnvironment?.applicationEnvironment === "Testing";
+  const testingEnabled = process.env.APP_ENVIRONMENT === "Testing";
 
   return (
     <main className="min-h-screen bg-[#ece9e1] px-4 pt-28 pb-16 sm:px-8 sm:pt-36" id="main-content">
@@ -88,13 +82,7 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
           </ul>
 
           <div className="mt-8">
-            <SignInPanel
-              callbackUrl={callbackUrl}
-              configurationError={configurationError}
-              localAuthEnabled={authenticationEnvironment?.authenticationMode === "local"}
-              mode="sign-up"
-              testingEnabled={testingEnabled}
-            />
+            <SignInPanel callbackUrl={callbackUrl} mode="sign-up" testingEnabled={testingEnabled} />
           </div>
           <p className="mt-7 text-sm text-ink-muted">
             Already have an account?{" "}

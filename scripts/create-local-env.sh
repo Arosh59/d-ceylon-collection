@@ -28,6 +28,7 @@ trap cleanup EXIT
 postgres_admin_password="$(openssl rand -hex 24)"
 postgres_app_password="$(openssl rand -hex 24)"
 redis_password="$(openssl rand -hex 24)"
+jwt_access_secret="$(openssl rand -hex 32)"
 
 while IFS= read -r line || [[ -n "${line}" ]]; do
     case "${line}" in
@@ -39,6 +40,9 @@ while IFS= read -r line || [[ -n "${line}" ]]; do
             ;;
         REDIS_PASSWORD=*)
             printf 'REDIS_PASSWORD=%s\n' "${redis_password}"
+            ;;
+        JWT_ACCESS_SECRET=*)
+            printf 'JWT_ACCESS_SECRET=%s\n' "${jwt_access_secret}"
             ;;
         *)
             printf '%s\n' "${line}"

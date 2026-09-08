@@ -7,19 +7,22 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
-import { createRemoteJWKSet, jwtVerify, type JWTPayload, type JWTVerifyGetKey } from "jose";
+import { jwtVerify, type JWTPayload } from "jose";
 
+import { SecurityAuditService } from "../database/security-audit.service";
+import { ApplicationJwtService } from "../modules/auth/application-jwt.service";
+import { AuthService } from "../modules/auth/auth.service";
 import { IS_PUBLIC, REQUIRED_ROLES } from "./auth.decorators";
 import type { AuthenticatedRequest, AuthenticatedUser } from "./auth.types";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private remoteKey: JWTVerifyGetKey | undefined;
-  private remoteKeyPromise: Promise<JWTVerifyGetKey> | undefined;
-
   public constructor(
     private readonly reflector: Reflector,
     private readonly config: ConfigService,
+    private readonly jwt: ApplicationJwtService,
+    private readonly auth: AuthService,
+    private readonly audit: SecurityAuditService,
   ) {}
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -32,6 +35,7 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const authorization = request.headers.authorization;
     if (!authorization?.startsWith("Bearer ")) {
+      await this.recordAuthentication(request, "missing-token");
       throw new UnauthorizedException("Authentication is required.");
     }
 
@@ -39,6 +43,7 @@ export class AuthGuard implements CanActivate {
     try {
       payload = await this.verify(authorization.slice(7));
     } catch {
+      await this.recordAuthentication(request, "invalid-token");
       throw new UnauthorizedException("The bearer token is invalid or expired.");
     }
 
@@ -48,25 +53,7 @@ export class AuthGuard implements CanActivate {
       }
     }
 
-    const roleClaim = this.config.get<string>("AUTH_ROLE_CLAIM") ?? "roles";
-    const permissionClaim = this.config.get<string>("AUTH_PERMISSION_CLAIM") ?? "permissions";
-    const customerClaim = this.config.get<string>("AUTH_CUSTOMER_CLAIM") ?? "customer_id";
-    const organisationClaim =
-      this.config.get<string>("AUTH_ORGANISATION_CLAIM") ?? "organisation_id";
-    const user: AuthenticatedUser = {
-      subject: payload.sub!,
-      displayName: stringClaim(payload.name) ?? payload.sub!,
-      roles: stringArray(payload[roleClaim]),
-      permissions: stringArray(payload[permissionClaim]),
-      claims: payload as Record<string, unknown>,
-      ...(stringClaim(payload.email) ? { email: stringClaim(payload.email)! } : {}),
-      ...(stringClaim(payload[customerClaim])
-        ? { customerId: stringClaim(payload[customerClaim])! }
-        : {}),
-      ...(stringClaim(payload[organisationClaim])
-        ? { organisationId: stringClaim(payload[organisationClaim])! }
-        : {}),
-    };
+    const user = await this.currentUser(payload);
     request.user = user;
 
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(REQUIRED_ROLES, [
@@ -74,40 +61,74 @@ export class AuthGuard implements CanActivate {
       context.getClass(),
     ]);
     if (requiredRoles?.length && !requiredRoles.some((role) => user.roles.includes(role))) {
+      await this.recordAuthentication(request, "forbidden-role", user.subject);
       throw new ForbiddenException("The authenticated identity does not have the required role.");
     }
+    await this.recordAuthentication(request, "succeeded", user.subject);
     return true;
   }
 
   private async verify(token: string): Promise<JWTPayload> {
     const testing = this.config.get<string>("APP_ENVIRONMENT") === "Testing";
-    const issuer = testing
-      ? this.config.getOrThrow<string>("AUTH_TEST_ISSUER")
-      : this.config.getOrThrow<string>("AUTH_ISSUER");
-    const audience = testing
-      ? this.config.getOrThrow<string>("AUTH_TEST_AUDIENCE")
-      : this.config.getOrThrow<string>("AUTH_AUDIENCE");
-    if (testing) {
-      const secret = new TextEncoder().encode(
-        this.config.getOrThrow<string>("AUTH_TEST_SIGNING_KEY"),
-      );
-      return (await jwtVerify(token, secret, { issuer, audience })).payload;
-    }
-    this.remoteKey ??= await (this.remoteKeyPromise ??= this.discoverRemoteKey());
-    return (await jwtVerify(token, this.remoteKey, { issuer, audience })).payload;
+    if (!testing) return this.jwt.verify(token);
+    const secret = new TextEncoder().encode(
+      this.config.getOrThrow<string>("AUTH_TEST_SIGNING_KEY"),
+    );
+    return (
+      await jwtVerify(token, secret, {
+        issuer: this.config.getOrThrow<string>("AUTH_TEST_ISSUER"),
+        audience: this.config.getOrThrow<string>("AUTH_TEST_AUDIENCE"),
+        algorithms: ["HS256"],
+      })
+    ).payload;
   }
 
-  private async discoverRemoteKey(): Promise<JWTVerifyGetKey> {
-    const authority = (
-      this.config.get<string>("AUTH_AUTHORITY") ?? this.config.getOrThrow<string>("AUTH_ISSUER")
-    ).replace(/\/$/u, "");
-    const response = await fetch(`${authority}/.well-known/openid-configuration`);
-    if (!response.ok) throw new Error(`OIDC discovery failed with HTTP ${response.status}.`);
-    const metadata = (await response.json()) as { jwks_uri?: unknown };
-    if (typeof metadata.jwks_uri !== "string")
-      throw new Error("OIDC discovery did not provide jwks_uri.");
-    return createRemoteJWKSet(new URL(metadata.jwks_uri));
+  private async currentUser(payload: JWTPayload): Promise<AuthenticatedUser> {
+    if (this.config.get<string>("APP_ENVIRONMENT") === "Testing") {
+      return userFromClaims(payload);
+    }
+    const sessionId = stringClaim(payload.sid);
+    if (!sessionId) throw new UnauthorizedException("The bearer token is missing sid.");
+    await this.auth.assertActiveSession(payload.sub!, sessionId);
+    const identity = await this.auth.identity(payload.sub!);
+    return {
+      subject: identity.subject,
+      displayName: identity.displayName,
+      roles: identity.roles,
+      permissions: identity.permissions,
+      claims: payload as Record<string, unknown>,
+      ...(identity.email ? { email: identity.email } : {}),
+      ...(identity.customerId ? { customerId: identity.customerId } : {}),
+      ...(identity.organisationId ? { organisationId: identity.organisationId } : {}),
+    };
   }
+
+  private async recordAuthentication(
+    request: AuthenticatedRequest,
+    outcome: string,
+    subject: string | null = null,
+  ): Promise<void> {
+    try {
+      await this.audit.record("authenticate", outcome, subject, request.correlationId ?? "unknown");
+    } catch {
+      // Authentication failures must still return a stable 401/403 if audit storage is unavailable.
+    }
+  }
+}
+
+function userFromClaims(payload: JWTPayload): AuthenticatedUser {
+  return {
+    subject: payload.sub!,
+    displayName: stringClaim(payload.name) ?? payload.sub!,
+    roles: stringArray(payload.roles),
+    permissions: stringArray(payload.permissions),
+    claims: payload as Record<string, unknown>,
+    ...(stringClaim(payload.email) ? { email: stringClaim(payload.email)! } : {}),
+    ...(stringClaim(payload.customer_id) ? { customerId: stringClaim(payload.customer_id)! } : {}),
+    ...(stringClaim(payload.organisation_id)
+      ? { organisationId: stringClaim(payload.organisation_id)! }
+      : {}),
+  };
 }
 
 function stringArray(value: unknown): string[] {

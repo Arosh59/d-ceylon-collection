@@ -13,6 +13,14 @@ RUN npm ci --ignore-scripts --no-audit --no-fund
 FROM dependencies AS builder
 WORKDIR /workspace
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_FIREBASE_API_KEY=""
+ARG NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=""
+ARG NEXT_PUBLIC_FIREBASE_PROJECT_ID=""
+ARG NEXT_PUBLIC_FIREBASE_APP_ID=""
+ENV NEXT_PUBLIC_FIREBASE_API_KEY=$NEXT_PUBLIC_FIREBASE_API_KEY \
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=$NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN \
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID=$NEXT_PUBLIC_FIREBASE_PROJECT_ID \
+    NEXT_PUBLIC_FIREBASE_APP_ID=$NEXT_PUBLIC_FIREBASE_APP_ID
 
 COPY --from=dependencies /workspace/node_modules ./node_modules
 COPY --from=dependencies /workspace/backend/package.json backend/package.json
@@ -23,13 +31,7 @@ COPY package.json package-lock.json ./
 COPY frontend/admin frontend/admin
 
 RUN API_BASE_URL=http://127.0.0.1:8080 \
-    NEXTAUTH_URL=http://127.0.0.1:3001 \
     APP_ENVIRONMENT=Production \
-    AUTH_MODE=oidc \
-    AUTH_ISSUER=https://identity.invalid \
-    AUTH_CLIENT_ID=build-only \
-    AUTH_CLIENT_SECRET=build-only \
-    AUTH_SECRET=build-only-secret-at-least-32-characters \
     npm run build:admin
 
 FROM node:24.11.0-alpine3.22 AS runtime

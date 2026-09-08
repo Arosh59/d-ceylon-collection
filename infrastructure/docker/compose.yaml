@@ -17,13 +17,20 @@ services:
         postgresql://${POSTGRES_APP_USER:?POSTGRES_APP_USER is
         required}:${POSTGRES_APP_PASSWORD:?POSTGRES_APP_PASSWORD is
         required}@postgres:5432/${POSTGRES_APP_DB:?POSTGRES_APP_DB is required}
-      AUTH_AUTHORITY: ${AUTH_AUTHORITY:-http://host.docker.internal:9090}
-      AUTH_ISSUER: ${AUTH_ISSUER:-http://host.docker.internal:9090}
-      AUTH_AUDIENCE: ${AUTH_AUDIENCE:-dceylon-api}
-      AUTH_ROLE_CLAIM: ${AUTH_ROLE_CLAIM:-roles}
-      AUTH_PERMISSION_CLAIM: ${AUTH_PERMISSION_CLAIM:-permissions}
-      AUTH_ORGANISATION_CLAIM: ${AUTH_ORGANISATION_CLAIM:-organisation_id}
-      AUTH_CUSTOMER_CLAIM: ${AUTH_CUSTOMER_CLAIM:-customer_id}
+      JWT_ISSUER: ${JWT_ISSUER:-dceylon-api}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-dceylon-api}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET is required}
+      JWT_ACCESS_TTL: ${JWT_ACCESS_TTL:-15m}
+      JWT_REFRESH_TTL: ${JWT_REFRESH_TTL:-30d}
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID:-}
+      FIREBASE_CLIENT_EMAIL: ${FIREBASE_CLIENT_EMAIL:-}
+      FIREBASE_PRIVATE_KEY: ${FIREBASE_PRIVATE_KEY:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      PASSWORD_RESET_URL: ${PASSWORD_RESET_URL:-http://127.0.0.1:3000/auth/reset-password}
     ports:
       - 127.0.0.1:${API_PORT:-8080}:8080
     healthcheck:
@@ -47,6 +54,11 @@ services:
     build:
       context: ../..
       dockerfile: frontend/web/Dockerfile
+      args:
+        NEXT_PUBLIC_FIREBASE_API_KEY: ${NEXT_PUBLIC_FIREBASE_API_KEY:-}
+        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:-}
+        NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${NEXT_PUBLIC_FIREBASE_PROJECT_ID:-}
+        NEXT_PUBLIC_FIREBASE_APP_ID: ${NEXT_PUBLIC_FIREBASE_APP_ID:-}
     restart: unless-stopped
     depends_on:
       api:
@@ -54,14 +66,11 @@ services:
     environment:
       API_BASE_URL: http://api:8080
       SITE_URL: ${SITE_URL:-http://127.0.0.1:3000}
-      NEXTAUTH_URL: ${SITE_URL:-http://127.0.0.1:3000}
       APP_ENVIRONMENT: ${APP_ENVIRONMENT:-Development}
-      AUTH_MODE: ${AUTH_MODE:-oidc}
-      AUTH_ISSUER: ${AUTH_ISSUER:-https://identity.example.test}
-      AUTH_CLIENT_ID: ${AUTH_CLIENT_ID:-dceylon-web}
-      AUTH_CLIENT_SECRET: ${AUTH_CLIENT_SECRET:-local-development-client-secret}
-      AUTH_SCOPE: ${AUTH_SCOPE:-openid profile email dceylon.api}
-      AUTH_SECRET: ${AUTH_SECRET:-local-development-secret-change-me-32-chars}
+      NEXT_PUBLIC_FIREBASE_API_KEY: ${NEXT_PUBLIC_FIREBASE_API_KEY:-}
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:-}
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${NEXT_PUBLIC_FIREBASE_PROJECT_ID:-}
+      NEXT_PUBLIC_FIREBASE_APP_ID: ${NEXT_PUBLIC_FIREBASE_APP_ID:-}
     ports:
       - 127.0.0.1:${WEB_PORT:-3000}:3000
     healthcheck:
@@ -85,21 +94,22 @@ services:
     build:
       context: ../..
       dockerfile: frontend/admin/Dockerfile
+      args:
+        NEXT_PUBLIC_FIREBASE_API_KEY: ${NEXT_PUBLIC_FIREBASE_API_KEY:-}
+        NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:-}
+        NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${NEXT_PUBLIC_FIREBASE_PROJECT_ID:-}
+        NEXT_PUBLIC_FIREBASE_APP_ID: ${NEXT_PUBLIC_FIREBASE_APP_ID:-}
     restart: unless-stopped
     depends_on:
       api:
         condition: service_started
     environment:
       API_BASE_URL: http://api:8080
-      NEXTAUTH_URL: ${ADMIN_SITE_URL:-http://127.0.0.1:3001}
       APP_ENVIRONMENT: ${APP_ENVIRONMENT:-Development}
-      AUTH_MODE: ${ADMIN_AUTH_MODE:-local}
-      AUTH_ISSUER: ${AUTH_ISSUER:-https://identity.example.test}
-      AUTH_CLIENT_ID: ${ADMIN_AUTH_CLIENT_ID:-dceylon-admin}
-      AUTH_CLIENT_SECRET: ${ADMIN_AUTH_CLIENT_SECRET:-local-development-client-secret}
-      AUTH_SECRET: ${ADMIN_AUTH_SECRET:-local-development-secret-change-me-32-chars}
-      LOCAL_ADMIN_EMAIL: ${LOCAL_ADMIN_EMAIL:-admin@dceylon.local}
-      LOCAL_ADMIN_PASSWORD: ${LOCAL_ADMIN_PASSWORD:-change-me-local-admin-password}
+      NEXT_PUBLIC_FIREBASE_API_KEY: ${NEXT_PUBLIC_FIREBASE_API_KEY:-}
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:-}
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${NEXT_PUBLIC_FIREBASE_PROJECT_ID:-}
+      NEXT_PUBLIC_FIREBASE_APP_ID: ${NEXT_PUBLIC_FIREBASE_APP_ID:-}
     ports:
       - 127.0.0.1:${ADMIN_PORT:-3001}:3001
     healthcheck:

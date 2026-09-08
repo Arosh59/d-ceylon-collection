@@ -1,6 +1,5 @@
 "use client";
 
-import { signOut } from "next-auth/react";
 import { useState } from "react";
 
 export function SignOutButton({ compact = false }: { compact?: boolean }) {
@@ -12,7 +11,11 @@ export function SignOutButton({ compact = false }: { compact?: boolean }) {
       disabled={busy}
       onClick={async () => {
         setBusy(true);
-        await signOut({ callbackUrl: "/auth/sign-in" });
+        try {
+          await fetch("/api/auth/logout", { method: "POST" });
+        } finally {
+          window.location.assign("/auth/sign-in");
+        }
       }}
       type="button"
     >
