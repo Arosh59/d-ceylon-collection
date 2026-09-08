@@ -34,10 +34,10 @@ Verify the baseline with `npm run prisma:baseline:verify`, `npm run prisma:migra
 
 ## Contract compatibility
 
-At startup the Nest application generates a route document and checks every canonical path,
-HTTP method, operation ID, and success status. The canonical reviewed document is then served
-unchanged so the existing SDK remains backward-compatible. The Jest contract test independently
-verifies all 60 paths and 82 operations.
+At startup the Nest application generates a route document and checks every canonical path, HTTP
+method, operation ID, and success status. The canonical reviewed document is then served unchanged
+so the existing SDK remains backward-compatible. The Jest contract test independently verifies all
+60 paths and 82 operations.
 
 Use `API_BASE_URL=http://127.0.0.1:8080 npm run sdk:verify` against a running backend. Refresh and
 regenerate the SDK only for an explicitly reviewed contract change.
@@ -52,3 +52,29 @@ regenerate the SDK only for an explicitly reviewed contract change.
 
 See [authentication](../authentication.md), [local setup](../local-setup.md), and the
 [backend README](../../backend/README.md).
+
+## Postman collection
+
+Import both files from [`docs/api/postman`](postman):
+
+- `D-Ceylon-Backend.postman_collection.json` contains every version-one backend operation, health
+  checks, testing-token helpers, realistic Sri Lankan travel request bodies, response assertions,
+  and automatic ID/concurrency-token capture.
+- `D-Ceylon-Local.postman_environment.json` supplies local defaults and placeholder resource IDs.
+  Select it before sending requests and set `testAuthKey` when the API runs in the isolated
+  `Testing` environment.
+
+For a normal Development or Production API, obtain OIDC tokens from the configured identity provider
+and set `customerToken`, `agentToken`, `staffToken`, and `adminToken` as needed. Never save real
+tokens or `testAuthKey` back into the repository files.
+
+Run create/get/update requests in resource order so their test scripts can capture server-issued IDs
+and concurrency tokens. Accept, decline, revise, withdraw, cancellation, payment, and delete
+requests change state and should be run deliberately; the complete collection is not intended to be
+executed blindly as one destructive collection-runner sequence.
+
+Regenerate the files after a reviewed OpenAPI contract change:
+
+```bash
+node scripts/generate-postman-collection.mjs
+```

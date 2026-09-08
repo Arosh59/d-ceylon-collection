@@ -1,0 +1,3747 @@
+{
+  "info": {
+    "_postman_id": "ca0ab651-c832-4b96-a35d-0e01a84b533f",
+    "name": "D Ceylon Backend API",
+    "description": "Complete D Ceylon v1 API collection generated from packages/sdk/openapi/v1.json. Request bodies contain realistic Sri Lankan travel examples. Run the testing-token requests only against APP_ENVIRONMENT=Testing; for production, paste OIDC bearer tokens into the matching environment variables. Requests capture created IDs and concurrency tokens. Accept, decline, revise, withdraw, cancellation, and delete requests are alternative/destructive transitions and should be run deliberately rather than by running the entire collection in one pass.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00 - Health",
+      "item": [
+        {
+          "name": "Liveness",
+          "request": {
+            "method": "GET",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/health/live",
+              "host": ["{{baseUrl}}"],
+              "path": ["health", "live"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('HTTP 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Readiness (database)",
+          "request": {
+            "method": "GET",
+            "auth": { "type": "noauth" },
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{baseUrl}}/health/ready",
+              "host": ["{{baseUrl}}"],
+              "path": ["health", "ready"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": ["pm.test('HTTP 200', () => pm.response.to.have.status(200));"]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "00 - Testing authentication",
+      "description": "Available only when the backend runs with APP_ENVIRONMENT=Testing. In production, obtain tokens from the configured OIDC provider and paste them into the environment.",
+      "item": [
+        {
+          "name": "Get customer testing token",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Test-Authentication-Key", "value": "{{testAuthKey}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": \"customer\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/access/testing/token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "access", "testing", "token"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  pm.environment.set('customerToken', data.accessToken);",
+                  "  if (data.identity.customerId) pm.environment.set('customerId', data.identity.customerId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Get agent testing token",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Test-Authentication-Key", "value": "{{testAuthKey}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": \"agent\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/access/testing/token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "access", "testing", "token"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  pm.environment.set('agentToken', data.accessToken);",
+                  "  if (data.identity.organisationId) pm.environment.set('organisationId', data.identity.organisationId);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Get staff testing token",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Test-Authentication-Key", "value": "{{testAuthKey}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": \"staff\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/access/testing/token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "access", "testing", "token"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  pm.environment.set('staffToken', data.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Get administrator testing token",
+          "request": {
+            "method": "POST",
+            "auth": { "type": "noauth" },
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Test-Authentication-Key", "value": "{{testAuthKey}}", "type": "text" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"persona\": \"administrator\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/access/testing/token",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "access", "testing", "token"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "  const data = pm.response.json();",
+                  "  pm.environment.set('adminToken', data.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Catalogue",
+      "item": [
+        {
+          "name": "Get Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/catalogue/products?query=tea&destination=ella&sort=price-asc&pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "catalogue", "products"],
+              "query": [
+                { "key": "query", "value": "tea", "disabled": false, "description": "" },
+                {
+                  "key": "productType",
+                  "value": "{{productType}}",
+                  "disabled": true,
+                  "description": ""
+                },
+                { "key": "category", "value": "{{category}}", "disabled": true, "description": "" },
+                {
+                  "key": "collection",
+                  "value": "{{collection}}",
+                  "disabled": true,
+                  "description": ""
+                },
+                { "key": "destination", "value": "ella", "disabled": false, "description": "" },
+                { "key": "tag", "value": "{{tag}}", "disabled": true, "description": "" },
+                {
+                  "key": "minimumPrice",
+                  "value": "{{minimumPrice}}",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "maximumPrice",
+                  "value": "{{maximumPrice}}",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "minimumDurationMinutes",
+                  "value": "{{minimumDurationMinutes}}",
+                  "disabled": true,
+                  "description": ""
+                },
+                {
+                  "key": "maximumDurationMinutes",
+                  "value": "{{maximumDurationMinutes}}",
+                  "disabled": true,
+                  "description": ""
+                },
+                { "key": "sort", "value": "price-asc", "disabled": false, "description": "" },
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "Searches and filters published catalogue products.\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Product By Slug",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/catalogue/products/{{productSlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "catalogue", "products", "{{productSlug}}"]
+            },
+            "description": "Gets one published product by slug.\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Product Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/catalogue/product-types?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "catalogue", "product-types"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "Gets product types.\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/catalogue/categories?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "catalogue", "categories"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "Gets catalogue categories.\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Tags",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/catalogue/tags?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "catalogue", "tags"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "Gets catalogue tags.\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Collections",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/catalogue/collections?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "catalogue", "collections"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "Gets published travel collections.\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Collection By Slug",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/catalogue/collections/{{collectionSlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "catalogue", "collections", "{{collectionSlug}}"]
+            },
+            "description": "Gets one published travel collection.\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Destinations",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/catalogue/destinations?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "catalogue", "destinations"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "Gets published destinations.\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Destination By Slug",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/catalogue/destinations/{{destinationSlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "catalogue", "destinations", "{{destinationSlug}}"]
+            },
+            "description": "Gets one published destination.\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Editorial",
+      "item": [
+        {
+          "name": "Get Journal Articles",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/editorial/journal?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "editorial", "journal"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetJournalArticlesV1\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Journal Article By Slug",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/editorial/journal/{{journalSlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "editorial", "journal", "{{journalSlug}}"]
+            },
+            "description": "GetJournalArticleBySlugV1\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Promotions",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": { "type": "noauth" },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/editorial/promotions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "editorial", "promotions"]
+            },
+            "description": "GetPromotionsV1\n\nAuthentication: public."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Identity and Access",
+      "item": [
+        {
+          "name": "Get Current Access",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/access/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "access", "me"]
+            },
+            "description": "GetCurrentAccessV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Portal",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/access/customer/{{customerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "access", "customer", "{{customerId}}"]
+            },
+            "description": "GetCustomerPortalV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Agent Portal",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/access/agent/{{organisationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "access", "agent", "{{organisationId}}"]
+            },
+            "description": "GetAgentPortalV1\n\nAuthentication: Bearer {{agentToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Staff Portal",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/access/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "access", "staff"]
+            },
+            "description": "GetStaffPortalV1\n\nAuthentication: Bearer {{staffToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Administrator Portal",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/access/administrator",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "access", "administrator"]
+            },
+            "description": "GetAdministratorPortalV1\n\nAuthentication: Bearer {{adminToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Customer records",
+      "item": [
+        {
+          "name": "Get Customer Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "profile"]
+            },
+            "description": "GetCustomerProfileV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('profileConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Customer Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "profile"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"givenName\": \"Nadeesha\",\n  \"familyName\": \"Perera\",\n  \"contactEmail\": \"nadeesha.perera@example.com\",\n  \"contactPhone\": \"+94771234567\",\n  \"countryCode\": \"LK\",\n  \"preferredLocale\": \"en-LK\",\n  \"preferredContactMethod\": \"email\",\n  \"marketingConsent\": true\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateCustomerProfileV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CreateCustomerProfileRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('profileConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Customer Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "profile"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concurrencyToken\": \"{{profileConcurrencyToken}}\",\n  \"givenName\": \"Nadeesha\",\n  \"familyName\": \"Perera\",\n  \"contactEmail\": \"nadeesha.perera@example.com\",\n  \"contactPhone\": \"+94771234567\",\n  \"countryCode\": \"LK\",\n  \"preferredLocale\": \"en-LK\",\n  \"preferredContactMethod\": \"email\",\n  \"marketingConsent\": false\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "UpdateCustomerProfileV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows UpdateCustomerProfileRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('profileConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Customer Profile",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/profile?concurrencyToken={{profileConcurrencyToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "profile"],
+              "query": [
+                {
+                  "key": "concurrencyToken",
+                  "value": "{{profileConcurrencyToken}}",
+                  "disabled": false,
+                  "description": ""
+                }
+              ]
+            },
+            "description": "DeleteCustomerProfileV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Travellers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travellers?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travellers"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetCustomerTravellersV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Customer Traveller",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travellers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travellers"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"givenName\": \"Maya\",\n  \"familyName\": \"Perera\",\n  \"dateOfBirth\": \"1992-08-14\",\n  \"accessibilityNeeds\": \"Step-free access where available.\",\n  \"dietaryNeeds\": \"Vegetarian; no peanuts.\",\n  \"emergencyContactName\": \"Kamal Perera\",\n  \"emergencyContactPhone\": \"+94772345678\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateCustomerTravellerV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CreateTravellerRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('travellerId', data.id);",
+                  "  if (data.concurrencyToken) pm.environment.set('travellerConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Traveller",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travellers/{{travellerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travellers", "{{travellerId}}"]
+            },
+            "description": "GetCustomerTravellerV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('travellerConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Customer Traveller",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travellers/{{travellerId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travellers", "{{travellerId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concurrencyToken\": \"{{travellerConcurrencyToken}}\",\n  \"givenName\": \"Maya\",\n  \"familyName\": \"Perera\",\n  \"dateOfBirth\": \"1992-08-14\",\n  \"accessibilityNeeds\": \"Step-free access and an aisle seat where available.\",\n  \"dietaryNeeds\": \"Vegetarian; no peanuts.\",\n  \"emergencyContactName\": \"Kamal Perera\",\n  \"emergencyContactPhone\": \"+94772345678\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "UpdateCustomerTravellerV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows UpdateTravellerRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('travellerConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Customer Traveller",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travellers/{{travellerId}}?concurrencyToken={{travellerConcurrencyToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travellers", "{{travellerId}}"],
+              "query": [
+                {
+                  "key": "concurrencyToken",
+                  "value": "{{travellerConcurrencyToken}}",
+                  "disabled": false,
+                  "description": ""
+                }
+              ]
+            },
+            "description": "DeleteCustomerTravellerV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Wishlist",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/wishlist?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "wishlist"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetCustomerWishlistV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Customer Wishlist Entry",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/wishlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "wishlist"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productSlug\": \"{{productSlug}}\",\n  \"note\": \"Interested in a private tea-country railway experience.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateCustomerWishlistEntryV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CreateWishlistEntryRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('wishlistEntryId', data.id);",
+                  "  if (data.concurrencyToken) pm.environment.set('wishlistConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Customer Wishlist Entry",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/wishlist/{{wishlistEntryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "wishlist", "{{wishlistEntryId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Prefer the morning train and a window seat, subject to availability.\",\n  \"concurrencyToken\": \"{{wishlistConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "UpdateCustomerWishlistEntryV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows UpdateWishlistEntryRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('wishlistConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Customer Wishlist Entry",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/wishlist/{{wishlistEntryId}}?concurrencyToken={{wishlistConcurrencyToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "wishlist", "{{wishlistEntryId}}"],
+              "query": [
+                {
+                  "key": "concurrencyToken",
+                  "value": "{{wishlistConcurrencyToken}}",
+                  "disabled": false,
+                  "description": ""
+                }
+              ]
+            },
+            "description": "DeleteCustomerWishlistEntryV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Saved Itineraries",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/saved-itineraries?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "saved-itineraries"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetCustomerSavedItinerariesV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Customer Saved Itinerary",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/saved-itineraries",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "saved-itineraries"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tea Country and Southern Coast\",\n  \"summary\": \"A relaxed journey from Ella to Galle with rail, tea, heritage, and coastal time.\",\n  \"travelStartDate\": \"2027-02-10\",\n  \"travelEndDate\": \"2027-02-17\",\n  \"primaryDestinationSlug\": \"ella\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateCustomerSavedItineraryV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CreateSavedItineraryRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('savedItineraryId', data.id);",
+                  "  if (data.concurrencyToken) pm.environment.set('savedItineraryConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Saved Itinerary",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/saved-itineraries/{{savedItineraryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "saved-itineraries", "{{savedItineraryId}}"]
+            },
+            "description": "GetCustomerSavedItineraryV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('savedItineraryConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Customer Saved Itinerary",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/saved-itineraries/{{savedItineraryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "saved-itineraries", "{{savedItineraryId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concurrencyToken\": \"{{savedItineraryConcurrencyToken}}\",\n  \"title\": \"Tea Country, Galle and the Southern Coast\",\n  \"summary\": \"An eight-day slow journey through Ella and Galle with local food and heritage.\",\n  \"travelStartDate\": \"2027-02-10\",\n  \"travelEndDate\": \"2027-02-17\",\n  \"primaryDestinationSlug\": \"ella\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "UpdateCustomerSavedItineraryV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows UpdateSavedItineraryRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('savedItineraryConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Customer Saved Itinerary",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/saved-itineraries/{{savedItineraryId}}?concurrencyToken={{savedItineraryConcurrencyToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "saved-itineraries", "{{savedItineraryId}}"],
+              "query": [
+                {
+                  "key": "concurrencyToken",
+                  "value": "{{savedItineraryConcurrencyToken}}",
+                  "disabled": false,
+                  "description": ""
+                }
+              ]
+            },
+            "description": "DeleteCustomerSavedItineraryV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Travel planning",
+      "item": [
+        {
+          "name": "Get Customer Travel Plans",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travel-plans?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travel-plans"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetCustomerTravelPlansV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Customer Travel Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travel-plans",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travel-plans"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Ella and Galle Discovery\",\n  \"savedItineraryId\": \"{{savedItineraryId}}\",\n  \"travelStartDate\": \"2027-02-10\",\n  \"travelEndDate\": \"2027-02-17\",\n  \"pace\": \"relaxed\",\n  \"destinationSlugs\": [\n    \"ella\",\n    \"galle\"\n  ],\n  \"travellerIds\": [\n    \"{{travellerId}}\"\n  ],\n  \"interests\": [\n    \"tea culture\",\n    \"scenic railways\",\n    \"local food\",\n    \"heritage\"\n  ],\n  \"productTypeSlugs\": [],\n  \"categorySlugs\": [],\n  \"tagSlugs\": [\n    \"tea\",\n    \"heritage\"\n  ],\n  \"accessibilityConsiderations\": \"Avoid long stair climbs and include regular rest stops.\",\n  \"dietaryConsiderations\": \"Vegetarian meals with no peanuts.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateCustomerTravelPlanV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CreateTravelPlanRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('planId', data.id);",
+                  "  if (data.concurrencyToken) pm.environment.set('travelPlanConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Travel Plan",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travel-plans/{{planId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travel-plans", "{{planId}}"]
+            },
+            "description": "GetCustomerTravelPlanV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('travelPlanConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Customer Travel Plan Input",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travel-plans/{{planId}}/input",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travel-plans", "{{planId}}", "input"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concurrencyToken\": \"{{travelPlanConcurrencyToken}}\",\n  \"title\": \"Ella and Galle Discovery\",\n  \"savedItineraryId\": \"{{savedItineraryId}}\",\n  \"travelStartDate\": \"2027-02-10\",\n  \"travelEndDate\": \"2027-02-17\",\n  \"pace\": \"relaxed\",\n  \"destinationSlugs\": [\n    \"ella\",\n    \"galle\"\n  ],\n  \"travellerIds\": [\n    \"{{travellerId}}\"\n  ],\n  \"interests\": [\n    \"tea culture\",\n    \"scenic railways\",\n    \"local food\",\n    \"heritage\"\n  ],\n  \"productTypeSlugs\": [],\n  \"categorySlugs\": [],\n  \"tagSlugs\": [\n    \"tea\",\n    \"heritage\"\n  ],\n  \"accessibilityConsiderations\": \"Avoid long stair climbs and include regular rest stops.\",\n  \"dietaryConsiderations\": \"Vegetarian meals with no peanuts.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "UpdateCustomerTravelPlanInputV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows UpdateTravelPlanInputRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('travelPlanConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generate Customer Travel Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travel-plans/{{planId}}/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travel-plans", "{{planId}}", "generate"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concurrencyToken\": \"{{travelPlanConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "GenerateCustomerTravelPlanV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows GenerateTravelPlanRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('travelPlanConcurrencyToken', data.concurrencyToken);",
+                  "  if (data.currentRevision?.id) pm.environment.set('itineraryRevisionId', data.currentRevision?.id);",
+                  "  if (data.currentRevision?.days?.[0]?.id) pm.environment.set('dayId', data.currentRevision?.days?.[0]?.id);",
+                  "  if (data.currentRevision?.days?.[0]?.concurrencyToken) pm.environment.set('dayConcurrencyToken', data.currentRevision?.days?.[0]?.concurrencyToken);",
+                  "  if (data.currentRevision?.days?.[0]?.items?.[0]?.id) pm.environment.set('itemId', data.currentRevision?.days?.[0]?.items?.[0]?.id);",
+                  "  if (data.currentRevision?.days?.[0]?.items?.[0]?.concurrencyToken) pm.environment.set('itemConcurrencyToken', data.currentRevision?.days?.[0]?.items?.[0]?.concurrencyToken);",
+                  "  if (data.currentRevision?.days?.length > 1) pm.environment.set('targetDayId', data.currentRevision.days[1].id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Customer Itinerary Day",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travel-plans/{{planId}}/days/{{dayId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travel-plans", "{{planId}}", "days", "{{dayId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Ella tea country and viewpoints\",\n  \"concurrencyToken\": \"{{dayConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "UpdateCustomerItineraryDayV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows UpdateItineraryDayRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('travelPlanConcurrencyToken', data.concurrencyToken);",
+                  "  if (data.currentRevision?.days?.[0]?.concurrencyToken) pm.environment.set('dayConcurrencyToken', data.currentRevision?.days?.[0]?.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Customer Itinerary Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travel-plans/{{planId}}/days/{{dayId}}/items",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "customer",
+                "travel-plans",
+                "{{planId}}",
+                "days",
+                "{{dayId}}",
+                "items"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Guided visit to a working tea estate\",\n  \"notes\": \"Include a factory tour and a vegetarian estate lunch.\",\n  \"durationMinutes\": 240,\n  \"destinationSlug\": \"ella\",\n  \"position\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateCustomerItineraryItemV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CreateItineraryItemRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('travelPlanConcurrencyToken', data.concurrencyToken);",
+                  "  if (data.currentRevision?.days?.[0]?.items?.[0]?.id) pm.environment.set('itemId', data.currentRevision?.days?.[0]?.items?.[0]?.id);",
+                  "  if (data.currentRevision?.days?.[0]?.items?.[0]?.concurrencyToken) pm.environment.set('itemConcurrencyToken', data.currentRevision?.days?.[0]?.items?.[0]?.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Customer Itinerary Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travel-plans/{{planId}}/items/{{itemId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "travel-plans", "{{planId}}", "items", "{{itemId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concurrencyToken\": \"{{itemConcurrencyToken}}\",\n  \"title\": \"Private guided visit to a working tea estate\",\n  \"notes\": \"Include factory tour, tasting, and vegetarian estate lunch.\",\n  \"durationMinutes\": 270,\n  \"destinationSlug\": \"ella\",\n  \"position\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "UpdateCustomerItineraryItemV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows UpdateItineraryItemRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('travelPlanConcurrencyToken', data.concurrencyToken);",
+                  "  if (data.currentRevision?.days?.[0]?.items?.[0]?.concurrencyToken) pm.environment.set('itemConcurrencyToken', data.currentRevision?.days?.[0]?.items?.[0]?.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reorder Customer Itinerary Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/travel-plans/{{planId}}/items/{{itemId}}/reorder",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "customer",
+                "travel-plans",
+                "{{planId}}",
+                "items",
+                "{{itemId}}",
+                "reorder"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetDayId\": \"{{targetDayId}}\",\n  \"position\": 1,\n  \"concurrencyToken\": \"{{itemConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "ReorderCustomerItineraryItemV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows ReorderItineraryItemRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('travelPlanConcurrencyToken', data.concurrencyToken);",
+                  "  if (data.currentRevision?.days?.[0]?.items?.[0]?.concurrencyToken) pm.environment.set('itemConcurrencyToken', data.currentRevision?.days?.[0]?.items?.[0]?.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Customer quotes",
+      "item": [
+        {
+          "name": "Get Customer Quotes",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/quotes?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "quotes"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetCustomerQuotesV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Request Customer Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/quotes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "quotes"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"travelPlanId\": \"{{planId}}\",\n  \"itineraryRevisionId\": \"{{itineraryRevisionId}}\",\n  \"customerNotes\": \"Please quote private transfers and boutique accommodation with breakfast.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "RequestCustomerQuoteV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CreateQuoteRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('quoteId', data.id);",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Quote",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/quotes/{{quoteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "quotes", "{{quoteId}}"]
+            },
+            "description": "GetCustomerQuoteV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "  if (data.currentVersionId) pm.environment.set('quoteVersionId', data.currentVersionId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Accept Customer Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/quotes/{{quoteId}}/accept",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "quotes", "{{quoteId}}", "accept"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"versionId\": \"{{quoteVersionId}}\",\n  \"concurrencyToken\": \"{{quoteConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "AcceptCustomerQuoteV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows QuoteTransitionRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Decline Customer Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/quotes/{{quoteId}}/decline",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "quotes", "{{quoteId}}", "decline"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"versionId\": \"{{quoteVersionId}}\",\n  \"concurrencyToken\": \"{{quoteConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "DeclineCustomerQuoteV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows QuoteTransitionRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Withdraw Customer Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/quotes/{{quoteId}}/withdraw",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "quotes", "{{quoteId}}", "withdraw"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concurrencyToken\": \"{{quoteConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "WithdrawCustomerQuoteV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows QuoteConcurrencyRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Agent quotes",
+      "item": [
+        {
+          "name": "Get Agent Quote Queue",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agent/quotes?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "agent", "quotes"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetAgentQuoteQueueV1\n\nAuthentication: Bearer {{agentToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Agent Quote",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agent/quotes/{{quoteId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "agent", "quotes", "{{quoteId}}"]
+            },
+            "description": "GetAgentQuoteV1\n\nAuthentication: Bearer {{agentToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "  if (data.currentVersionId) pm.environment.set('quoteVersionId', data.currentVersionId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Prepare Agent Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agent/quotes/{{quoteId}}/prepare",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "agent", "quotes", "{{quoteId}}", "prepare"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"USD\",\n  \"concurrencyToken\": \"{{quoteConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "PrepareAgentQuoteV1\n\nAuthentication: Bearer {{agentToken}}.\n\nExample body follows PrepareAgentQuoteRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Agent Quote Draft",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agent/quotes/{{quoteId}}/draft",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "agent", "quotes", "{{quoteId}}", "draft"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"USD\",\n  \"assumptions\": [\n    \"Rates are based on two adults sharing one room.\",\n    \"Rail seats and named hotels remain subject to confirmation.\"\n  ],\n  \"inclusions\": [\n    \"Seven nights' boutique accommodation with breakfast\",\n    \"Private air-conditioned vehicle with English-speaking chauffeur\",\n    \"Tea estate visit and Galle Fort walking tour\"\n  ],\n  \"exclusions\": [\n    \"International flights\",\n    \"Travel insurance\",\n    \"Personal expenses\"\n  ],\n  \"terms\": \"A 30% deposit is required after acceptance. Final availability is confirmed separately.\",\n  \"internalNotes\": \"Confirm Ella rail seats before supplier release deadline.\",\n  \"lines\": [\n    {\n      \"title\": \"Boutique accommodation\",\n      \"description\": \"Seven nights for two adults, including breakfast.\",\n      \"quantity\": 7,\n      \"unitAmount\": 185\n    },\n    {\n      \"title\": \"Private chauffeur and vehicle\",\n      \"description\": \"Airport arrival, intercity transfers, and local touring.\",\n      \"quantity\": 8,\n      \"unitAmount\": 95\n    },\n    {\n      \"title\": \"Curated experiences\",\n      \"description\": \"Tea estate visit, scenic railway assistance, and Galle heritage walk.\",\n      \"quantity\": 1,\n      \"unitAmount\": 420\n    }\n  ],\n  \"components\": [\n    {\n      \"kind\": \"tax\",\n      \"label\": \"Local taxes and service charges\",\n      \"amount\": 247.5\n    },\n    {\n      \"kind\": \"adjustment\",\n      \"label\": \"Early planning adjustment\",\n      \"amount\": -100\n    }\n  ],\n  \"concurrencyToken\": \"{{quoteConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "UpdateAgentQuoteDraftV1\n\nAuthentication: Bearer {{agentToken}}.\n\nExample body follows UpdateAgentQuoteDraftRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Send Agent Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agent/quotes/{{quoteId}}/send",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "agent", "quotes", "{{quoteId}}", "send"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expiresAtUtc\": \"2027-01-15T12:00:00.000Z\",\n  \"concurrencyToken\": \"{{quoteConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "SendAgentQuoteV1\n\nAuthentication: Bearer {{agentToken}}.\n\nExample body follows SendQuoteRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "  if (data.currentVersionId) pm.environment.set('quoteVersionId', data.currentVersionId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Revise Agent Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agent/quotes/{{quoteId}}/revise",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "agent", "quotes", "{{quoteId}}", "revise"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concurrencyToken\": \"{{quoteConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "ReviseAgentQuoteV1\n\nAuthentication: Bearer {{agentToken}}.\n\nExample body follows QuoteConcurrencyRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Withdraw Agent Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agent/quotes/{{quoteId}}/withdraw",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "agent", "quotes", "{{quoteId}}", "withdraw"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"concurrencyToken\": \"{{quoteConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "WithdrawAgentQuoteV1\n\nAuthentication: Bearer {{agentToken}}.\n\nExample body follows QuoteConcurrencyRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('quoteConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Customer bookings",
+      "item": [
+        {
+          "name": "Get Customer Bookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/bookings?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "bookings"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetCustomerBookingsV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Customer Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "bookings"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quoteId\": \"{{quoteId}}\",\n  \"quoteVersionId\": \"{{quoteVersionId}}\",\n  \"customerNotes\": \"Please arrange an airport meet-and-greet with a name board.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateCustomerBookingV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CreateBookingRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('bookingId', data.id);",
+                  "  if (data.concurrencyToken) pm.environment.set('bookingConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Booking",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/bookings/{{bookingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "bookings", "{{bookingId}}"]
+            },
+            "description": "GetCustomerBookingV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('bookingConcurrencyToken', data.concurrencyToken);",
+                  "  if (data.vouchers?.[0]?.id) pm.environment.set('voucherId', data.vouchers?.[0]?.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Voucher",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/bookings/{{bookingId}}/vouchers/{{voucherId}}",
+              "host": ["{{baseUrl}}"],
+              "path": [
+                "api",
+                "v1",
+                "customer",
+                "bookings",
+                "{{bookingId}}",
+                "vouchers",
+                "{{voucherId}}"
+              ]
+            },
+            "description": "GetCustomerVoucherV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Request Booking Cancellation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/bookings/{{bookingId}}/request-cancellation",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "bookings", "{{bookingId}}", "request-cancellation"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Travel dates changed unexpectedly; please review cancellation options.\",\n  \"concurrencyToken\": \"{{bookingConcurrencyToken}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "RequestBookingCancellationV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CancelBookingRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.concurrencyToken) pm.environment.set('bookingConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Agent bookings",
+      "item": [
+        {
+          "name": "Get Agent Bookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agent/bookings?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "agent", "bookings"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetAgentBookingsV1\n\nAuthentication: Bearer {{agentToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Agent Booking",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{agentToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/agent/bookings/{{bookingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "agent", "bookings", "{{bookingId}}"]
+            },
+            "description": "GetAgentBookingV1\n\nAuthentication: Bearer {{agentToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Customer payments",
+      "item": [
+        {
+          "name": "Get Customer Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/bookings/{{bookingId}}/payments?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "bookings", "{{bookingId}}", "payments"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetCustomerPaymentsV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Customer Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/bookings/{{bookingId}}/payments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "bookings", "{{bookingId}}", "payments"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kind\": \"deposit\",\n  \"gateway\": \"manual\",\n  \"idempotencyKey\": \"postman-ella-galle-deposit-001\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateCustomerPaymentV1\n\nAuthentication: Bearer {{customerToken}}.\n\nExample body follows CreatePaymentRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('paymentId', data.id);",
+                  "  if (data.concurrencyToken) pm.environment.set('paymentConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Customer Payment",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{customerToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/payments/{{paymentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "payments", "{{paymentId}}"]
+            },
+            "description": "GetCustomerPaymentV1\n\nAuthentication: Bearer {{customerToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Supplier operations",
+      "item": [
+        {
+          "name": "Get Operation Suppliers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/suppliers?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "suppliers"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetOperationSuppliersV1\n\nAuthentication: Bearer {{staffToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Operation Supplier",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/suppliers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "suppliers"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Ceylon Highlands Transport\",\n  \"category\": \"transport\",\n  \"contactName\": \"Dinuka Fernando\",\n  \"contactEmail\": \"operations@ceylon-highlands.example\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateOperationSupplierV1\n\nAuthentication: Bearer {{staffToken}}.\n\nExample body follows CreateSupplierRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('supplierId', data.id);",
+                  "  if (data.concurrencyToken) pm.environment.set('supplierConcurrencyToken', data.concurrencyToken);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Booking Operation Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/tasks?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "tasks"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetBookingOperationTasksV1\n\nAuthentication: Bearer {{staffToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Booking Operation Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "tasks"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"supplierId\": \"{{supplierId}}\",\n  \"title\": \"Confirm Ella railway tickets\",\n  \"dueDate\": \"2027-01-20\",\n  \"notes\": \"Request first-class observation seats where available.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateBookingOperationTaskV1\n\nAuthentication: Bearer {{staffToken}}.\n\nExample body follows CreateOperationTaskRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('operationTaskId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Operation Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/vehicles?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "vehicles"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetOperationVehiclesV1\n\nAuthentication: Bearer {{staffToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Operation Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/vehicles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "vehicles"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplierId\": \"{{supplierId}}\",\n  \"name\": \"Toyota KDH High Roof\",\n  \"registrationNumber\": \"WP-CAB-4821\",\n  \"capacity\": 8,\n  \"notes\": \"Air-conditioned vehicle with space for four large suitcases.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateOperationVehicleV1\n\nAuthentication: Bearer {{staffToken}}.\n\nExample body follows CreateVehicleRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('vehicleId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Operation Drivers",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/drivers?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "drivers"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetOperationDriversV1\n\nAuthentication: Bearer {{staffToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Operation Driver",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/drivers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "drivers"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kasun Jayawardena\",\n  \"phone\": \"+94774567890\",\n  \"licenceNumber\": \"B1234567\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateOperationDriverV1\n\nAuthentication: Bearer {{staffToken}}.\n\nExample body follows CreateDriverRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('driverId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Operation Guides",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/guides?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "guides"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetOperationGuidesV1\n\nAuthentication: Bearer {{staffToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Operation Guide",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/guides",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "guides"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tharushi Wijesinghe\",\n  \"phone\": \"+94775678901\",\n  \"languages\": \"English, Sinhala, German\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateOperationGuideV1\n\nAuthentication: Bearer {{staffToken}}.\n\nExample body follows CreateGuideRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('guideId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Operation Arrivals",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/arrivals?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "arrivals"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetOperationArrivalsV1\n\nAuthentication: Bearer {{staffToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Operation Arrival",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/arrivals",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "arrivals"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"arrivalAtUtc\": \"2027-02-10T03:30:00.000Z\",\n  \"airport\": \"Bandaranaike International Airport (CMB)\",\n  \"flightNumber\": \"UL 504\",\n  \"notes\": \"Meet at arrivals with a D Ceylon Collection name board.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateOperationArrivalV1\n\nAuthentication: Bearer {{staffToken}}.\n\nExample body follows CreateArrivalRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('arrivalId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Operation Booking Resource Assignments",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/assignments?pageNumber={{pageNumber}}&pageSize={{pageSize}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "assignments"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "{{pageNumber}}",
+                  "disabled": false,
+                  "description": ""
+                },
+                { "key": "pageSize", "value": "{{pageSize}}", "disabled": false, "description": "" }
+              ]
+            },
+            "description": "GetOperationBookingResourceAssignmentsV1\n\nAuthentication: Bearer {{staffToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Operation Booking Resource Assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" },
+              { "key": "Content-Type", "value": "application/json", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{staffToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/operations/assignments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "operations", "assignments"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"serviceDate\": \"2027-02-10\",\n  \"vehicleId\": \"{{vehicleId}}\",\n  \"driverId\": \"{{driverId}}\",\n  \"guideId\": \"{{guideId}}\",\n  \"notes\": \"Airport pickup followed by transfer to the first Colombo hotel.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "CreateOperationBookingResourceAssignmentV1\n\nAuthentication: Bearer {{staffToken}}.\n\nExample body follows CreateBookingResourceAssignmentRequest."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);",
+                  "if (pm.response.code >= 200 && pm.response.code < 300 && pm.response.text()) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id) pm.environment.set('assignmentId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Administration",
+      "item": [
+        {
+          "name": "Get Administration Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json", "type": "text" },
+              { "key": "X-Correlation-ID", "value": "{{$guid}}", "type": "text" }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{adminToken}}", "type": "string" }]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/administration/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "administration", "summary"]
+            },
+            "description": "Gets live administrator dashboard totals and recent audit activity.\n\nAuthentication: Bearer {{adminToken}}."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const correlationId = pm.response.headers.get('X-Correlation-ID');",
+                  "if (correlationId) pm.environment.set('lastCorrelationId', correlationId);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.environment.get('baseUrl')) {",
+          "  throw new Error('Select the D Ceylon Local environment or define baseUrl.');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    { "key": "pageNumber", "value": "1" },
+    { "key": "pageSize", "value": "20" }
+  ]
+}
