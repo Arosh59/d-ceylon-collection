@@ -14,14 +14,13 @@ interface SignUpPageProps {
 
 export default async function SignUpPage({ searchParams }: SignUpPageProps) {
   const value = (await searchParams).callbackUrl;
-  const authenticationEnvironment = getAuthenticationEnvironment();
+  const configurationError = getAuthenticationConfigurationError();
+  const authenticationEnvironment = configurationError ? undefined : getAuthenticationEnvironment();
   const callbackUrl = safeRedirectTarget(
     Array.isArray(value) ? value[0] : value,
-    authenticationEnvironment.authenticationMode === "local" ? "/" : "/portal/customer",
+    authenticationEnvironment?.authenticationMode === "local" ? "/" : "/portal/customer",
   );
-  const configurationError = getAuthenticationConfigurationError();
-  const testingEnabled =
-    !configurationError && authenticationEnvironment.applicationEnvironment === "Testing";
+  const testingEnabled = authenticationEnvironment?.applicationEnvironment === "Testing";
 
   return (
     <main className="min-h-screen bg-[#ece9e1] px-4 pt-28 pb-16 sm:px-8 sm:pt-36" id="main-content">
@@ -92,7 +91,7 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
             <SignInPanel
               callbackUrl={callbackUrl}
               configurationError={configurationError}
-              localAuthEnabled={authenticationEnvironment.authenticationMode === "local"}
+              localAuthEnabled={authenticationEnvironment?.authenticationMode === "local"}
               mode="sign-up"
               testingEnabled={testingEnabled}
             />

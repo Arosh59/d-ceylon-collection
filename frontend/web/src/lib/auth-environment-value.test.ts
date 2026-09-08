@@ -4,9 +4,10 @@ import { readAuthenticationEnvironment } from "./auth-environment-value";
 
 const valid = {
   APP_ENVIRONMENT: "Production",
+  AUTH_AUDIENCE: "dceylon-api",
   AUTH_CLIENT_ID: "dceylon-web",
   AUTH_CLIENT_SECRET: "provider-client-secret",
-  AUTH_ISSUER: "https://identity.example.test",
+  AUTH_ISSUER: "https://dceylon-test.us.auth0.com",
   AUTH_SCOPE: "openid profile email dceylon.api",
   AUTH_SECRET: "session-secret-with-at-least-32-characters",
 } as const;
@@ -15,8 +16,9 @@ describe("readAuthenticationEnvironment", () => {
   it("accepts a production OIDC configuration", () => {
     expect(readAuthenticationEnvironment(valid)).toMatchObject({
       applicationEnvironment: "Production",
+      audience: "dceylon-api",
       clientId: "dceylon-web",
-      issuer: "https://identity.example.test",
+      issuer: "https://dceylon-test.us.auth0.com",
     });
   });
 
@@ -65,5 +67,20 @@ describe("readAuthenticationEnvironment", () => {
         AUTH_SCOPE: "profile email",
       }),
     ).toThrow("must include openid");
+  });
+
+  it("rejects deployment placeholders before starting an OIDC request", () => {
+    expect(() =>
+      readAuthenticationEnvironment({
+        ...valid,
+        AUTH_ISSUER: "https://your-identity-provider.com",
+      }),
+    ).toThrow("AUTH_ISSUER is still a placeholder");
+    expect(() =>
+      readAuthenticationEnvironment({
+        ...valid,
+        AUTH_CLIENT_SECRET: "replace-with-real-oidc-client-secret",
+      }),
+    ).toThrow("AUTH_CLIENT_SECRET is still a placeholder");
   });
 });

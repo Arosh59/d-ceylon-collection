@@ -66,6 +66,7 @@ const providers: NextAuthOptions["providers"] =
           authorization: {
             params: {
               scope: authEnvironment.scope,
+              ...(authEnvironment.audience ? { audience: authEnvironment.audience } : {}),
             },
           },
           idToken: true,

@@ -10,8 +10,19 @@ export function validateEnvironment(values: Record<string, unknown>): Record<str
     }
     for (const name of ["AUTH_AUTHORITY", "AUTH_ISSUER"]) {
       const value = stringValue(values[name])!;
-      if (new URL(value).protocol !== "https:") {
+      let url: URL;
+      try {
+        url = new URL(value);
+      } catch {
+        throw new Error(`${name} must be a valid URL in ${environment}.`);
+      }
+      if (url.protocol !== "https:") {
         throw new Error(`${name} must use HTTPS in ${environment}.`);
+      }
+      if (isPlaceholderIdentityHost(url.hostname)) {
+        throw new Error(
+          `${name} is still a placeholder. Configure the managed OIDC provider in ${environment}.`,
+        );
       }
     }
   }
@@ -34,6 +45,17 @@ export function validateEnvironment(values: Record<string, unknown>): Record<str
   }
 
   return values;
+}
+
+function isPlaceholderIdentityHost(hostname: string): boolean {
+  const normalized = hostname.toLowerCase();
+  return (
+    normalized === "your-identity-provider.com" ||
+    normalized === "example.com" ||
+    normalized.endsWith(".example.com") ||
+    normalized === "example.test" ||
+    normalized.endsWith(".example.test")
+  );
 }
 
 function stringValue(value: unknown): string | undefined {

@@ -45,6 +45,18 @@ describe("authorization and authentication configuration", () => {
     ).toThrow("must use HTTPS");
   });
 
+  it("rejects placeholder production identity configuration", () => {
+    expect(() =>
+      validateEnvironment({
+        APP_ENVIRONMENT: "Production",
+        DATABASE_URL: "postgresql://database.example.test/app",
+        AUTH_AUTHORITY: "https://your-identity-provider.com",
+        AUTH_ISSUER: "https://your-identity-provider.com",
+        AUTH_AUDIENCE: "dceylon-api",
+      }),
+    ).toThrow("still a placeholder");
+  });
+
   it("cannot enable testing authentication without independent strong keys", () => {
     expect(() =>
       validateEnvironment({

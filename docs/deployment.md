@@ -45,10 +45,27 @@ AUTH_ISSUER=https://identity.example.com
 AUTH_CLIENT_ID=dceylon-web
 AUTH_CLIENT_SECRET=replace-with-web-oidc-client-secret
 AUTH_SCOPE=openid profile email dceylon.api
+AUTH_AUDIENCE=dceylon-api
 AUTH_SECRET=replace-with-at-least-32-random-characters
 # Optional; restrict this key to the production site's HTTP referrers.
 GOOGLE_MAPS_API_KEY=
 ```
+
+The identity values above are examples, not a hosted identity service. Before deployment, create a
+Regular Web Application with a managed OIDC provider (the current sign-up flow is designed for Auth0
+Universal Login) and replace all placeholders. For the example public domain, configure the provider
+with:
+
+```text
+Allowed callback URL: https://www.example.com/api/auth/callback/dceylon
+Allowed logout URL:   https://www.example.com
+Allowed web origin:   https://www.example.com
+```
+
+Set `AUTH_ISSUER` to the provider's issuer origin, and copy that application's real client ID and
+client secret into the Dokploy secret store. Configure the backend `AUTH_AUTHORITY` and
+`AUTH_ISSUER` for the same provider and set `AUTH_AUDIENCE` to the same API identifier in both
+services. Placeholder issuer or secret values are rejected before an OIDC request is attempted.
 
 Because the frontend and backend are separate Dokploy services, `API_BASE_URL` must use the public
 HTTPS API origin. The Compose-only hostname `http://api:8080` is not resolvable from the standalone

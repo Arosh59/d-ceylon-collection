@@ -15,10 +15,9 @@ interface SignInPageProps {
 export default async function SignInPage({ searchParams }: SignInPageProps) {
   const value = (await searchParams).callbackUrl;
   const callbackUrl = safeRedirectTarget(Array.isArray(value) ? value[0] : value);
-  const authenticationEnvironment = getAuthenticationEnvironment();
   const configurationError = getAuthenticationConfigurationError();
-  const testingEnabled =
-    !configurationError && authenticationEnvironment.applicationEnvironment === "Testing";
+  const authenticationEnvironment = configurationError ? undefined : getAuthenticationEnvironment();
+  const testingEnabled = authenticationEnvironment?.applicationEnvironment === "Testing";
 
   return (
     <main className="min-h-screen bg-[#ece9e1] px-4 pt-28 pb-16 sm:px-8 sm:pt-36" id="main-content">
@@ -74,7 +73,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
             <SignInPanel
               callbackUrl={callbackUrl}
               configurationError={configurationError}
-              localAuthEnabled={authenticationEnvironment.authenticationMode === "local"}
+              localAuthEnabled={authenticationEnvironment?.authenticationMode === "local"}
               testingEnabled={testingEnabled}
             />
           </div>

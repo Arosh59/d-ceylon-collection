@@ -23,7 +23,9 @@ The server requires:
 - `APP_ENVIRONMENT` — `Development`, `Production`, or isolated `Testing` (omitting it defaults to
   `Development`; casing is accepted);
 - `AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, and `AUTH_SCOPE` — external OIDC
-  integration; and
+  integration;
+- `AUTH_AUDIENCE` — optional provider-specific API audience (set this to the backend audience for
+  Auth0); and
 - `AUTH_SECRET` — at least 32 random characters for encrypted session state.
 
 ## Docker and Dokploy
@@ -37,9 +39,10 @@ docker build -f frontend/web/Dockerfile -t dceylon-web .
 
 In Dokploy, set the build context to `/`, the Dockerfile to `frontend/web/Dockerfile`, and the
 container port to `3000`. Configure `API_BASE_URL`, `SITE_URL`, `APP_ENVIRONMENT`, `AUTH_MODE`,
-`AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_SCOPE`, and `AUTH_SECRET` as runtime
-environment variables. `GOOGLE_MAPS_API_KEY` is optional and browser-visible; restrict it to the
-production site's HTTP referrers. Do not upload or copy an `.env` file into the image.
+`AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_SCOPE`, `AUTH_AUDIENCE`, and
+`AUTH_SECRET` as runtime environment variables. `GOOGLE_MAPS_API_KEY` is optional and
+browser-visible; restrict it to the production site's HTTP referrers. Do not upload or copy an
+`.env` file into the image.
 
 `NEXTAUTH_URL` is derived from `SITE_URL` by the container. It may be set explicitly to the same
 public origin if required by the deployment platform.

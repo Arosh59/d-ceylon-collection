@@ -3,6 +3,7 @@ export type AuthenticationMode = "local" | "oidc";
 
 export interface AuthenticationEnvironment {
   applicationEnvironment: ApplicationEnvironment;
+  audience?: string | undefined;
   authenticationMode: AuthenticationMode;
   clientId: string;
   clientSecret: string;
@@ -14,6 +15,7 @@ export interface AuthenticationEnvironment {
 
 interface EnvironmentInput {
   readonly APP_ENVIRONMENT?: string;
+  readonly AUTH_AUDIENCE?: string;
   readonly AUTH_MODE?: string;
   readonly AUTH_CLIENT_ID?: string;
   readonly AUTH_CLIENT_SECRET?: string;
@@ -44,7 +46,7 @@ export function readAuthenticationEnvironment(
     throw new Error("AUTH_SCOPE must include openid.");
   }
 
-  const sessionSecret = required("AUTH_SECRET", environment.AUTH_SECRET);
+  const sessionSecret = requiredSecret("AUTH_SECRET", environment.AUTH_SECRET);
   if (sessionSecret.length < 32) {
     throw new Error("AUTH_SECRET must be at least 32 characters.");
   }
@@ -59,12 +61,14 @@ export function readAuthenticationEnvironment(
 
   return {
     applicationEnvironment,
+    audience:
+      authenticationMode === "oidc" ? environment.AUTH_AUDIENCE?.trim() || undefined : undefined,
     authenticationMode,
     clientId:
       authenticationMode === "oidc" ? required("AUTH_CLIENT_ID", environment.AUTH_CLIENT_ID) : "",
     clientSecret:
       authenticationMode === "oidc"
-        ? required("AUTH_CLIENT_SECRET", environment.AUTH_CLIENT_SECRET)
+        ? requiredSecret("AUTH_CLIENT_SECRET", environment.AUTH_CLIENT_SECRET)
         : "",
     issuer,
     scope,
@@ -100,7 +104,12 @@ function readApplicationEnvironment(value: string | undefined): ApplicationEnvir
 
 function readIssuer(value: string | undefined, environment: ApplicationEnvironment): string {
   const candidate = required("AUTH_ISSUER", value);
-  const url = new URL(candidate);
+  let url: URL;
+  try {
+    url = new URL(candidate);
+  } catch {
+    throw new Error("AUTH_ISSUER must be a valid URL.");
+  }
   const permitsLoopbackHttp =
     environment !== "Production" && url.protocol === "http:" && isLoopback(url.hostname);
   if (
@@ -115,7 +124,24 @@ function readIssuer(value: string | undefined, environment: ApplicationEnvironme
     );
   }
 
+  if (isPlaceholderIssuer(url.hostname)) {
+    throw new Error(
+      "AUTH_ISSUER is still a placeholder. Set it to the issuer URL from your managed OIDC provider.",
+    );
+  }
+
   return url.origin;
+}
+
+function isPlaceholderIssuer(hostname: string): boolean {
+  const normalized = hostname.toLowerCase();
+  return (
+    normalized === "your-identity-provider.com" ||
+    normalized === "example.com" ||
+    normalized.endsWith(".example.com") ||
+    normalized === "example.test" ||
+    normalized.endsWith(".example.test")
+  );
 }
 
 function isLoopback(hostname: string): boolean {
@@ -128,5 +154,19 @@ function required(name: string, value: string | undefined): string {
     throw new Error(`${name} is required.`);
   }
 
+  return result;
+}
+
+function requiredSecret(name: string, value: string | undefined): string {
+  const result = required(name, value);
+  const normalized = result.toLowerCase();
+  if (
+    normalized.startsWith("replace-") ||
+    normalized.startsWith("replace_") ||
+    normalized.startsWith("your-") ||
+    normalized === "change-me"
+  ) {
+    throw new Error(`${name} is still a placeholder. Load a real value from the secret store.`);
+  }
   return result;
 }

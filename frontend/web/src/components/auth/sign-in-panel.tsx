@@ -30,13 +30,19 @@ export function SignInPanel({
   const isSignUp = mode === "sign-up";
 
   async function startExternalSignIn() {
+    setError(null);
     setBusy(true);
-    if (isSignUp) {
-      await signIn("dceylon", { callbackUrl }, { prompt: "login", screen_hint: "signup" });
-    } else {
-      await signIn("dceylon", { callbackUrl });
+    try {
+      if (isSignUp) {
+        await signIn("dceylon", { callbackUrl }, { prompt: "login", screen_hint: "signup" });
+      } else {
+        await signIn("dceylon", { callbackUrl });
+      }
+    } catch {
+      setError("The identity provider could not be reached. Please try again shortly.");
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   }
 
   async function startTestingSignIn() {
@@ -87,8 +93,8 @@ export function SignInPanel({
           Secure {isSignUp ? "registration" : "sign-in"} is not configured on this server.
         </p>
         <p className="mt-2">
-          Add the server-only OIDC settings from <code>frontend/web/.env.example</code> to an ignored
-          <code>frontend/web/.env.local</code> file, then restart the web server.
+          Replace every placeholder <code>AUTH_*</code> value with credentials from your managed
+          OIDC provider. For Docker or Dokploy, update the application environment and redeploy.
         </p>
         <p className="mt-2 text-ink-muted">Configuration detail: {configurationError}</p>
       </div>
@@ -98,7 +104,11 @@ export function SignInPanel({
   return (
     <div className="grid gap-6">
       {localAuthEnabled ? (
-        <form aria-label={isSignUp ? "Create account" : "Sign in"} className="grid gap-4" onSubmit={startLocalAuth}>
+        <form
+          aria-label={isSignUp ? "Create account" : "Sign in"}
+          className="grid gap-4"
+          onSubmit={startLocalAuth}
+        >
           {isSignUp ? (
             <label className="filter-field">
               <span>Your name</span>
@@ -146,11 +156,18 @@ export function SignInPanel({
             </label>
           ) : null}
           {error ? (
-            <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
+            <p
+              className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+              role="alert"
+            >
               {error}
             </p>
           ) : null}
-          <button className="button-primary w-full disabled:cursor-wait disabled:opacity-60" disabled={busy} type="submit">
+          <button
+            className="button-primary w-full disabled:cursor-wait disabled:opacity-60"
+            disabled={busy}
+            type="submit"
+          >
             {busy ? "Please wait…" : isSignUp ? "Create your account" : "Sign in"}
           </button>
           <p className="text-xs leading-5 text-ink-muted">
@@ -158,18 +175,28 @@ export function SignInPanel({
           </p>
         </form>
       ) : (
-        <button
-          className="button-primary w-full disabled:cursor-wait disabled:opacity-60"
-          disabled={busy}
-          onClick={startExternalSignIn}
-          type="button"
-        >
-          {busy
-            ? `Opening secure ${isSignUp ? "registration" : "sign-in"}…`
-            : isSignUp
-              ? "Create your account securely"
-              : "Continue to secure sign-in"}
-        </button>
+        <div className="grid gap-4">
+          {error ? (
+            <p
+              className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+              role="alert"
+            >
+              {error}
+            </p>
+          ) : null}
+          <button
+            className="button-primary w-full disabled:cursor-wait disabled:opacity-60"
+            disabled={busy}
+            onClick={startExternalSignIn}
+            type="button"
+          >
+            {busy
+              ? `Opening secure ${isSignUp ? "registration" : "sign-in"}…`
+              : isSignUp
+                ? "Create your account securely"
+                : "Continue to secure sign-in"}
+          </button>
+        </div>
       )}
 
       {testingEnabled && !isSignUp && !localAuthEnabled ? (
