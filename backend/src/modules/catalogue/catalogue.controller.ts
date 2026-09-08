@@ -56,7 +56,7 @@ export class CatalogueController {
   @Get("destinations")
   @ApiOperation({ operationId: "GetDestinationsV1" })
   public destinations(@Query() query: PageQuery): Promise<Record<string, unknown>> {
-    return this.catalogue.publishedNamedPage("destinations", query);
+    return this.catalogue.publishedDestinationPage(query);
   }
 
   @Get("destinations/:slug")

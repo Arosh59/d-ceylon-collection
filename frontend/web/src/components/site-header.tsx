@@ -38,7 +38,7 @@ export function SiteHeader() {
     <header className="absolute inset-x-0 top-0 z-30 border-b border-white/10 bg-navy/35 backdrop-blur-md">
       <Container className="flex min-h-20 items-center justify-between gap-6">
         <Brand />
-        <nav aria-label="Primary navigation" className="hidden md:block">
+        <nav aria-label="Primary navigation" className="hidden lg:block">
           <ul className="flex items-center gap-7">
             {navigation.map((item) => (
               <li key={item.href}>
@@ -52,7 +52,7 @@ export function SiteHeader() {
             ))}
           </ul>
         </nav>
-        <details className="group relative md:hidden">
+        <details className="group relative lg:hidden">
           <summary className="cursor-pointer list-none rounded-full border border-white/30 px-4 py-2 text-sm text-white marker:content-none">
             <span className="group-open:hidden">Menu</span>
             <span className="hidden group-open:inline">Close</span>

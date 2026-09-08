@@ -13,6 +13,8 @@ RUN npm ci --no-audit --no-fund
 FROM node:24.11.0-alpine3.22 AS builder
 WORKDIR /workspace
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
+ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
 
 COPY --from=dependencies /workspace/node_modules ./node_modules
 COPY --from=dependencies /workspace/backend/package.json backend/package.json

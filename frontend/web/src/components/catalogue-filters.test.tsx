@@ -14,7 +14,19 @@ describe("catalogue filters", () => {
         categories={[{ ...reference, name: "Nature", slug: "nature" }]}
         collections={[{ ...reference, summary: "Summary", heroMedia: null }]}
         destinations={[
-          { ...reference, name: "Ella", slug: "ella", summary: "Summary", heroMedia: null },
+          {
+            ...reference,
+            categories: [],
+            district: "Badulla",
+            heroMedia: null,
+            latitude: 6.8667,
+            longitude: 81.0466,
+            name: "Ella",
+            province: "Uva",
+            publishedProductCount: 1,
+            slug: "ella",
+            summary: "Summary",
+          },
         ]}
         productTypes={[{ ...reference, name: "Experience", slug: "experience" }]}
         tags={[{ ...reference, name: "Mindful", slug: "mindful" }]}

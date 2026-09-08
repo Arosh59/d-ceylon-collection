@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type Conversation = {
@@ -37,6 +38,7 @@ const suggestions: Conversation[] = [
 ];
 
 export function TripConcierge() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [conversation, setConversation] = useState<Conversation | null>(null);
 
@@ -49,6 +51,8 @@ export function TripConcierge() {
   function chooseSuggestion(suggestion: Conversation) {
     setConversation(suggestion);
   }
+
+  if (pathname === "/destinations/map") return null;
 
   return (
     <div className="fixed right-4 bottom-4 z-40 sm:right-7 sm:bottom-7">
@@ -133,7 +137,7 @@ export function TripConcierge() {
       <button
         aria-expanded={open}
         aria-label={open ? "Close trip concierge" : "Open trip concierge"}
-        className="ml-auto flex min-h-14 items-center gap-3 rounded-full bg-gold px-5 text-sm font-bold text-navy shadow-[0_12px_35px_rgba(14,35,66,0.25)] transition hover:bg-gold-light"
+        className="ml-auto flex size-14 items-center justify-center rounded-full bg-gold text-sm font-bold text-navy shadow-[0_12px_35px_rgba(14,35,66,0.25)] transition hover:bg-gold-light sm:h-14 sm:w-auto sm:gap-3 sm:px-5"
         onClick={() => setOpen((isOpen) => !isOpen)}
         type="button"
       >
@@ -143,7 +147,7 @@ export function TripConcierge() {
         >
           ✦
         </span>
-        <span>{open ? "Close guide" : "Plan with us"}</span>
+        <span className="hidden sm:inline">{open ? "Close guide" : "Plan with us"}</span>
       </button>
     </div>
   );

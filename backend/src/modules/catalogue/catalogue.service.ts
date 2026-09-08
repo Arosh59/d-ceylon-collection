@@ -171,6 +171,50 @@ export class CatalogueService {
     return apiValue(page(items, Number(counts[0]?.count ?? 0), p.pageNumber, p.pageSize));
   }
 
+  public async publishedDestinationPage(query: PageQuery): Promise<Record<string, unknown>> {
+    const p = pagination(query);
+    const [counts, items] = await Promise.all([
+      this.database.rows<{ count: bigint }>(Prisma.sql`
+        SELECT COUNT(*)::bigint AS count
+          FROM catalogue.destinations
+         WHERE publication_state = 'Published'
+      `),
+      this.database.rows<Record<string, unknown>>(Prisma.sql`
+        SELECT x.id, x.name, x.slug, COALESCE(x.summary, '') AS summary,
+               x.latitude::float8 AS latitude, x.longitude::float8 AS longitude,
+               x.district, x.province,
+               CASE WHEN m.id IS NULL THEN NULL ELSE json_build_object(
+                 'id', m.id, 'assetKey', m.asset_key, 'altText', m.alt_text,
+                 'width', m.width, 'height', m.height) END AS "heroMedia",
+               (SELECT COUNT(DISTINCT p.id)::int
+                  FROM catalogue.product_destinations pd
+                  JOIN catalogue.products p ON p.id = pd.product_id
+                 WHERE pd.destination_id = x.id AND p.publication_state = 'Published') AS "publishedProductCount",
+               COALESCE((
+                 SELECT json_agg(
+                          json_build_object('id', c.id, 'name', c.name, 'slug', c.slug)
+                          ORDER BY c.name
+                        )
+                   FROM catalogue.categories c
+                  WHERE EXISTS (
+                    SELECT 1
+                      FROM catalogue.product_categories pc
+                      JOIN catalogue.products p ON p.id = pc.product_id
+                      JOIN catalogue.product_destinations pd ON pd.product_id = p.id
+                     WHERE pc.category_id = c.id
+                       AND pd.destination_id = x.id
+                       AND p.publication_state = 'Published'
+                  )
+               ), '[]') AS categories
+          FROM catalogue.destinations x
+          LEFT JOIN catalogue.media_assets m ON m.id = x.hero_media_id
+         WHERE x.publication_state = 'Published'
+         ORDER BY x.name, x.id OFFSET ${p.skip} LIMIT ${p.pageSize}
+      `),
+    ]);
+    return apiValue(page(items, Number(counts[0]?.count ?? 0), p.pageNumber, p.pageSize));
+  }
+
   public collection(slug: string): Promise<Record<string, unknown>> {
     return this.publishedDetail("collections", "product_collections", "collection_id", slug);
   }
@@ -220,6 +264,28 @@ export class CatalogueService {
     slug: string,
   ): Promise<Record<string, unknown>> {
     validateSlug(slug);
+    const destinationFields =
+      table === "destinations"
+        ? Prisma.sql`,
+             x.latitude::float8 AS latitude, x.longitude::float8 AS longitude,
+             x.district, x.province,
+             COALESCE((
+               SELECT json_agg(
+                        json_build_object('id', c.id, 'name', c.name, 'slug', c.slug)
+                        ORDER BY c.name
+                      )
+                 FROM catalogue.categories c
+                WHERE EXISTS (
+                  SELECT 1
+                    FROM catalogue.product_categories pc
+                    JOIN catalogue.products p ON p.id = pc.product_id
+                    JOIN catalogue.product_destinations pd ON pd.product_id = p.id
+                   WHERE pc.category_id = c.id
+                     AND pd.destination_id = x.id
+                     AND p.publication_state = 'Published'
+                )
+             ), '[]') AS categories`
+        : Prisma.empty;
     const rows = await this.database.rows<Record<string, unknown>>(Prisma.sql`
       SELECT x.id, x.name, x.slug, COALESCE(x.summary, '') AS summary,
              COALESCE(x.description, '') AS description,
@@ -229,6 +295,7 @@ export class CatalogueService {
              (SELECT COUNT(*)::int FROM ${Prisma.raw(`catalogue.${linkTable}`)} link
                JOIN catalogue.products p ON p.id=link.product_id
               WHERE link.${Prisma.raw(foreignColumn)}=x.id AND p.publication_state='Published') AS "publishedProductCount"
+             ${destinationFields}
         FROM ${Prisma.raw(`catalogue.${table}`)} x
         LEFT JOIN catalogue.media_assets m ON m.id=x.hero_media_id
        WHERE x.slug=${slug} AND x.publication_state='Published' LIMIT 1

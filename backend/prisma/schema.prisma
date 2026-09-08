@@ -207,6 +207,10 @@ model Destination {
   createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
   description                   String? @db.VarChar(4000)
   heroMediaId                   String? @map("hero_media_id") @db.Uuid
+  latitude                      Decimal? @db.Decimal(9, 6)
+  longitude                     Decimal? @db.Decimal(9, 6)
+  district                      String? @db.VarChar(120)
+  province                      String? @db.VarChar(120)
   name                          String @db.VarChar(160)
   publicationState              String @map("publication_state") @db.VarChar(32)
   slug                          String @db.VarChar(200)
@@ -969,4 +973,3 @@ model WishlistEntry {
   @@map("wishlist_entries")
   @@schema("customers_travellers")
 }
-

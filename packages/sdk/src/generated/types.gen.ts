@@ -334,6 +334,11 @@ export type DestinationDetailResponse = {
   summary: string;
   description: string;
   heroMedia: null | MediaMetadataResponse;
+  latitude: number | null;
+  longitude: number | null;
+  district: string | null;
+  province: string | null;
+  categories: Array<NamedReferenceResponse>;
   publishedProductCount: number | string;
 };
 
@@ -343,6 +348,12 @@ export type DestinationSummaryResponse = {
   slug: string;
   summary: string;
   heroMedia: null | MediaMetadataResponse;
+  latitude: number | null;
+  longitude: number | null;
+  district: string | null;
+  province: string | null;
+  categories: Array<NamedReferenceResponse>;
+  publishedProductCount: number | string;
 };
 
 export type DriverResponse = {

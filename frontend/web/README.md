@@ -19,6 +19,8 @@ The server requires:
 
 - `API_BASE_URL` — server-only origin of the NestJS API; and
 - `SITE_URL` — canonical public origin used by metadata, robots, and sitemap generation;
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` — browser-visible key for the destination map, restricted to
+  approved HTTP referrers and the Maps JavaScript API;
 - `APP_ENVIRONMENT` — `Development`, `Production`, or isolated `Testing` (omitting it defaults to
   `Development`; casing is accepted);
 - `AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, and `AUTH_SCOPE` — external OIDC
@@ -37,8 +39,9 @@ docker build -f frontend/web/Dockerfile -t dceylon-web .
 In Dockploy, set the build context to `/`, the Dockerfile to `frontend/web/Dockerfile`, and the
 container port to `3000`. Configure `API_BASE_URL`, `SITE_URL`, `APP_ENVIRONMENT`, `AUTH_MODE`,
 `AUTH_ISSUER`, `AUTH_CLIENT_ID`, `AUTH_CLIENT_SECRET`, `AUTH_SCOPE`, and `AUTH_SECRET` as runtime
-environment variables. `GOOGLE_MAPS_API_KEY` is optional and browser-visible; restrict it to the
-production site's HTTP referrers. Do not upload or copy an `.env` file into the image.
+environment variables. Supply `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` as a Docker build argument because
+Next.js embeds public environment values in the browser bundle. Restrict it to the production site's
+HTTP referrers. Do not upload or copy an `.env` file into the image.
 
 The image uses Next.js standalone output, runs as an unprivileged user, and includes a container
 health check. Dockploy should terminate TLS at its reverse proxy and route the public hostname to

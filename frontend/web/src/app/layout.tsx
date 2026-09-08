@@ -47,7 +47,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="en">
       <body>
         <a
-          className="fixed top-3 left-3 z-50 -translate-y-24 rounded-full bg-gold px-5 py-3 font-semibold text-navy transition-transform focus:translate-y-0"
+          className="skip-link fixed top-3 left-3 z-50 rounded-full bg-gold px-5 py-3 font-semibold text-navy transition-transform"
           href="#main-content"
         >
           Skip to main content

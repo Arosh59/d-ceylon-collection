@@ -1,6 +1,8 @@
 import type { CollectionSummary, DestinationSummary, ProductSummary } from "@dceylon/sdk";
 import Image from "next/image";
 
+import { destinationImageUrl } from "@/lib/destination-media";
+
 type Media = NonNullable<
   ProductSummary["primaryMedia"] | CollectionSummary["heroMedia"] | DestinationSummary["heroMedia"]
 >;
@@ -10,17 +12,8 @@ interface MediaPlaceholderProps {
   media?: Media | null;
 }
 
-const destinationImageByAssetKey: Record<string, string> = {
-  "placeholder:colombo": "/images/destinations/colombo-provided.jpg",
-  "placeholder:ella": "/images/destinations/ella-provided.jpg",
-  "placeholder:galle": "/images/destinations/galle-provided.png",
-  "placeholder:kandy": "/images/destinations/kandy-provided.jpg",
-  "placeholder:sigiriya": "/images/destinations/sigiriya-provided.jpg",
-  "placeholder:tangalle": "/images/destinations/tangalle-provided.jpg",
-};
-
 export function MediaPlaceholder({ className = "", media }: MediaPlaceholderProps) {
-  const image = media ? destinationImageByAssetKey[media.assetKey] : undefined;
+  const image = destinationImageUrl(media?.assetKey);
 
   if (image && media) {
     return (

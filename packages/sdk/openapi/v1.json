@@ -6464,6 +6464,11 @@
           "summary",
           "description",
           "heroMedia",
+          "latitude",
+          "longitude",
+          "district",
+          "province",
+          "categories",
           "publishedProductCount"
         ],
         "type": "object",
@@ -6494,6 +6499,38 @@
               }
             ]
           },
+          "latitude": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "longitude": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "district": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "province": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NamedReferenceResponse"
+            }
+          },
           "publishedProductCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -6510,7 +6547,13 @@
           "name",
           "slug",
           "summary",
-          "heroMedia"
+          "heroMedia",
+          "latitude",
+          "longitude",
+          "district",
+          "province",
+          "categories",
+          "publishedProductCount"
         ],
         "type": "object",
         "properties": {
@@ -6536,6 +6579,46 @@
                 "$ref": "#/components/schemas/MediaMetadataResponse"
               }
             ]
+          },
+          "latitude": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "longitude": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "district": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "province": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NamedReferenceResponse"
+            }
+          },
+          "publishedProductCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
