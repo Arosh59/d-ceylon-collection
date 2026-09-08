@@ -3,20 +3,21 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach } from "vitest";
 
-Object.defineProperty(window, "matchMedia", {
-  configurable: true,
-  value: (query: string): MediaQueryList => ({
-    addEventListener: () => undefined,
-    addListener: () => undefined,
-    dispatchEvent: () => false,
-    matches: false,
-    media: query,
-    onchange: null,
-    removeEventListener: () => undefined,
-    removeListener: () => undefined,
-  }),
-  writable: true,
-});
+if (!window.matchMedia) {
+  Object.defineProperty(window, "matchMedia", {
+    configurable: true,
+    value: (query: string): MediaQueryList => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      addListener: () => undefined,
+      removeListener: () => undefined,
+      dispatchEvent: () => true,
+    }),
+  });
+}
 
 afterEach(() => {
   cleanup();

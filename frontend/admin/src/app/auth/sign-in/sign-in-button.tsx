@@ -1,41 +1,78 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { getRedirectResult, signInWithRedirect } from "firebase/auth";
+import { useEffect, useState, type FormEvent } from "react";
 
-export function SignInButton({ localAuthEnabled = false }: { localAuthEnabled?: boolean }) {
+import {
+  firebaseGoogleAuthentication,
+  hasFirebaseGoogleConfiguration,
+} from "@/lib/firebase-client";
+
+export function SignInButton() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
-  if (localAuthEnabled) {
-    return (
-      <form
-        className="mt-8 grid gap-4"
-        onSubmit={async (event) => {
-          event.preventDefault();
-          setBusy(true);
-          setError(null);
-          const result = await signIn("local", {
-            callbackUrl: "/",
-            email,
-            password,
-            redirect: false,
-          });
-          if (!result?.ok) {
-            setError("The administrator credentials could not be verified.");
-            setBusy(false);
-            return;
-          }
-          window.location.assign(result.url ?? "/");
-        }}
-      >
+  useEffect(() => {
+    let active = true;
+    async function completeGoogleSignIn() {
+      if (!hasFirebaseGoogleConfiguration()) return;
+      try {
+        const { auth } = firebaseGoogleAuthentication();
+        const result = await getRedirectResult(auth);
+        if (!result || !active) return;
+        setBusy(true);
+        const response = await post("google", { idToken: await result.user.getIdToken() });
+        if (!response.ok) throw new Error(await responseError(response));
+        window.location.assign("/");
+      } catch (reason) {
+        if (active) setError(messageFor(reason, "Google sign-in could not be completed."));
+      } finally {
+        if (active) setBusy(false);
+      }
+    }
+    void completeGoogleSignIn();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      const response = await post("login", { email, password });
+      if (!response.ok) throw new Error(await responseError(response));
+      window.location.assign("/");
+    } catch (reason) {
+      setError(messageFor(reason, "Sign-in is temporarily unavailable."));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function google() {
+    setBusy(true);
+    setError(null);
+    try {
+      const { auth, provider } = firebaseGoogleAuthentication();
+      await signInWithRedirect(auth, provider);
+    } catch (reason) {
+      setError(messageFor(reason, "Google sign-in is not configured for this site."));
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-8 grid gap-5">
+      <form className="grid gap-4" onSubmit={submit}>
         <label className="grid gap-2 text-sm font-semibold">
           <span>Email address</span>
           <input
             autoComplete="email"
-            className="rounded-xl border border-navy/15 px-4 py-3"
+            className="form-control"
             onChange={(event) => setEmail(event.target.value)}
             required
             type="email"
@@ -46,7 +83,7 @@ export function SignInButton({ localAuthEnabled = false }: { localAuthEnabled?: 
           <span>Password</span>
           <input
             autoComplete="current-password"
-            className="rounded-xl border border-navy/15 px-4 py-3"
+            className="form-control"
             onChange={(event) => setPassword(event.target.value)}
             required
             type="password"
@@ -54,28 +91,42 @@ export function SignInButton({ localAuthEnabled = false }: { localAuthEnabled?: 
           />
         </label>
         {error ? (
-          <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
+          <p
+            className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+            role="alert"
+          >
             {error}
           </p>
         ) : null}
-        <button
-          className="rounded-full bg-navy px-6 py-3 font-semibold text-white disabled:cursor-wait disabled:opacity-60"
-          disabled={busy}
-          type="submit"
-        >
+        <button className="primary-button mt-1" disabled={busy} type="submit">
           {busy ? "Signing in…" : "Sign in to administration"}
         </button>
       </form>
-    );
-  }
-
-  return (
-    <button
-      className="mt-8 rounded-full bg-navy px-6 py-3 font-semibold text-white"
-      onClick={() => signIn("dceylon", { callbackUrl: "/" })}
-      type="button"
-    >
-      Sign in securely
-    </button>
+      <div className="relative border-t border-navy/10 pt-5">
+        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-white px-3 text-xs tracking-widest text-slate-500 uppercase">
+          or
+        </span>
+        <button className="secondary-button w-full" disabled={busy} onClick={google} type="button">
+          Continue with Google
+        </button>
+      </div>
+    </div>
   );
+}
+
+function post(action: string, body: unknown): Promise<Response> {
+  return fetch(`/api/auth/${action}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
+async function responseError(response: Response): Promise<string> {
+  const body = (await response.json().catch(() => null)) as { error?: string } | null;
+  return body?.error ?? "The request could not be completed.";
+}
+
+function messageFor(reason: unknown, fallback: string): string {
+  return reason instanceof Error && reason.message ? reason.message : fallback;
 }

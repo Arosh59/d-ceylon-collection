@@ -1,6 +1,5 @@
 "use client";
 
-import { signOut } from "next-auth/react";
 import { useState } from "react";
 
 export function LogoutButton() {
@@ -10,9 +9,13 @@ export function LogoutButton() {
     <button
       className="button-secondary border-white/30 text-white disabled:cursor-wait disabled:opacity-60"
       disabled={busy}
-      onClick={() => {
+      onClick={async () => {
         setBusy(true);
-        void signOut({ callbackUrl: "/" });
+        try {
+          await fetch("/api/auth/logout", { method: "POST" });
+        } finally {
+          window.location.assign("/");
+        }
       }}
       type="button"
     >

@@ -1,69 +1,66 @@
-# Authentication and Authorization
+# Authentication and authorization
 
-Phase 5 integrates standards-based external OpenID Connect authentication. The identity provider
-authenticates users and issues access tokens; the NestJS API remains authoritative for
-authorization, organisation isolation, customer ownership, and security audit records. D Ceylon does
-not store passwords.
+NestJS is the authentication and authorization authority. PostgreSQL stores users, password
+credentials, external identity links, refresh sessions, roles, permissions, password reset tokens,
+and audit events. Firebase is used only to prove a Google identity.
 
-## API token validation
+## Browser session flow
 
-`Authentication:External` is required outside tests and is supplied through environment
-configuration or a managed secret/configuration service. The API validates:
+The web and admin applications expose same-origin BFF routes under `/api/auth/*`. They send login,
+registration, reset, refresh, and Firebase Google token exchanges to NestJS. The BFF stores the
+short-lived D Ceylon access token and rotating refresh token in separate `HttpOnly`, `SameSite=Lax`
+cookies. Production cookies use `Secure`. Browser JavaScript never receives refresh tokens and no
+authentication token is stored in `localStorage`.
 
-- the configured issuer and audience;
-- the signature against provider-published signing keys;
-- token expiry, signing, and lifetime with a maximum five-minute configurable clock skew;
-- required `sub`, `jti`, and `iat` claims; and
-- configured role, permission, organisation, and customer claim mappings.
+The web and admin applications use different cookie names. Admin exchanges are accepted only when
+the current database roles include `administrator`.
 
-Issuer and authority values must use HTTPS in Production. Loopback HTTP is accepted only in
-Development. Access tokens—not ID tokens—authorize API calls. Never commit client secrets, signing
-material, or tokens.
+## API endpoints
 
-The authorization fallback policy requires an authenticated identity. Public catalogue, OpenAPI,
-root, liveness, and readiness routes opt out explicitly. Named policies cover customer, agent,
-staff, and administrator access. Customer and agent resources perform an additional server-side
-owner or organisation-ID check; UI filtering is never considered an authorization boundary.
+- `POST /api/v1/auth/register` creates a customer account.
+- `POST /api/v1/auth/login` verifies a scrypt password credential.
+- `POST /api/v1/auth/google` verifies a Firebase Google ID token and safely links or creates a user.
+- `POST /api/v1/auth/refresh` rotates the refresh token family.
+- `POST /api/v1/auth/logout` revokes the active refresh session.
+- `POST /api/v1/auth/forgot-password` sends a generic, non-enumerating response and SMTP email.
+- `POST /api/v1/auth/reset-password` consumes a single-use reset token and revokes active sessions.
+- `GET /api/v1/auth/me` returns current roles, permissions, customer ID, and organisation ID.
 
-## Web session
+Access tokens use issuer and audience `dceylon-api` by default and expire after 15 minutes. The API
+verifies signature, issuer, audience, expiry, subject, token ID, and issued-at time, then reloads
+the active user and current authorization assignments from PostgreSQL. Ownership and organisation
+isolation remain enforced in service code.
 
-The Next.js application uses `next-auth` with an external OIDC provider, PKCE, state and nonce
-validation, and an encrypted HTTP-only, SameSite=Lax session cookie. The API bearer token remains
-only in the encrypted server-side session token and is not included in the browser-visible session
-response. Production cookies are secure and use the `__Secure-` prefix.
+## Google setup
 
-Sign-in, sign-up, and callback processing live under `/api/auth`, with accessible entry, error,
-unauthorized, and forbidden routes under `/auth`. The public `/auth/sign-up` route does not collect
-credentials: it redirects to Auth0 Universal Login with `screen_hint=signup` and `prompt=login`.
-Configure customer self-registration and email verification in the identity provider; other OIDC
-providers may use their own registration parameter or hosted registration flow. Redirects accept
-only same-origin or application-relative targets. Customer and agent layouts check the session role
-before rendering, then call the generated API client so the API independently validates the token
-and ownership boundary. Logout clears the session and returns to the public site.
+Create a Firebase project, enable Authentication > Sign-in method > Google, and add the local and
+production frontend hosts under Authentication > Settings > Authorized domains. Register both web
+applications and provide their `NEXT_PUBLIC_FIREBASE_*` values at Next.js build time.
 
-Required server-only web settings are documented in `frontend/web/.env.example`. `AUTH_SECRET`,
-`AUTH_CLIENT_SECRET`, and provider credentials must come from a secret store and must never use
-`NEXT_PUBLIC_*`.
+Create a Firebase service account for the backend and store `FIREBASE_PROJECT_ID`,
+`FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` in the deployment secret store. Preserve private
+key newlines as escaped `\n` characters when the platform requires a single-line value. Never add
+the Admin private key to either frontend.
 
-## Isolated testing authentication
+Only a Firebase token with Google as its sign-in provider and a verified email is accepted. Exact,
+case-insensitive email matching links only one active existing user. Duplicate matches are rejected.
+Google login never grants `agent`, `staff`, or `administrator` automatically.
 
-Deterministic customer, agent, staff, and administrator personas exist only for automated tests:
+## Administrator bootstrap
 
-- NestJS registers the HMAC test issuer and token endpoint only when
-  `ASPNETCORE_ENVIRONMENT=Testing`;
-- Next.js registers the test credentials provider only when `APP_ENVIRONMENT=Testing`;
-- both sides require independent keys of at least 32 characters;
-- startup fails when required test configuration is absent or test settings are supplied to another
-  web environment; and
-- the API test-token route is omitted from OpenAPI and uses the stricter authentication rate-limit
-  policy.
+After applying migrations, run this one-off command from a trusted backend environment:
 
-These fixtures are not a password store and must never be exposed on a shared or production
-deployment.
+```sh
+BOOTSTRAP_ADMIN_EMAIL=admin@example.com \
+BOOTSTRAP_ADMIN_PASSWORD='replace-with-a-long-random-password' \
+npm run auth:bootstrap-admin --workspace=@dceylon/backend
+```
 
-## Remaining provider controls
+The command refuses ambiguous or inactive users, upserts a password credential, and assigns the
+existing `administrator` role without removing any current roles. Remove the bootstrap variables
+afterward.
 
-The selected managed provider must enforce MFA for staff and administrators, account recovery,
-lockout, anti-enumeration, credential monitoring, and signing key rotation. Refresh-token rotation
-and revocation must be designed before any refresh token is retained. Cookie-authenticated mutation
-routes must retain NextAuth CSRF protection and add feature-specific anti-replay controls.
+## Testing mode
+
+The existing persona-token endpoint remains available only when `APP_ENVIRONMENT=Testing` and both
+independent test keys are configured. Production cannot enable this path.

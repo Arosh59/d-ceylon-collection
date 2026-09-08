@@ -53,7 +53,6 @@ AUTH_TEST_ISSUER="https://identity.test.dceylon.invalid"
 AUTH_TEST_AUDIENCE="dceylon-api"
 AUTH_TEST_SIGNING_KEY="$(openssl rand -hex 32)"
 AUTH_TEST_ENDPOINT_KEY="$(openssl rand -hex 32)"
-AUTH_SECRET="$(openssl rand -hex 32)"
 export AUTH_TEST_ISSUER
 export AUTH_TEST_AUDIENCE
 export AUTH_TEST_SIGNING_KEY
@@ -118,13 +117,7 @@ curl --fail --silent --show-error \
 web_auth_environment=(
     "API_BASE_URL=${API_ORIGIN}"
     "SITE_URL=${WEB_ORIGIN}"
-    "NEXTAUTH_URL=${WEB_ORIGIN}"
     "APP_ENVIRONMENT=Testing"
-    "AUTH_ISSUER=${AUTH_TEST_ISSUER}"
-    "AUTH_CLIENT_ID=dceylon-web-testing"
-    "AUTH_CLIENT_SECRET=testing-client-secret-not-used-for-external-login"
-    "AUTH_SCOPE=openid profile email dceylon.api"
-    "AUTH_SECRET=${AUTH_SECRET}"
     "AUTH_TEST_ENDPOINT_KEY=${AUTH_TEST_ENDPOINT_KEY}"
 )
 

@@ -5,7 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["bookings", "catalogue", "customers_travellers", "identity_access", "itineraries_travel_planning", "organisations_agents", "payments", "quotes", "supplier_operations"]
+  schemas  = ["bookings", "catalogue", "customers_travellers", "editorial", "identity_access", "itineraries_travel_planning", "organisations_agents", "payments", "quotes", "supplier_operations"]
 }
 
 // Generated from the final EF Core model snapshots at the NestJS cutover baseline.
@@ -39,11 +39,78 @@ model ApplicationUser {
   subject                       String @db.VarChar(200)
   updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
   customerAccountRecords        CustomerAccount?
+  externalIdentities            UserIdentity[]
+  passwordCredential            PasswordCredential?
+  passwordResetTokens           PasswordResetToken[]
+  refreshSessions               RefreshSession[]
   userRoles                     UserRole[]
   @@index([email], map: "ix_users_email")
   @@index([isActive], map: "ix_users_is_active")
   @@unique([issuer, subject], map: "ux_users_issuer_subject")
   @@map("users")
+  @@schema("identity_access")
+}
+
+model UserIdentity {
+  id                            String @id(map: "PK_user_identities") @db.Uuid
+  userId                        String @map("user_id") @db.Uuid
+  provider                      String @db.VarChar(50)
+  subject                       String @db.VarChar(200)
+  email                         String? @db.VarChar(320)
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  lastAuthenticatedAtUtc        DateTime? @map("last_authenticated_at_utc") @db.Timestamptz(6)
+  user                          ApplicationUser @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FK_user_identities_users_user_id")
+  @@unique([provider, subject], map: "ux_user_identities_provider_subject")
+  @@index([userId, provider], map: "ix_user_identities_user_provider")
+  @@index([email], map: "ix_user_identities_email")
+  @@map("user_identities")
+  @@schema("identity_access")
+}
+
+model PasswordCredential {
+  userId                        String @id(map: "PK_password_credentials") @map("user_id") @db.Uuid
+  passwordHash                  String @map("password_hash") @db.VarChar(500)
+  passwordChangedAtUtc          DateTime @map("password_changed_at_utc") @db.Timestamptz(6)
+  failedLoginCount              Int @default(0) @map("failed_login_count")
+  lockedUntilUtc                DateTime? @map("locked_until_utc") @db.Timestamptz(6)
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
+  concurrencyToken              String @map("concurrency_token") @db.Uuid
+  user                          ApplicationUser @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FK_password_credentials_users_user_id")
+  @@map("password_credentials")
+  @@schema("identity_access")
+}
+
+model RefreshSession {
+  id                            String @id(map: "PK_refresh_sessions") @db.Uuid
+  userId                        String @map("user_id") @db.Uuid
+  familyId                      String @map("family_id") @db.Uuid
+  tokenHash                     String @unique(map: "ux_refresh_sessions_token_hash") @map("token_hash") @db.Char(64)
+  expiresAtUtc                  DateTime @map("expires_at_utc") @db.Timestamptz(6)
+  revokedAtUtc                  DateTime? @map("revoked_at_utc") @db.Timestamptz(6)
+  replacedBySessionId           String? @map("replaced_by_session_id") @db.Uuid
+  userAgent                     String? @map("user_agent") @db.VarChar(500)
+  ipAddress                     String? @map("ip_address") @db.VarChar(64)
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  user                          ApplicationUser @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FK_refresh_sessions_users_user_id")
+  @@index([userId, expiresAtUtc], map: "ix_refresh_sessions_user_expiry")
+  @@index([familyId, revokedAtUtc], map: "ix_refresh_sessions_family_revoked")
+  @@map("refresh_sessions")
+  @@schema("identity_access")
+}
+
+model PasswordResetToken {
+  id                            String @id(map: "PK_password_reset_tokens") @db.Uuid
+  userId                        String @map("user_id") @db.Uuid
+  tokenHash                     String @unique(map: "ux_password_reset_tokens_token_hash") @map("token_hash") @db.Char(64)
+  expiresAtUtc                  DateTime @map("expires_at_utc") @db.Timestamptz(6)
+  consumedAtUtc                 DateTime? @map("consumed_at_utc") @db.Timestamptz(6)
+  requestIp                     String? @map("request_ip") @db.VarChar(64)
+  createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
+  user                          ApplicationUser @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FK_password_reset_tokens_users_user_id")
+  @@index([userId, expiresAtUtc], map: "ix_password_reset_tokens_user_expiry")
+  @@map("password_reset_tokens")
   @@schema("identity_access")
 }
 

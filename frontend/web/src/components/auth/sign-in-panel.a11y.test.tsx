@@ -4,8 +4,13 @@ import { describe, expect, it, vi } from "vitest";
 
 import { SignInPanel } from "./sign-in-panel";
 
-vi.mock("next-auth/react", () => ({
-  signIn: vi.fn(),
+vi.mock("firebase/auth", () => ({
+  getRedirectResult: vi.fn().mockResolvedValue(null),
+  signInWithRedirect: vi.fn(),
+}));
+vi.mock("@/lib/firebase-client", () => ({
+  firebaseGoogleAuthentication: () => ({ auth: {}, provider: {} }),
+  hasFirebaseGoogleConfiguration: () => true,
 }));
 
 describe("SignInPanel accessibility", () => {

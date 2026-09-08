@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "next build --webpack",
     "dev": "next dev --hostname 127.0.0.1",
     "lint": "eslint . --max-warnings=0",
     "start": "next start --hostname 127.0.0.1",
@@ -14,9 +14,8 @@
   },
   "dependencies": {
     "@dceylon/sdk": "*",
-    "@googlemaps/markerclusterer": "^2.6.2",
+    "firebase": "12.18.0",
     "next": "16.2.12",
-    "next-auth": "4.24.15",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },

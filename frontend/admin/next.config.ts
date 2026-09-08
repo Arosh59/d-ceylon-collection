@@ -4,6 +4,8 @@ import path from "node:path";
 const developmentScriptSource = process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : "";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  outputFileTracingRoot: path.resolve(import.meta.dirname, "../.."),
   poweredByHeader: false,
   reactStrictMode: true,
   turbopack: { root: path.resolve(import.meta.dirname, "../..") },
@@ -15,7 +17,7 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; " +
+              "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; frame-src https://*.firebaseapp.com https://accounts.google.com; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://accounts.google.com; object-src 'none'; form-action 'self'; " +
               `script-src 'self' 'unsafe-inline'${developmentScriptSource}`,
           },
           { key: "X-Content-Type-Options", value: "nosniff" },

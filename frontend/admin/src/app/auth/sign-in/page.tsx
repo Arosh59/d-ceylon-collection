@@ -1,18 +1,51 @@
 import { SignInButton } from "./sign-in-button";
-import { localAuthEnabled } from "@/lib/auth";
 
-export default function SignInPage() {
+export const dynamic = "force-dynamic";
+
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ reason?: string | string[] }>;
+}) {
+  const reason = (await searchParams).reason;
   return (
-    <main className="grid min-h-screen place-items-center p-6">
-      <section className="w-full max-w-md rounded-3xl border border-navy/15 bg-white p-8 shadow-xl">
-        <p className="text-sm font-bold tracking-[0.16em] text-gold uppercase">Restricted access</p>
-        <h1 className="mt-4 text-4xl font-serif">D Ceylon Administration</h1>
+    <main className="auth-page">
+      <section className="auth-card" aria-labelledby="sign-in-heading">
+        <div className="brand-lockup">
+          <span className="brand-mark" aria-hidden="true">
+            DC
+          </span>
+          <span>
+            <strong>D Ceylon</strong>
+            <small>Administration</small>
+          </span>
+        </div>
+        <div className="mt-10">
+          <span className="mode-badge">
+            <span className="mode-dot" aria-hidden="true" />
+            Secure administrator access
+          </span>
+        </div>
+        <h1 className="auth-heading" id="sign-in-heading">
+          Welcome back
+        </h1>
         <p className="mt-4 leading-7 text-slate-600">
-          {localAuthEnabled
-            ? "Use the local administrator credentials configured for this development workspace."
-            : "Sign in with an approved administrator account. Customer, agent, and staff roles do not receive administrative access."}
+          Sign in with your D Ceylon credentials or Google. Your account must already have the
+          administrator role.
         </p>
-        <SignInButton localAuthEnabled={localAuthEnabled} />
+        {reason === "expired" ? (
+          <p
+            className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900"
+            role="status"
+          >
+            Your administrator session expired. Sign in again to continue.
+          </p>
+        ) : null}
+        <SignInButton />
+        <p className="mt-7 border-t border-navy/10 pt-5 text-xs leading-5 text-slate-500">
+          Access is restricted to administrator accounts. Activity may be recorded for security and
+          support.
+        </p>
       </section>
     </main>
   );

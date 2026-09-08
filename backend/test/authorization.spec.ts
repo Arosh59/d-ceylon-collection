@@ -33,16 +33,23 @@ describe("authorization and authentication configuration", () => {
     ).toThrow(ForbiddenException);
   });
 
-  it("rejects insecure production identity configuration", () => {
+  it("requires a strong application JWT secret outside Testing", () => {
+    expect(() =>
+      validateEnvironment({
+        APP_ENVIRONMENT: "Development",
+        JWT_ACCESS_SECRET: "short",
+      }),
+    ).toThrow("JWT_ACCESS_SECRET");
+  });
+
+  it("rejects incomplete production Firebase and password-reset configuration", () => {
     expect(() =>
       validateEnvironment({
         APP_ENVIRONMENT: "Production",
         DATABASE_URL: "postgresql://database.example.test/app",
-        AUTH_AUTHORITY: "http://identity.example.test",
-        AUTH_ISSUER: "http://identity.example.test",
-        AUTH_AUDIENCE: "dceylon-api",
+        JWT_ACCESS_SECRET: "a-production-secret-that-is-longer-than-32-characters",
       }),
-    ).toThrow("must use HTTPS");
+    ).toThrow("FIREBASE_PROJECT_ID");
   });
 
   it("cannot enable testing authentication without independent strong keys", () => {

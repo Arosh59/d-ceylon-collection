@@ -1,12 +1,7 @@
 import "server-only";
 
 export type CatalogueModule =
-  | "products"
-  | "product-types"
-  | "categories"
-  | "collections"
-  | "destinations"
-  | "tags";
+  "products" | "product-types" | "categories" | "collections" | "destinations" | "tags";
 
 export interface CatalogueRecord {
   id: string;
@@ -37,7 +32,11 @@ export async function getCatalogueModuleData(
   if (resource === "products" && query?.trim()) url.searchParams.set("query", query.trim());
   if (resource === "products" && sort) url.searchParams.set("sort", sort);
 
-  const response = await fetch(url, { cache: "no-store", headers: { Accept: "application/json" } });
+  const response = await fetch(url, {
+    cache: "no-store",
+    headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(5_000),
+  });
   if (!response.ok) throw new Error(`The catalogue API returned HTTP ${response.status}.`);
   const data = (await response.json()) as {
     items?: CatalogueRecord[];

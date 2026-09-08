@@ -6,9 +6,10 @@ const developmentScriptSource = process.env.NODE_ENV === "development" ? " 'unsa
 const contentSecurityPolicy = [
   "default-src 'self'",
   "base-uri 'self'",
-  "connect-src 'self' https://maps.googleapis.com https://maps.gstatic.com https://maps.google.com",
+  "connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://accounts.google.com https://maps.googleapis.com https://maps.gstatic.com https://maps.google.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "form-action 'self'",
+  "frame-src https://*.firebaseapp.com https://accounts.google.com",
   "frame-ancestors 'none'",
   "img-src 'self' data: https://maps.googleapis.com https://maps.gstatic.com https://maps.google.com",
   "object-src 'none'",

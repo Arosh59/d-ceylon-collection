@@ -14,14 +14,23 @@ export class RateLimitMiddleware implements NestMiddleware {
     const limit =
       request.path === "/api/v1/access/testing/token"
         ? 10
-        : request.path.startsWith("/api/v1/catalogue/") ||
-            request.path.startsWith("/api/v1/editorial/")
-          ? 120
-          : undefined;
+        : [
+              "/api/v1/auth/login",
+              "/api/v1/auth/google",
+              "/api/v1/auth/register",
+              "/api/v1/auth/forgot-password",
+              "/api/v1/auth/reset-password",
+            ].includes(request.path)
+          ? 10
+          : request.path === "/api/v1/auth/refresh"
+            ? 30
+            : request.path.startsWith("/api/v1/catalogue/")
+              ? 120
+              : undefined;
     if (!limit) return next();
 
     const now = Date.now();
-    const key = `${request.ip ?? request.socket.remoteAddress ?? "unknown"}:${limit}`;
+    const key = `${request.ip ?? request.socket.remoteAddress ?? "unknown"}:${request.path}`;
     const current = this.windows.get(key);
     const state =
       !current || current.resetAt <= now ? { count: 0, resetAt: now + 60_000 } : current;

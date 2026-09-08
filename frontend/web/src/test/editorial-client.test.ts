@@ -2,7 +2,7 @@ import { createEditorialClient } from "@dceylon/sdk";
 import { describe, expect, it, vi } from "vitest";
 
 describe("editorial client", () => {
-  it("preserves correlation IDs for public Directus-backed editorial requests", async () => {
+  it("preserves correlation IDs for public editorial requests", async () => {
     const request = vi.fn<typeof fetch>().mockResolvedValue(
       new Response(JSON.stringify({ items: [], pagination: {} }), {
         headers: { "content-type": "application/json" },

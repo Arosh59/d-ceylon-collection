@@ -10,6 +10,7 @@ import { RequestLoggingMiddleware } from "./common/request-logging.middleware";
 import { DatabaseModule } from "./database/database.module";
 import { AccessModule } from "./modules/access/access.module";
 import { AdministrationModule } from "./modules/administration/administration.module";
+import { AuthModule } from "./modules/auth/auth.module";
 import { BookingsModule } from "./modules/bookings/bookings.module";
 import { CatalogueModule } from "./modules/catalogue/catalogue.module";
 import { CustomersModule } from "./modules/customers/customers.module";
@@ -24,6 +25,7 @@ import { validateEnvironment } from "./configuration";
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnvironment }),
     DatabaseModule,
+    AuthModule,
     AccessModule,
     AdministrationModule,
     CatalogueModule,

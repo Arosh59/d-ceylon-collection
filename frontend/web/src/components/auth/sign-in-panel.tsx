@@ -1,8 +1,13 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useState } from "react";
-import type { FormEvent } from "react";
+import { getRedirectResult, signInWithRedirect } from "firebase/auth";
+import Link from "next/link";
+import { useEffect, useState, type FormEvent } from "react";
+
+import {
+  firebaseGoogleAuthentication,
+  hasFirebaseGoogleConfiguration,
+} from "@/lib/firebase-client";
 
 interface SignInPanelProps {
   callbackUrl: string;
@@ -12,13 +17,7 @@ interface SignInPanelProps {
   testingEnabled: boolean;
 }
 
-export function SignInPanel({
-  callbackUrl,
-  configurationError,
-  localAuthEnabled = false,
-  mode = "sign-in",
-  testingEnabled,
-}: SignInPanelProps) {
+export function SignInPanel({ callbackUrl, mode = "sign-in", testingEnabled }: SignInPanelProps) {
   const [busy, setBusy] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -29,157 +28,177 @@ export function SignInPanel({
   const [testKey, setTestKey] = useState("");
   const isSignUp = mode === "sign-up";
 
-  async function startExternalSignIn() {
-    setBusy(true);
-    if (isSignUp) {
-      await signIn("dceylon", { callbackUrl }, { prompt: "login", screen_hint: "signup" });
-    } else {
-      await signIn("dceylon", { callbackUrl });
+  useEffect(() => {
+    let active = true;
+    async function finishGoogleRedirect() {
+      if (!hasFirebaseGoogleConfiguration()) return;
+      try {
+        const { auth } = firebaseGoogleAuthentication();
+        const result = await getRedirectResult(auth);
+        if (!result || !active) return;
+        setBusy(true);
+        const response = await post("google", { idToken: await result.user.getIdToken() });
+        if (!response.ok) throw new Error(await responseError(response));
+        window.location.assign(callbackUrl);
+      } catch (reason) {
+        if (active) setError(messageFor(reason, "Google sign-in could not be completed."));
+      } finally {
+        if (active) setBusy(false);
+      }
     }
-    setBusy(false);
-  }
+    void finishGoogleRedirect();
+    return () => {
+      active = false;
+    };
+  }, [callbackUrl]);
 
-  async function startTestingSignIn() {
-    setBusy(true);
-    await signIn("testing", { callbackUrl, persona, testKey });
-    setBusy(false);
-  }
-
-  async function startLocalAuth(event: FormEvent<HTMLFormElement>) {
+  async function submitCredentials(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     if (isSignUp && password !== passwordConfirmation) {
       setError("The passwords do not match.");
       return;
     }
-
     setBusy(true);
-    if (isSignUp) {
-      const response = await fetch("/api/local-auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, name, password }),
+    try {
+      const response = await post(isSignUp ? "register" : "login", {
+        email,
+        password,
+        ...(isSignUp ? { name } : {}),
       });
-      if (!response.ok) {
-        const body = (await response.json().catch(() => null)) as { error?: string } | null;
-        setError(body?.error ?? "Unable to create the account.");
-        setBusy(false);
-        return;
-      }
-    }
-
-    const result = await signIn("local", { callbackUrl, email, password, redirect: false });
-    if (!result?.ok) {
-      setError("Those credentials could not be verified.");
+      if (!response.ok) throw new Error(await responseError(response));
+      window.location.assign(callbackUrl);
+    } catch (reason) {
+      setError(messageFor(reason, "Authentication is temporarily unavailable."));
+    } finally {
       setBusy(false);
-      return;
     }
-    window.location.assign(result.url ?? callbackUrl);
   }
 
-  if (configurationError) {
-    return (
-      <div
-        className="rounded-2xl border border-gold/40 bg-gold/10 p-5 text-sm text-ink"
-        role="alert"
-      >
-        <p className="font-semibold text-navy">
-          Secure {isSignUp ? "registration" : "sign-in"} is not configured on this server.
-        </p>
-        <p className="mt-2">
-          Add the server-only OIDC settings from <code>frontend/web/.env.example</code> to an ignored
-          <code>frontend/web/.env.local</code> file, then restart the web server.
-        </p>
-        <p className="mt-2 text-ink-muted">Configuration detail: {configurationError}</p>
-      </div>
-    );
+  async function startGoogle() {
+    setError(null);
+    setBusy(true);
+    try {
+      const { auth, provider } = firebaseGoogleAuthentication();
+      await signInWithRedirect(auth, provider);
+    } catch (reason) {
+      setError(messageFor(reason, "Google sign-in is not configured on this site."));
+      setBusy(false);
+    }
+  }
+
+  async function startTestingSignIn(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      const response = await post("testing", { persona, testKey });
+      if (!response.ok) throw new Error(await responseError(response));
+      window.location.assign(callbackUrl);
+    } catch (reason) {
+      setError(messageFor(reason, "The testing identity could not be verified."));
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <div className="grid gap-6">
-      {localAuthEnabled ? (
-        <form aria-label={isSignUp ? "Create account" : "Sign in"} className="grid gap-4" onSubmit={startLocalAuth}>
-          {isSignUp ? (
-            <label className="filter-field">
-              <span>Your name</span>
-              <input
-                autoComplete="name"
-                minLength={2}
-                onChange={(event) => setName(event.target.value)}
-                required
-                value={name}
-              />
-            </label>
-          ) : null}
+      <form
+        aria-label={isSignUp ? "Create account" : "Sign in"}
+        className="grid gap-4"
+        onSubmit={submitCredentials}
+      >
+        {isSignUp ? (
           <label className="filter-field">
-            <span>Email address</span>
+            <span>Your name</span>
             <input
-              autoComplete="email"
-              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="name"
+              minLength={2}
+              onChange={(event) => setName(event.target.value)}
               required
-              type="email"
-              value={email}
+              value={name}
             />
           </label>
+        ) : null}
+        <label className="filter-field">
+          <span>Email address</span>
+          <input
+            autoComplete="email"
+            onChange={(event) => setEmail(event.target.value)}
+            required
+            type="email"
+            value={email}
+          />
+        </label>
+        <label className="filter-field">
+          <span>Password</span>
+          <input
+            autoComplete={isSignUp ? "new-password" : "current-password"}
+            minLength={8}
+            onChange={(event) => setPassword(event.target.value)}
+            required
+            type="password"
+            value={password}
+          />
+        </label>
+        {isSignUp ? (
           <label className="filter-field">
-            <span>Password</span>
+            <span>Confirm password</span>
             <input
-              autoComplete={isSignUp ? "new-password" : "current-password"}
+              autoComplete="new-password"
               minLength={8}
-              onChange={(event) => setPassword(event.target.value)}
+              onChange={(event) => setPasswordConfirmation(event.target.value)}
               required
               type="password"
-              value={password}
+              value={passwordConfirmation}
             />
           </label>
-          {isSignUp ? (
-            <label className="filter-field">
-              <span>Confirm password</span>
-              <input
-                autoComplete="new-password"
-                minLength={8}
-                onChange={(event) => setPasswordConfirmation(event.target.value)}
-                required
-                type="password"
-                value={passwordConfirmation}
-              />
-            </label>
-          ) : null}
-          {error ? (
-            <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
-              {error}
-            </p>
-          ) : null}
-          <button className="button-primary w-full disabled:cursor-wait disabled:opacity-60" disabled={busy} type="submit">
-            {busy ? "Please wait…" : isSignUp ? "Create your account" : "Sign in"}
-          </button>
-          <p className="text-xs leading-5 text-ink-muted">
-            Local development mode is active. Passwords are hashed and stored only on this machine.
+        ) : null}
+        {error ? (
+          <p
+            className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+            role="alert"
+          >
+            {error}
           </p>
-        </form>
-      ) : (
+        ) : null}
         <button
           className="button-primary w-full disabled:cursor-wait disabled:opacity-60"
           disabled={busy}
-          onClick={startExternalSignIn}
+          type="submit"
+        >
+          {busy ? "Please wait…" : isSignUp ? "Create your account" : "Sign in"}
+        </button>
+        {!isSignUp ? (
+          <Link
+            className="text-sm font-semibold text-navy underline decoration-gold underline-offset-4"
+            href="/auth/forgot-password"
+          >
+            Forgot your password?
+          </Link>
+        ) : null}
+      </form>
+
+      <div className="relative border-t border-navy/10 pt-6">
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white px-3 text-xs tracking-widest text-ink-muted uppercase">
+          or
+        </span>
+        <button
+          className="button-secondary w-full disabled:cursor-wait disabled:opacity-60"
+          disabled={busy}
+          onClick={startGoogle}
           type="button"
         >
-          {busy
-            ? `Opening secure ${isSignUp ? "registration" : "sign-in"}…`
-            : isSignUp
-              ? "Create your account securely"
-              : "Continue to secure sign-in"}
+          Continue with Google
         </button>
-      )}
+      </div>
 
-      {testingEnabled && !isSignUp && !localAuthEnabled ? (
+      {testingEnabled && !isSignUp ? (
         <form
           aria-label="Testing identity sign-in"
           className="grid gap-4 border-t border-navy/10 pt-6"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void startTestingSignIn();
-          }}
+          onSubmit={startTestingSignIn}
         >
           <p className="rounded-xl bg-gold/15 p-3 text-sm text-ink">
             Testing identities are available only in the isolated Testing environment.
@@ -210,4 +229,21 @@ export function SignInPanel({
       ) : null}
     </div>
   );
+}
+
+function post(action: string, body: unknown): Promise<Response> {
+  return fetch(`/api/auth/${action}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+}
+
+async function responseError(response: Response): Promise<string> {
+  const body = (await response.json().catch(() => null)) as { error?: string } | null;
+  return body?.error ?? "The request could not be completed.";
+}
+
+function messageFor(reason: unknown, fallback: string): string {
+  return reason instanceof Error && reason.message ? reason.message : fallback;
 }

@@ -2,11 +2,8 @@ import "server-only";
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { decode } from "next-auth/jwt";
 
-import { getAuthenticationEnvironment } from "./auth-environment";
-import { authOptions } from "./auth-options";
+import { accessCookieName, type SessionIdentity } from "./bff-auth";
 
 export interface PortalAuthentication {
   accessToken: string;
@@ -18,44 +15,28 @@ export interface PortalAuthentication {
 }
 
 export async function getPortalAuthentication(): Promise<PortalAuthentication | null> {
-  const session = await getServerSession(authOptions);
-  if (!session) {
+  const accessToken = (await cookies()).get(accessCookieName())?.value;
+  if (!accessToken) return null;
+
+  try {
+    const response = await fetch(new URL("/api/v1/auth/me", apiBaseUrl()), {
+      cache: "no-store",
+      headers: { Accept: "application/json", Authorization: `Bearer ${accessToken}` },
+      signal: AbortSignal.timeout(5_000),
+    });
+    if (!response.ok) return null;
+    const identity = (await response.json()) as SessionIdentity;
+    return {
+      accessToken,
+      subject: identity.subject,
+      displayName: identity.displayName,
+      roles: identity.roles,
+      ...(identity.customerId ? { customerId: identity.customerId } : {}),
+      ...(identity.organisationId ? { organisationId: identity.organisationId } : {}),
+    };
+  } catch {
     return null;
   }
-
-  const environment = getAuthenticationEnvironment();
-  const cookieName =
-    environment.applicationEnvironment === "Production"
-      ? "__Secure-dceylon.session-token"
-      : "dceylon.session-token";
-  const cookieStore = await cookies();
-  const encodedToken = cookieStore.get(cookieName)?.value;
-  if (!encodedToken) {
-    return null;
-  }
-
-  const token = await decode({
-    token: encodedToken,
-    secret: environment.sessionSecret,
-  });
-  const now = Math.floor(Date.now() / 1_000);
-  if (
-    !token?.accessToken ||
-    !token.sub ||
-    !token.accessTokenExpiresAt ||
-    token.accessTokenExpiresAt <= now
-  ) {
-    return null;
-  }
-
-  return {
-    accessToken: token.accessToken,
-    subject: token.sub,
-    displayName: session.user?.name ?? "Authenticated user",
-    roles: token.roles ?? [],
-    customerId: token.customerId,
-    organisationId: token.organisationId,
-  };
 }
 
 export async function requirePortalAuthentication(
@@ -63,20 +44,19 @@ export async function requirePortalAuthentication(
   callbackUrl: string,
 ): Promise<PortalAuthentication> {
   const authentication = await getPortalAuthentication();
-  if (!authentication) {
-    redirect(`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`);
-  }
-
-  if (!authentication.roles.includes(role)) {
-    redirect("/auth/forbidden");
-  }
-
+  if (!authentication) redirect(`/api/auth/session?returnTo=${encodeURIComponent(callbackUrl)}`);
+  if (!authentication.roles.includes(role)) redirect("/auth/forbidden");
   if (
     (role === "customer" && !authentication.customerId) ||
     (role === "agent" && !authentication.organisationId)
   ) {
     redirect("/auth/forbidden");
   }
-
   return authentication;
+}
+
+function apiBaseUrl(): string {
+  const value = process.env.API_BASE_URL?.trim();
+  if (!value) throw new Error("API_BASE_URL is required.");
+  return value;
 }

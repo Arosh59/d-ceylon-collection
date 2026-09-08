@@ -15,4 +15,4 @@ resource environment 'Microsoft.App/managedEnvironments@2024-03-01' = {
 }
 
 output managedEnvironmentId string = environment.id
-output releaseGuidance string = 'Deploy API, web, admin, Directus, and AI containers through an approved pipeline with Key Vault references; do not put secrets in Bicep parameters.'
+output releaseGuidance string = 'Deploy API, web, admin, and AI containers through an approved pipeline with Key Vault references; do not put secrets in Bicep parameters.'

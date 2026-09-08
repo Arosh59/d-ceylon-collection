@@ -1,9 +1,5 @@
 import "server-only";
 
-import { getServerSession } from "next-auth";
-
-import { authOptions } from "./auth";
-
 export interface DashboardActivity {
   eventType: string;
   outcome: string;
@@ -20,8 +16,8 @@ export interface DashboardData {
   counts: {
     users: number | null;
     customers: number | null;
-    publishedProducts: number;
-    publishedDestinations: number;
+    publishedProducts: number | null;
+    publishedDestinations: number | null;
     bookings: number | null;
     pendingBookings: number | null;
     quoteRequests: number | null;
@@ -31,22 +27,32 @@ export interface DashboardData {
   recentActivity: DashboardActivity[];
   bookingStatuses: DashboardStatusCount[];
   quoteStatuses: DashboardStatusCount[];
-  source: "administrator-api" | "catalogue-api";
+  source: "administrator-api" | "catalogue-api" | "unavailable";
   warning?: string;
 }
 
-export async function getDashboardData(): Promise<DashboardData> {
-  const session = await getServerSession(authOptions);
+export async function getDashboardData(accessToken: string): Promise<DashboardData> {
   const apiBaseUrl = required("API_BASE_URL");
+  let administratorWarning: string | undefined;
 
-  if (session?.accessToken) {
-    const response = await fetch(new URL("/api/v1/administration/summary", apiBaseUrl), {
-      cache: "no-store",
-      headers: { Accept: "application/json", Authorization: `Bearer ${session.accessToken}` },
-    });
-    if (response.ok) {
-      const data = (await response.json()) as Omit<DashboardData, "source">;
-      return { ...data, source: "administrator-api" };
+  if (accessToken) {
+    try {
+      const response = await fetch(new URL("/api/v1/administration/summary", apiBaseUrl), {
+        cache: "no-store",
+        headers: { Accept: "application/json", Authorization: `Bearer ${accessToken}` },
+        signal: AbortSignal.timeout(5_000),
+      });
+      if (response.ok) {
+        const data = (await response.json()) as Omit<DashboardData, "source">;
+        return { ...data, source: "administrator-api" };
+      }
+      administratorWarning =
+        response.status === 403
+          ? "Your administrator account cannot access the operational summary. Published catalogue totals are shown instead."
+          : "The protected operational summary is unavailable. Published catalogue totals are shown instead.";
+    } catch {
+      administratorWarning =
+        "The protected operational summary could not be reached. Published catalogue totals are shown instead.";
     }
   }
 
@@ -54,6 +60,7 @@ export async function getDashboardData(): Promise<DashboardData> {
     catalogueCount(apiBaseUrl, "products"),
     catalogueCount(apiBaseUrl, "destinations"),
   ]);
+  const catalogueUnavailable = products === null || destinations === null;
 
   return {
     counts: {
@@ -70,20 +77,27 @@ export async function getDashboardData(): Promise<DashboardData> {
     recentActivity: [],
     bookingStatuses: [],
     quoteStatuses: [],
-    source: "catalogue-api",
-    warning:
-      "Operational totals are available after signing in through the managed identity provider. Local administrator credentials can view the published catalogue only.",
+    source: catalogueUnavailable ? "unavailable" : "catalogue-api",
+    warning: catalogueUnavailable
+      ? "You are signed in, but the backend catalogue is unavailable. Start the API with `npm run dev:backend`, then refresh this page."
+      : (administratorWarning ??
+        "The operational summary is unavailable, so published catalogue totals are shown."),
   };
 }
 
-async function catalogueCount(apiBaseUrl: string, resource: string): Promise<number> {
-  const response = await fetch(new URL(`/api/v1/catalogue/${resource}?pageSize=1`, apiBaseUrl), {
-    cache: "no-store",
-    headers: { Accept: "application/json" },
-  });
-  if (!response.ok) throw new Error(`The catalogue API returned HTTP ${response.status}.`);
-  const data = (await response.json()) as { pagination?: { totalItems?: number } };
-  return Number(data.pagination?.totalItems ?? 0);
+async function catalogueCount(apiBaseUrl: string, resource: string): Promise<number | null> {
+  try {
+    const response = await fetch(new URL(`/api/v1/catalogue/${resource}?pageSize=1`, apiBaseUrl), {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(5_000),
+    });
+    if (!response.ok) return null;
+    const data = (await response.json()) as { pagination?: { totalItems?: number } };
+    return Number(data.pagination?.totalItems ?? 0);
+  } catch {
+    return null;
+  }
 }
 
 function required(name: string): string {

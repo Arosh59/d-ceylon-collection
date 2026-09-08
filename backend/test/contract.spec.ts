@@ -2,6 +2,12 @@ import { Test } from "@nestjs/testing";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 jest.mock("jose", () => ({ createRemoteJWKSet: jest.fn(), jwtVerify: jest.fn() }));
+jest.mock("firebase-admin/app", () => ({
+  cert: jest.fn(),
+  getApps: jest.fn(() => []),
+  initializeApp: jest.fn(),
+}));
+jest.mock("firebase-admin/auth", () => ({ getAuth: jest.fn() }));
 
 import { AppModule } from "../src/app.module";
 import { loadCanonicalOpenApi, missingCanonicalOperations } from "../src/common/openapi-contract";
@@ -25,16 +31,16 @@ describe("canonical API contract", () => {
         ["get", "post", "put", "patch", "delete"].includes(method),
       ),
     );
-    expect(Object.keys(canonical.paths)).toHaveLength(60);
-    expect(operations).toHaveLength(82);
-    expect(Object.keys(generated.paths)).toHaveLength(60);
+    expect(Object.keys(canonical.paths)).toHaveLength(68);
+    expect(operations).toHaveLength(90);
+    expect(Object.keys(generated.paths)).toHaveLength(68);
     expect(
       Object.values(generated.paths).flatMap((path) =>
         Object.keys(path ?? {}).filter((method) =>
           ["get", "post", "put", "patch", "delete"].includes(method),
         ),
       ),
-    ).toHaveLength(82);
+    ).toHaveLength(90);
     expect(missingCanonicalOperations(canonical, generated)).toEqual([]);
     await app.close();
   });

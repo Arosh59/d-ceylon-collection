@@ -38,9 +38,4 @@ create_role_and_database \
     "${APP_POSTGRES_USER}" \
     "${APP_POSTGRES_PASSWORD}"
 
-create_role_and_database \
-    "${DIRECTUS_DB}" \
-    "${DIRECTUS_DB_USER}" \
-    "${DIRECTUS_DB_PASSWORD}"
-
 true

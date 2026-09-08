@@ -25,33 +25,14 @@ verify() {
         pg_isready --username="$POSTGRES_USER" --dbname="$POSTGRES_DB"
         test "$(psql --username="$POSTGRES_USER" --dbname="$POSTGRES_DB" \
             --tuples-only --no-align \
-            --command="SELECT count(*) FROM pg_database WHERE datname IN ('\''$APP_POSTGRES_DB'\'', '\''$DIRECTUS_DB'\'');")" = "2"
+            --command="SELECT count(*) FROM pg_database WHERE datname = '\''$APP_POSTGRES_DB'\'';")" = "1"
     '
 
     compose exec -T redis sh -ec '
         REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli ping | grep -q PONG
     '
 
-    directus_port="$(
-        sed -n 's/^DIRECTUS_PORT=//p' "${environment_file}" | tail -n 1
-    )"
-    directus_port="${directus_port:-8055}"
-
-    curl \
-        --fail \
-        --silent \
-        --show-error \
-        "http://127.0.0.1:${directus_port}/server/ping"
-    printf '\n'
-
-    curl \
-        --fail \
-        --silent \
-        --show-error \
-        "http://127.0.0.1:${directus_port}/server/health"
-    printf '\n'
-
-    echo "All local infrastructure checks passed."
+    echo "PostgreSQL and Redis checks passed."
 }
 
 usage() {
@@ -61,12 +42,12 @@ Usage: ./scripts/local-infrastructure.sh COMMAND
 Commands:
   config   Validate and render the Compose configuration
   pull     Pull the pinned container images
-  up       Start PostgreSQL, Redis, and Directus in the background
+  up       Start PostgreSQL and Redis in the background
   down     Stop and remove containers while preserving named volumes
   restart  Restart all local infrastructure containers
   status   Show container and health status
   logs     Follow logs for all infrastructure services
-  verify   Verify PostgreSQL, Redis, and Directus connectivity and health
+  verify   Verify PostgreSQL and Redis connectivity and health
   destroy  Remove containers and named volumes (requires confirmation)
 USAGE
 }
