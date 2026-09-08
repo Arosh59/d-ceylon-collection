@@ -48,6 +48,7 @@
     "test:web:smoke": "npm run test:smoke --workspace=@dceylon/web",
     "test:backend": "npm run test --workspace=@dceylon/backend",
     "test:backend:e2e": "npm run test:e2e --workspace=@dceylon/backend",
+    "test:admin": "npm run test --workspace=@dceylon/admin",
     "typecheck:admin": "npm run typecheck --workspace=@dceylon/admin",
     "typecheck:backend": "npm run typecheck --workspace=@dceylon/backend",
     "typecheck:web": "npm run typecheck --workspace=@dceylon/web && npm run typecheck --workspace=@dceylon/sdk"

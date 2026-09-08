@@ -2,7 +2,7 @@ import "server-only";
 
 import { getServerSession } from "next-auth";
 
-import { authOptions } from "./auth";
+import { getAuthOptions } from "./auth";
 
 export interface DashboardActivity {
   eventType: string;
@@ -36,17 +36,26 @@ export interface DashboardData {
 }
 
 export async function getDashboardData(): Promise<DashboardData> {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(getAuthOptions());
   const apiBaseUrl = required("API_BASE_URL");
+  let administratorWarning: string | undefined;
 
   if (session?.accessToken) {
-    const response = await fetch(new URL("/api/v1/administration/summary", apiBaseUrl), {
-      cache: "no-store",
-      headers: { Accept: "application/json", Authorization: `Bearer ${session.accessToken}` },
-    });
-    if (response.ok) {
-      const data = (await response.json()) as Omit<DashboardData, "source">;
-      return { ...data, source: "administrator-api" };
+    try {
+      const response = await fetch(new URL("/api/v1/administration/summary", apiBaseUrl), {
+        cache: "no-store",
+        headers: { Accept: "application/json", Authorization: `Bearer ${session.accessToken}` },
+        signal: AbortSignal.timeout(5_000),
+      });
+      if (response.ok) {
+        const data = (await response.json()) as Omit<DashboardData, "source">;
+        return { ...data, source: "administrator-api" };
+      }
+      administratorWarning =
+        "The protected operational summary is unavailable. Published catalogue totals are shown instead.";
+    } catch {
+      administratorWarning =
+        "The protected operational summary could not be reached. Published catalogue totals are shown instead.";
     }
   }
 
@@ -72,7 +81,8 @@ export async function getDashboardData(): Promise<DashboardData> {
     quoteStatuses: [],
     source: "catalogue-api",
     warning:
-      "Operational totals are available after signing in through the managed identity provider. Local administrator credentials can view the published catalogue only.",
+      administratorWarning ??
+      "Local administrator credentials provide catalogue review only. Use managed identity for customer, booking, quote, task, and audit data.",
   };
 }
 
@@ -80,6 +90,7 @@ async function catalogueCount(apiBaseUrl: string, resource: string): Promise<num
   const response = await fetch(new URL(`/api/v1/catalogue/${resource}?pageSize=1`, apiBaseUrl), {
     cache: "no-store",
     headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(5_000),
   });
   if (!response.ok) throw new Error(`The catalogue API returned HTTP ${response.status}.`);
   const data = (await response.json()) as { pagination?: { totalItems?: number } };

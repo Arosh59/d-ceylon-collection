@@ -93,7 +93,7 @@ services:
       API_BASE_URL: http://api:8080
       NEXTAUTH_URL: ${ADMIN_SITE_URL:-http://127.0.0.1:3001}
       APP_ENVIRONMENT: ${APP_ENVIRONMENT:-Development}
-      AUTH_MODE: ${AUTH_MODE:-oidc}
+      AUTH_MODE: ${ADMIN_AUTH_MODE:-local}
       AUTH_ISSUER: ${AUTH_ISSUER:-https://identity.example.test}
       AUTH_CLIENT_ID: ${ADMIN_AUTH_CLIENT_ID:-dceylon-admin}
       AUTH_CLIENT_SECRET: ${ADMIN_AUTH_CLIENT_SECRET:-local-development-client-secret}

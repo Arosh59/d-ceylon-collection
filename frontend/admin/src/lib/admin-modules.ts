@@ -22,6 +22,7 @@ const modules = [
   ["guides", "Guides", "Guide directory foundation."],
   ["vehicles", "Vehicles", "Vehicle records foundation."],
   ["assignments", "Assignments", "Operational assignment foundation."],
+  ["tasks", "Operations tasks", "Booking fulfilment and operational task review."],
   ["journal", "Journal", "PostgreSQL-backed editorial content."],
   ["media", "Media", "Editorial media metadata."],
   ["promotions", "Promotions", "Editorial promotion management."],

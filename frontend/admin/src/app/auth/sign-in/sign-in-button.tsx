@@ -17,26 +17,32 @@ export function SignInButton({ localAuthEnabled = false }: { localAuthEnabled?: 
           event.preventDefault();
           setBusy(true);
           setError(null);
-          const result = await signIn("local", {
-            callbackUrl: "/",
-            email,
-            password,
-            redirect: false,
-          });
-          if (!result?.ok) {
-            setError("The administrator credentials could not be verified.");
+          try {
+            const result = await signIn("local", {
+              callbackUrl: "/",
+              email,
+              password,
+              redirect: false,
+            });
+            if (!result?.ok) {
+              setError("The email address or password does not match the local administrator.");
+              return;
+            }
+            window.location.assign(result.url ?? "/");
+          } catch {
+            setError("Sign-in is temporarily unavailable. Check the server and try again.");
+          } finally {
             setBusy(false);
-            return;
           }
-          window.location.assign(result.url ?? "/");
         }}
       >
         <label className="grid gap-2 text-sm font-semibold">
           <span>Email address</span>
           <input
             autoComplete="email"
-            className="rounded-xl border border-navy/15 px-4 py-3"
+            className="form-control"
             onChange={(event) => setEmail(event.target.value)}
+            placeholder="admin@dceylon.local"
             required
             type="email"
             value={email}
@@ -46,7 +52,7 @@ export function SignInButton({ localAuthEnabled = false }: { localAuthEnabled?: 
           <span>Password</span>
           <input
             autoComplete="current-password"
-            className="rounded-xl border border-navy/15 px-4 py-3"
+            className="form-control"
             onChange={(event) => setPassword(event.target.value)}
             required
             type="password"
@@ -54,15 +60,14 @@ export function SignInButton({ localAuthEnabled = false }: { localAuthEnabled?: 
           />
         </label>
         {error ? (
-          <p className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800" role="alert">
+          <p
+            className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+            role="alert"
+          >
             {error}
           </p>
         ) : null}
-        <button
-          className="rounded-full bg-navy px-6 py-3 font-semibold text-white disabled:cursor-wait disabled:opacity-60"
-          disabled={busy}
-          type="submit"
-        >
+        <button className="primary-button mt-1" disabled={busy} type="submit">
           {busy ? "Signing in…" : "Sign in to administration"}
         </button>
       </form>
@@ -71,7 +76,7 @@ export function SignInButton({ localAuthEnabled = false }: { localAuthEnabled?: 
 
   return (
     <button
-      className="mt-8 rounded-full bg-navy px-6 py-3 font-semibold text-white"
+      className="primary-button mt-8 w-full"
       onClick={() => signIn("dceylon", { callbackUrl: "/" })}
       type="button"
     >

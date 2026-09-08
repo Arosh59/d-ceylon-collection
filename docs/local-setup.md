@@ -29,6 +29,12 @@ Configure the same external OIDC issuer/audience and claim names used by the pre
 the web and admin OIDC client values independently; they retain separate sessions and deployment
 boundaries.
 
+The admin example uses development-only local credentials by default. After copying it, sign in at
+`http://127.0.0.1:3001/auth/sign-in` with the values in `frontend/admin/.env.local`. Change the
+example password if the machine or development environment is shared. Production admin deployments
+must use `APP_ENVIRONMENT=Production`, `AUTH_MODE=oidc`, and secret-store-backed OIDC values; local
+administrator authentication is rejected outside Development.
+
 ## Infrastructure and database
 
 ```bash
@@ -44,11 +50,11 @@ docker compose --env-file .env --file infrastructure/docker/compose.yaml \
   --profile application up --build --detach --wait
 ```
 
-The public web host is `http://127.0.0.1:3000`, the admin host is
-`http://127.0.0.1:3001`, and the API is `http://127.0.0.1:8080`.
+The public web host is `http://127.0.0.1:3000`, the admin host is `http://127.0.0.1:3001`, and the
+API is `http://127.0.0.1:8080`.
 
-The full Prisma baseline creates all preserved schemas when the database is empty. For an existing
-D Ceylon database, run `./scripts/api.sh baseline-existing` once instead of applying the baseline,
+The full Prisma baseline creates all preserved schemas when the database is empty. For an existing D
+Ceylon database, run `./scripts/api.sh baseline-existing` once instead of applying the baseline,
 then use `./scripts/api.sh migrate` for later migrations. Never run `prisma migrate reset` or
 `prisma db push` against an existing environment.
 
@@ -59,6 +65,10 @@ then use `./scripts/api.sh migrate` for later migrations. Never run `prisma migr
 npm run dev:web
 npm run dev:admin
 ```
+
+If the admin host reports that authentication setup is required, confirm `frontend/admin/.env.local`
+exists and restart the development server after changing it. The local admin dashboard intentionally
+shows published catalogue data only; operational totals require a managed OIDC access token.
 
 The default origins are API `http://127.0.0.1:8080`, web `http://127.0.0.1:3000`, and admin
 `http://127.0.0.1:3001`. Editorial content is stored in the application PostgreSQL database.
@@ -81,6 +91,7 @@ npm run test:web:a11y
 npm run build:web
 npm run typecheck:admin
 npm run lint:admin
+npm run test:admin
 npm run build:admin
 ```
 
