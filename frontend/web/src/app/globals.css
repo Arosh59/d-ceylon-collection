@@ -11,18 +11,18 @@
   --color-navy: var(--navy);
   --font-sans: var(--font-body);
   --font-serif: var(--font-display);
-  --shadow-soft: 0 24px 70px rgba(14, 35, 66, 0.08);
+  --shadow-soft: 0 24px 70px rgba(5, 29, 71, 0.09);
 }
 
 :root {
-  --canvas: #f6f4ef;
-  --gold: #c8a45d;
-  --gold-dark: #8a6b32;
-  --gold-light: #e1c98e;
-  --ink: #172033;
-  --ink-muted: #596170;
-  --mist: #e8ecec;
-  --navy: #0e2342;
+  --canvas: #f8f5ed;
+  --gold: #d7ae57;
+  --gold-dark: #8d671f;
+  --gold-light: #f0d58a;
+  --ink: #111c31;
+  --ink-muted: #566173;
+  --mist: #e8edf2;
+  --navy: #051d47;
   --font-body:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-display: Iowan Old Style, Baskerville, "Times New Roman", serif;
@@ -93,8 +93,8 @@ summary {
 
 .page-hero {
   background:
-    radial-gradient(circle at 78% 15%, rgba(200, 164, 93, 0.22), transparent 24rem),
-    linear-gradient(145deg, #17365d 0%, var(--navy) 58%, #09172b 100%);
+    radial-gradient(circle at 78% 15%, rgba(215, 174, 87, 0.24), transparent 24rem),
+    linear-gradient(145deg, #0c3769 0%, var(--navy) 58%, #02112b 100%);
   padding-block: 8rem 4rem;
 }
 
@@ -148,7 +148,7 @@ summary {
 .home-hero-control {
   align-items: center;
   backdrop-filter: blur(10px);
-  background: rgba(14, 35, 66, 0.58);
+  background: rgba(5, 29, 71, 0.68);
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
   color: white;
@@ -165,8 +165,8 @@ summary {
 
 .home-hero-control:hover,
 .home-hero-control:focus-visible {
-  background: rgba(200, 164, 93, 0.9);
-  border-color: rgba(200, 164, 93, 0.9);
+  background: rgba(215, 174, 87, 0.94);
+  border-color: rgba(215, 174, 87, 0.94);
   color: var(--navy);
 }
 
@@ -211,7 +211,7 @@ summary {
   background:
     radial-gradient(circle at 74% 18%, rgba(225, 201, 142, 0.46), transparent 32%),
     radial-gradient(circle at 20% 84%, rgba(67, 111, 105, 0.48), transparent 38%),
-    linear-gradient(145deg, #17365d, #0e2342 62%, #09172b);
+    linear-gradient(145deg, #0c3769, #051d47 62%, #02112b);
   color: rgba(255, 255, 255, 0.72);
   display: flex;
   font-size: 0.68rem;
@@ -302,7 +302,7 @@ summary {
 .filter-field select,
 .filter-field textarea {
   background: var(--canvas);
-  border: 1px solid rgba(14, 35, 66, 0.18);
+  border: 1px solid rgba(5, 29, 71, 0.18);
   border-radius: 0.8rem;
   color: var(--ink);
   font: inherit;
@@ -340,7 +340,7 @@ summary {
 
 .button-secondary {
   background: transparent;
-  border: 1px solid rgba(14, 35, 66, 0.2);
+  border: 1px solid rgba(5, 29, 71, 0.2);
   color: var(--navy);
 }
 
@@ -414,7 +414,7 @@ summary {
 
 .gm-style .gm-style-iw-c {
   border-radius: 1rem;
-  box-shadow: 0 18px 48px rgba(14, 35, 66, 0.2);
+  box-shadow: 0 18px 48px rgba(5, 29, 71, 0.2);
   padding: 0.75rem !important;
 }
 

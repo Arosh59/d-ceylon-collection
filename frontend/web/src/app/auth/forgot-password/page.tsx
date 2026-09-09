@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
   return (
     <main className="min-h-screen bg-[#ece9e1] px-4 pt-32 pb-16" id="main-content">
       <section
-        className="mx-auto max-w-xl rounded-[2rem] bg-white p-8 shadow-[0_30px_100px_rgba(14,35,66,0.14)] sm:p-12"
+        className="mx-auto max-w-xl rounded-[2rem] bg-white p-8 shadow-[0_30px_100px_rgba(5,29,71,0.16)] sm:p-12"
         aria-labelledby="forgot-heading"
       >
         <p className="eyebrow">Account recovery</p>

@@ -17,10 +17,10 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
   const testingEnabled = process.env.APP_ENVIRONMENT === "Testing";
 
   return (
-    <main className="min-h-screen bg-[#ece9e1] px-4 pt-28 pb-16 sm:px-8 sm:pt-36" id="main-content">
+    <main className="min-h-screen bg-canvas px-4 pt-28 pb-16 sm:px-8 sm:pt-36" id="main-content">
       <section
         aria-labelledby="sign-up-heading"
-        className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-[0_30px_100px_rgba(14,35,66,0.14)] lg:grid-cols-[0.92fr_1.08fr]"
+        className="mx-auto grid max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-[0_30px_100px_rgba(5,29,71,0.16)] lg:grid-cols-[0.92fr_1.08fr]"
       >
         <div className="relative min-h-[30rem] overflow-hidden bg-navy text-white lg:min-h-[45rem]">
           <Image
@@ -32,16 +32,20 @@ export default async function SignUpPage({ searchParams }: SignUpPageProps) {
             src="/images/editorial/kandy-heritage.webp"
             unoptimized
           />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,35,66,0.18),rgba(7,19,36,0.92))]" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,29,71,0.2),rgba(2,17,43,0.94))]" />
           <div
             aria-hidden="true"
             className="hero-grain absolute inset-0 opacity-20 mix-blend-soft-light"
           />
           <div className="relative flex h-full min-h-[30rem] flex-col justify-between p-7 sm:p-10 lg:min-h-[45rem]">
             <div className="flex items-center gap-3">
-              <span className="grid size-11 place-items-center rounded-full border border-gold/70 font-serif text-xl text-gold-light">
-                D
-              </span>
+              <Image
+                alt=""
+                className="size-12 rounded-full object-cover"
+                height={48}
+                src="/brand/d-ceylon-mark-navy.webp"
+                width={48}
+              />
               <span className="text-xs font-semibold tracking-[0.24em] text-white/75 uppercase">
                 A private travel space
               </span>

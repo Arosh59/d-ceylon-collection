@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { SignInButton } from "./sign-in-button";
 
 export const dynamic = "force-dynamic";
@@ -12,11 +14,16 @@ export default async function SignInPage({
     <main className="auth-page">
       <section className="auth-card" aria-labelledby="sign-in-heading">
         <div className="brand-lockup">
-          <span className="brand-mark" aria-hidden="true">
-            DC
-          </span>
+          <Image
+            alt=""
+            className="brand-mark"
+            height={48}
+            priority
+            src="/brand/d-ceylon-mark-navy.webp"
+            width={48}
+          />
           <span>
-            <strong>D Ceylon</strong>
+            <strong>D’Ceylon</strong>
             <small>Administration</small>
           </span>
         </div>

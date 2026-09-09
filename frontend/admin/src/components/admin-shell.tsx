@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -41,11 +42,16 @@ export function AdminShell({
     <main className="admin-frame">
       <aside className="admin-sidebar">
         <Link className="brand-lockup" href="/" aria-label="D Ceylon administration dashboard">
-          <span className="brand-mark" aria-hidden="true">
-            DC
-          </span>
+          <Image
+            alt=""
+            className="brand-mark"
+            height={48}
+            priority
+            src="/brand/d-ceylon-mark-navy.webp"
+            width={48}
+          />
           <span>
-            <strong>D Ceylon</strong>
+            <strong>D’Ceylon</strong>
             <small>Administration</small>
           </span>
         </Link>

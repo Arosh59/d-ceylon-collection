@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "./ui/container";
@@ -7,7 +8,13 @@ export function SiteFooter() {
     <footer className="bg-navy text-white">
       <Container className="grid gap-12 py-14 md:grid-cols-[1.4fr_1fr_1fr] md:py-20">
         <div>
-          <p className="font-serif text-3xl">D Ceylon Collection</p>
+          <Image
+            alt="D Ceylon Collection — Discover Ceylon. Rediscover Yourself."
+            className="h-auto w-52"
+            height={807}
+            src="/brand/d-ceylon-lockup-navy.webp"
+            width={900}
+          />
           <p className="mt-4 max-w-sm leading-7 text-white/64">
             Thoughtful Sri Lankan journeys, shaped with local perspective and space to rediscover
             what matters.

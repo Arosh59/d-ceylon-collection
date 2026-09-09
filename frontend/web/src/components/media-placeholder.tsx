@@ -39,7 +39,13 @@ export function MediaPlaceholder({ className = "", media }: MediaPlaceholderProp
       data-asset-key={media?.assetKey ?? "placeholder:unavailable"}
       role="img"
     >
-      <span aria-hidden="true">D Ceylon Collection</span>
+      <Image
+        alt=""
+        className="h-auto w-24 rounded-full opacity-85"
+        height={96}
+        src="/brand/d-ceylon-mark-navy.webp"
+        width={96}
+      />
     </div>
   );
 }

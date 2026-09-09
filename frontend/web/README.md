@@ -38,9 +38,9 @@ docker build -f frontend/web/Dockerfile -t dceylon-web .
 
 In Dokploy, set the build context to `/`, the Dockerfile to `frontend/web/Dockerfile`, and the
 container port to `3000`. Configure `API_BASE_URL`, `SITE_URL`, and `APP_ENVIRONMENT` as runtime
-variables and supply `NEXT_PUBLIC_FIREBASE_*` as image build arguments. `GOOGLE_MAPS_API_KEY` is
-optional and browser-visible; restrict it to the production site's HTTP referrers. Do not upload or
-copy an `.env` file into the image.
+variables and supply `NEXT_PUBLIC_FIREBASE_*` and `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` as image build
+arguments. The Maps key is optional and browser-visible; restrict it to the production site's HTTP
+referrers. Do not upload or copy an `.env` file into the image.
 
 When the backend Compose stack is a separate Dokploy service, set `API_BASE_URL` to its public HTTPS
 origin, such as `https://api.example.com`. Do not use `http://api:8080`, because that hostname

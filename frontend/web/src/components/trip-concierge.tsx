@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -59,7 +60,7 @@ export function TripConcierge() {
       {open ? (
         <section
           aria-label="Trip concierge"
-          className="mb-3 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-[1.6rem] border border-navy/10 bg-white shadow-[0_25px_80px_rgba(14,35,66,0.22)]"
+          className="mb-3 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-[1.6rem] border border-navy/10 bg-white shadow-[0_25px_80px_rgba(5,29,71,0.22)]"
         >
           <div className="bg-navy p-5 text-white">
             <div className="flex items-start justify-between gap-4">
@@ -69,12 +70,13 @@ export function TripConcierge() {
                 </p>
                 <h2 className="mt-2 font-serif text-2xl">Where should we begin?</h2>
               </div>
-              <span
-                aria-hidden="true"
-                className="grid size-9 place-items-center rounded-full border border-gold/60 font-serif text-lg text-gold-light"
-              >
-                D
-              </span>
+              <Image
+                alt=""
+                className="size-10 rounded-full object-cover shadow-[0_0_0_1px_rgba(215,174,87,0.45)]"
+                height={40}
+                src="/brand/d-ceylon-mark-navy.webp"
+                width={40}
+              />
             </div>
             <p className="mt-3 text-sm leading-6 text-white/65">
               A few gentle starting points for finding your kind of Sri Lanka.
@@ -137,7 +139,7 @@ export function TripConcierge() {
       <button
         aria-expanded={open}
         aria-label={open ? "Close trip concierge" : "Open trip concierge"}
-        className="ml-auto flex size-14 items-center justify-center rounded-full bg-gold text-sm font-bold text-navy shadow-[0_12px_35px_rgba(14,35,66,0.25)] transition hover:bg-gold-light sm:h-14 sm:w-auto sm:gap-3 sm:px-5"
+        className="ml-auto flex size-14 items-center justify-center rounded-full bg-gold text-sm font-bold text-navy shadow-[0_12px_35px_rgba(5,29,71,0.25)] transition hover:bg-gold-light sm:h-14 sm:w-auto sm:gap-3 sm:px-5"
         onClick={() => setOpen((isOpen) => !isOpen)}
         type="button"
       >

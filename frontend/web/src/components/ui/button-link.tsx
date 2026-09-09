@@ -8,7 +8,7 @@ interface ButtonLinkProps {
 }
 
 const variants = {
-  primary: "bg-gold text-navy shadow-[0_12px_35px_rgba(200,164,93,0.2)] hover:bg-gold-light",
+  primary: "bg-gold text-navy shadow-[0_12px_35px_rgba(215,174,87,0.22)] hover:bg-gold-light",
   secondary: "border border-white/35 text-white hover:border-gold hover:text-gold-light",
   text: "text-navy underline decoration-gold decoration-1 underline-offset-8 hover:text-gold-dark",
 } as const;

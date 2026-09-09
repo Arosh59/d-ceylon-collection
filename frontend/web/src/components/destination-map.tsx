@@ -576,7 +576,7 @@ function markerIcon(
   hovered: boolean,
 ): google.maps.Symbol {
   return {
-    fillColor: active ? "#C8A45D" : hovered ? "#17365D" : "#0E2342",
+    fillColor: active ? "#D7AE57" : hovered ? "#0C3769" : "#051D47",
     fillOpacity: 1,
     path: maps.SymbolPath.CIRCLE,
     scale: active ? 11 : hovered ? 10 : 8,

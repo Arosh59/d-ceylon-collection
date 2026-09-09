@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #10243f;
-  --color-gold: #bd9853;
-  --color-canvas: #f5f6f8;
+  --color-navy: #051d47;
+  --color-gold: #d7ae57;
+  --color-canvas: #f7f5ef;
 }
 
 :root {
-  --navy: #10243f;
-  --navy-deep: #09182b;
-  --gold: #bd9853;
-  --canvas: #f5f6f8;
-  --border: rgba(16, 36, 63, 0.11);
-  --muted: #64748b;
+  --navy: #051d47;
+  --navy-deep: #02132f;
+  --gold: #d7ae57;
+  --canvas: #f7f5ef;
+  --border: rgba(5, 29, 71, 0.12);
+  --muted: #5f6d80;
 }
 
 * {
@@ -27,7 +27,7 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at 75% 0%, rgba(189, 152, 83, 0.08), transparent 28rem), var(--canvas);
+    radial-gradient(circle at 75% 0%, rgba(215, 174, 87, 0.1), transparent 28rem), var(--canvas);
   color: var(--navy);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -101,16 +101,14 @@ select {
 }
 
 .brand-mark {
-  display: grid;
-  width: 2.6rem;
-  height: 2.6rem;
-  place-items: center;
-  border: 1px solid rgba(189, 152, 83, 0.65);
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  border: 1px solid rgba(215, 174, 87, 0.38);
   border-radius: 0.75rem;
-  color: #dfc789;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
+  object-fit: cover;
+  box-shadow: 0 8px 24px rgba(2, 19, 47, 0.2);
 }
 
 .admin-navigation {
@@ -151,8 +149,8 @@ select {
 }
 
 .navigation-link.active {
-  background: rgba(189, 152, 83, 0.16);
-  color: #f4dfac;
+  background: rgba(215, 174, 87, 0.17);
+  color: #f5dda1;
   font-weight: 700;
 }
 
@@ -367,7 +365,7 @@ select {
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.88);
   padding: 1.1rem;
-  box-shadow: 0 8px 24px rgba(16, 36, 63, 0.035);
+  box-shadow: 0 8px 24px rgba(5, 29, 71, 0.04);
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease,
@@ -376,8 +374,8 @@ select {
 
 .stat-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(189, 152, 83, 0.8);
-  box-shadow: 0 14px 30px rgba(16, 36, 63, 0.08);
+  border-color: rgba(215, 174, 87, 0.8);
+  box-shadow: 0 14px 30px rgba(5, 29, 71, 0.09);
 }
 
 .stat-card-topline {
@@ -427,7 +425,7 @@ select {
   border: 1px solid var(--border);
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 8px 24px rgba(16, 36, 63, 0.035);
+  box-shadow: 0 8px 24px rgba(5, 29, 71, 0.04);
 }
 
 .panel {
@@ -548,7 +546,7 @@ select {
   background: linear-gradient(145deg, var(--navy), var(--navy-deep));
   padding: 1.4rem;
   color: white;
-  box-shadow: 0 14px 30px rgba(9, 24, 43, 0.16);
+  box-shadow: 0 14px 30px rgba(2, 19, 47, 0.18);
 }
 
 .quick-action {
@@ -609,8 +607,8 @@ select {
   place-items: center;
   padding: 1.5rem;
   background:
-    linear-gradient(rgba(9, 24, 43, 0.94), rgba(9, 24, 43, 0.98)),
-    radial-gradient(circle at top right, rgba(189, 152, 83, 0.35), transparent 28rem);
+    linear-gradient(rgba(2, 19, 47, 0.94), rgba(2, 19, 47, 0.98)),
+    radial-gradient(circle at top right, rgba(215, 174, 87, 0.36), transparent 28rem);
 }
 
 .auth-card {
@@ -649,7 +647,7 @@ select {
 
 .form-control:focus {
   border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(189, 152, 83, 0.14);
+  box-shadow: 0 0 0 3px rgba(215, 174, 87, 0.16);
   outline: none;
 }
 
