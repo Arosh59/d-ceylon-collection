@@ -32,9 +32,13 @@ Configure these server-side runtime values:
 ```dotenv
 APP_ENVIRONMENT=Production
 API_BASE_URL=https://api.example.com
+PUBLIC_ADMIN_URL=https://admin.example.com
 SITE_URL=https://www.example.com
 GOOGLE_MAPS_API_KEY=
 ```
+
+`PUBLIC_ADMIN_URL` must be the HTTPS domain users open for the admin application. It prevents
+authentication redirects from using the container listener address such as `0.0.0.0:3001`.
 
 `GOOGLE_MAPS_API_KEY` is a browser key read at container runtime. Restrict it to the production
 site's HTTPS referrer and the Maps JavaScript API. Do not pass it as a Docker build argument.

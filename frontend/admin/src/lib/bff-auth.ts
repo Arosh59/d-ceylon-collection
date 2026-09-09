@@ -158,9 +158,22 @@ function sessionFailure(request: NextRequest): NextResponse {
   const returnTo = safeReturnTo(request.nextUrl.searchParams.get("returnTo"));
   if (!returnTo)
     return problem(401, "Your administrator session has expired. Please sign in again.");
-  const response = NextResponse.redirect(new URL("/auth/sign-in?reason=expired", request.url));
+  const response = NextResponse.redirect(
+    new URL("/auth/sign-in?reason=expired", publicAdminUrl(request)),
+  );
   clearAuthenticationCookies(response);
   return response;
+}
+
+function publicAdminUrl(request: NextRequest): string {
+  const configuredUrl = process.env.PUBLIC_ADMIN_URL?.trim();
+  if (configuredUrl) return configuredUrl;
+
+  const forwardedHost = request.headers.get("x-forwarded-host")?.split(",")[0]?.trim();
+  const host = forwardedHost || request.headers.get("host") || request.nextUrl.host;
+  const forwardedProto = request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim();
+  const protocol = forwardedProto || request.nextUrl.protocol.replace(":", "");
+  return `${protocol}://${host}`;
 }
 
 function safeReturnTo(value: string | null): string | null {
