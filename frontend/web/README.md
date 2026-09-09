@@ -19,7 +19,7 @@ The server requires:
 
 - `API_BASE_URL` — server-only origin of the NestJS API; and
 - `SITE_URL` — canonical public origin used by metadata, robots, and sitemap generation;
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` — browser-visible key for the destination map, restricted to
+- `GOOGLE_MAPS_API_KEY` — runtime browser-visible key for the destination map, restricted to
   approved HTTP referrers and the Maps JavaScript API;
 - `APP_ENVIRONMENT` — `Development`, `Production`, or isolated `Testing` (omitting it defaults to
   `Development`; casing is accepted);
@@ -38,8 +38,9 @@ docker build -f frontend/web/Dockerfile -t dceylon-web .
 
 In Dokploy, set the build context to `/`, the Dockerfile to `frontend/web/Dockerfile`, and the
 container port to `3000`. Configure `API_BASE_URL`, `SITE_URL`, and `APP_ENVIRONMENT` as runtime
-variables and supply `NEXT_PUBLIC_FIREBASE_*` and `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` as image build
-arguments. The Maps key is optional and browser-visible; restrict it to the production site's HTTP
+variables, supply `NEXT_PUBLIC_FIREBASE_*` as image build arguments, and set
+`GOOGLE_MAPS_API_KEY` on the running container. The Maps key is optional and browser-visible;
+restrict it to the production site's HTTP
 referrers. Do not upload or copy an `.env` file into the image.
 
 When the backend Compose stack is a separate Dokploy service, set `API_BASE_URL` to its public HTTPS

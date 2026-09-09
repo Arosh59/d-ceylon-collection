@@ -4,6 +4,23 @@ set -Eeuo pipefail
 
 script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repository_root="$(cd -- "${script_directory}/.." && pwd)"
+environment_file="${DCEYLON_ENV_FILE:-${repository_root}/.env}"
+
+if [[ -f "${environment_file}" ]]; then
+    normalized_environment_file="$(mktemp "${TMPDIR:-/tmp}/dceylon-web-env.XXXXXX")"
+    cleanup_environment() {
+        rm -f -- "${normalized_environment_file}"
+    }
+    trap cleanup_environment EXIT
+    sed 's/\r$//' "${environment_file}" > "${normalized_environment_file}"
+    set -a
+    # shellcheck disable=SC1090
+    source "${normalized_environment_file}"
+    set +a
+    cleanup_environment
+    trap - EXIT
+fi
+
 api_origin="${API_BASE_URL:-http://127.0.0.1:8080}"
 api_process=""
 

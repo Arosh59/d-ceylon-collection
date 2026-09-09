@@ -7,14 +7,14 @@ no illustrated or synthetic map fallback.
 
 ## Google Maps configuration
 
-Set `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` in the public web environment. The key is necessarily visible
+Set `GOOGLE_MAPS_API_KEY` in the public web runtime environment. The key is necessarily visible
 in the browser, so restrict it to the production and local-development HTTP referrers. Limit the key
 to the Maps JavaScript API and keep its billing, quota, and restriction settings under the
 organisation's Google Cloud account.
 
-For Docker builds, pass the value as the `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` build argument because
-Next.js embeds public variables into the browser bundle at build time. No API key is committed to
-the repository.
+The value is read by the Next.js server and passed only to the map component. This keeps Docker
+images portable between environments and avoids the build-time freezing applied to `NEXT_PUBLIC_*`
+variables. No API key is committed to the repository.
 
 The integration loads Google Maps once, uses the weekly channel, requests Sri Lanka regional data in
 English, and clusters published destinations at crowded zoom levels. It does not use Places,

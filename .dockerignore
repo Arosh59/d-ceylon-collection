@@ -11,9 +11,6 @@
 **/*.tsbuildinfo
 apps
 docs
-frontend/admin/src
-frontend/web/public
-frontend/web/src
 frontend/web/tests
 infrastructure
 scripts

@@ -6,6 +6,7 @@ export interface AuthenticatedUser {
   email?: string;
   roles: string[];
   permissions: string[];
+  mustChangePassword: boolean;
   customerId?: string;
   organisationId?: string;
   claims: Record<string, unknown>;

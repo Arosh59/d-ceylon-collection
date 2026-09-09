@@ -48,6 +48,14 @@ export default async function SignInPage({
             Your administrator session expired. Sign in again to continue.
           </p>
         ) : null}
+        {reason === "password-changed" ? (
+          <p
+            className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900"
+            role="status"
+          >
+            Your password was updated. Sign in with the new password.
+          </p>
+        ) : null}
         <SignInButton />
         <p className="mt-7 border-t border-navy/10 pt-5 text-xs leading-5 text-slate-500">
           Access is restricted to administrator accounts. Activity may be recorded for security and

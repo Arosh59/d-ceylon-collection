@@ -586,6 +586,203 @@ select {
   overflow: hidden;
 }
 
+.records-header,
+.pagination-row,
+.editor-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.records-header {
+  border-bottom: 1px solid var(--border);
+  padding: 1.2rem;
+}
+
+.records-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.records-filters input,
+.records-filters select,
+.editor-field input,
+.editor-field select,
+.editor-field textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  background: white;
+  padding: 0.75rem 0.85rem;
+  color: var(--navy);
+}
+
+.records-filters input {
+  width: min(15rem, 100%);
+}
+
+.records-filters select {
+  width: auto;
+}
+
+.pagination-row {
+  border-top: 1px solid var(--border);
+  padding: 1rem 1.2rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.pagination-row > div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.publication-badge {
+  display: inline-flex;
+  border-radius: 999px;
+  background: #f1f5f9;
+  padding: 0.35rem 0.6rem;
+  color: #475569;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.publication-published {
+  background: #e9f8ee;
+  color: #176039;
+}
+
+.publication-archived {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.table-action {
+  display: inline-block;
+  margin-left: 0.65rem;
+  color: var(--navy);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 0.25rem;
+}
+
+.editor-form {
+  display: grid;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.editor-grid-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.editor-field {
+  display: grid;
+  gap: 0.45rem;
+  color: var(--navy);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.editor-field small {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.editor-field textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.editor-field select[multiple] {
+  min-height: 7rem;
+}
+
+.editor-field input:focus,
+.editor-field select:focus,
+.editor-field textarea:focus,
+.records-filters input:focus,
+.records-filters select:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(215, 174, 87, 0.16);
+  outline: none;
+}
+
+.editor-actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  padding-top: 1.2rem;
+}
+
+.danger-button {
+  min-height: 2.8rem;
+  margin-left: auto;
+  border: 1px solid #fecaca;
+  border-radius: 0.75rem;
+  background: #fff7f7;
+  padding: 0.75rem 1.15rem;
+  color: #991b1b;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.form-error,
+.form-success {
+  border: 1px solid #fecaca;
+  border-radius: 0.75rem;
+  background: #fff1f2;
+  padding: 0.8rem 0.9rem;
+  color: #991b1b;
+  font-size: 0.82rem;
+}
+
+.form-success {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.user-access-card {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) minmax(20rem, 2fr) auto auto;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  padding: 1rem;
+}
+
+.user-access-card small {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+
+.role-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.active-toggle {
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
 .protected-panel {
   display: flex;
   align-items: flex-start;
@@ -743,6 +940,30 @@ select {
 
   .page-heading {
     font-size: 2.4rem;
+  }
+
+  .records-header,
+  .pagination-row,
+  .editor-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .records-filters,
+  .records-filters input,
+  .records-filters select,
+  .editor-grid,
+  .editor-grid-three {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .user-access-card {
+    grid-template-columns: 1fr;
+  }
+
+  .danger-button {
+    margin-left: 0;
   }
 }
 

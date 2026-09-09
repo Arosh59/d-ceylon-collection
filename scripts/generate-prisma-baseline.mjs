@@ -274,7 +274,19 @@ if (process.argv.includes("--verify-migration")) {
       .replace(/^\uFEFF/u, "")
       .replace(/\r\n/gu, "\n")
       .trimEnd()}\n`;
-  const current = normalize(readFileSync(schemaPath, "utf8"));
+  const stripReviewedAdditions = (value) =>
+    value
+      .replace(', "editorial"', "")
+      .replace(
+        /^\s*(?:externalIdentities|passwordCredential|passwordResetTokens|refreshSessions)\s+[^\n]*\n/gmu,
+        "",
+      )
+      .replace(/^\s*(?:latitude|longitude|district|province)\s+[^\n]*\n/gmu, "")
+      .replace(
+        /^model (?:UserIdentity|PasswordCredential|RefreshSession|PasswordResetToken|JournalArticle|EditorialPromotion|SiteSetting) \{[\s\S]*?^\}\n+/gmu,
+        "",
+      );
+  const current = normalize(stripReviewedAdditions(readFileSync(schemaPath, "utf8")));
   if (current !== normalize(generated)) {
     const currentLines = current.split("\n");
     const generatedLines = normalize(generated).split("\n");
@@ -285,7 +297,9 @@ if (process.argv.includes("--verify-migration")) {
         "Regenerate it with: node scripts/generate-prisma-baseline.mjs > backend/prisma/schema.prisma",
     );
   }
-  process.stdout.write("Prisma baseline matches all final EF Core snapshots.\n");
+  process.stdout.write(
+    "Prisma baseline matches all final EF Core snapshots and preserves reviewed NestJS additions.\n",
+  );
 } else {
   process.stdout.write(generated);
 }

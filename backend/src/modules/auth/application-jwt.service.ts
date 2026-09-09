@@ -23,6 +23,7 @@ export class ApplicationJwtService {
       email: identity.email,
       roles: identity.roles,
       permissions: identity.permissions,
+      must_change_password: identity.mustChangePassword,
       sid: sessionId,
       ...(identity.customerId ? { customer_id: identity.customerId } : {}),
       ...(identity.organisationId ? { organisation_id: identity.organisationId } : {}),

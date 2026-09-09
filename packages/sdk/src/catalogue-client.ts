@@ -94,14 +94,28 @@ export function createCatalogueClient(options: CatalogueClientOptions): Catalogu
       }
     }
 
-    const response = await request(url, {
-      cache: "no-store",
-      headers: {
-        Accept: "application/json",
-        ...(options.correlationId ? { "X-Correlation-ID": options.correlationId } : {}),
-      },
-      signal: AbortSignal.timeout(5_000),
-    });
+    let response: Response;
+
+    try {
+      response = await request(url, {
+        cache: "no-store",
+        headers: {
+          Accept: "application/json",
+          ...(options.correlationId ? { "X-Correlation-ID": options.correlationId } : {}),
+        },
+        signal: AbortSignal.timeout(5_000),
+      });
+    } catch (error) {
+      if (error instanceof ApiRequestError) throw error;
+
+      throw new ApiRequestError(
+        isTimeoutError(error)
+          ? "The catalogue API did not respond in time."
+          : "The catalogue API could not be reached.",
+        503,
+        options.correlationId,
+      );
+    }
 
     if (!response.ok) {
       const problem = await readProblemDetails(response);
@@ -154,6 +168,13 @@ export function createCatalogueClient(options: CatalogueClientOptions): Catalogu
     getTags: (query = {}) =>
       get<GetTagsV1Responses[200]>("/api/v1/catalogue/tags", pagination(query)),
   };
+}
+
+function isTimeoutError(error: unknown): boolean {
+  return (
+    error instanceof DOMException &&
+    (error.name === "AbortError" || error.name === "TimeoutError")
+  );
 }
 
 function normalizeBaseUrl(value: string): URL {

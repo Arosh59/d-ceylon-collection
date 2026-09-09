@@ -4,27 +4,24 @@ import Link from "next/link";
 
 import { ContactGuideButton } from "@/components/contact-guide-button";
 import { Container } from "@/components/ui/container";
+import { getContactContent } from "@/lib/site-content";
 
 export const metadata: Metadata = {
   title: "Contact Us",
   description: "Start a conversation about a thoughtful journey through Sri Lanka.",
 };
 
-const contactEmail = "hello@dceyloncollection.com";
+export const dynamic = "force-dynamic";
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const contact = await getContactContent();
   return (
     <main id="main-content">
       <section className="page-hero">
         <Container>
-          <p className="eyebrow text-gold-light">Contact D Ceylon</p>
-          <h1 className="mt-5 max-w-4xl text-5xl text-white sm:text-7xl">
-            Tell us what you’re hoping to find.
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">
-            A place, a feeling, or a first question is enough. We’ll help you find a considered way
-            into Sri Lanka.
-          </p>
+          <p className="eyebrow text-gold-light">{contact.eyebrow}</p>
+          <h1 className="mt-5 max-w-4xl text-5xl text-white sm:text-7xl">{contact.heading}</h1>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-white/72">{contact.description}</p>
         </Container>
       </section>
 
@@ -44,13 +41,13 @@ export default function ContactPage() {
           <div className="mt-8 grid gap-4">
             <a
               className="group flex items-center justify-between rounded-2xl border border-navy/10 p-5 transition hover:border-gold hover:bg-gold/8"
-              href={`mailto:${contactEmail}`}
+              href={`mailto:${contact.email}`}
             >
               <span>
                 <span className="block text-xs font-semibold tracking-[0.16em] text-gold-dark uppercase">
                   Email us
                 </span>
-                <span className="mt-2 block text-lg font-semibold text-navy">{contactEmail}</span>
+                <span className="mt-2 block text-lg font-semibold text-navy">{contact.email}</span>
               </span>
               <span
                 aria-hidden="true"
@@ -59,13 +56,22 @@ export default function ContactPage() {
                 ↗
               </span>
             </a>
+            {contact.phone ? (
+              <a
+                className="rounded-2xl border border-navy/10 p-5 transition hover:border-gold hover:bg-gold/8"
+                href={`tel:${contact.phone}`}
+              >
+                <span className="block text-xs font-semibold tracking-[0.16em] text-gold-dark uppercase">
+                  Call us
+                </span>
+                <span className="mt-2 block text-lg font-semibold text-navy">{contact.phone}</span>
+              </a>
+            ) : null}
             <div className="rounded-2xl bg-mist p-5">
               <p className="text-xs font-semibold tracking-[0.16em] text-gold-dark uppercase">
                 A gentle promise
               </p>
-              <p className="mt-3 leading-7 text-ink-muted">
-                We’ll reply with a human point of view, not a packed itinerary or a hard sell.
-              </p>
+              <p className="mt-3 leading-7 text-ink-muted">{contact.promise}</p>
             </div>
           </div>
           <Link

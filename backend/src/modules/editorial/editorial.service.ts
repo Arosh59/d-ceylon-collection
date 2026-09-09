@@ -76,6 +76,21 @@ export class EditorialService {
       imageUrl: item.image ?? null,
     }));
   }
+
+  public async contact(): Promise<Record<string, unknown>> {
+    const setting = await this.database.siteSetting.findUnique({ where: { key: "contact" } });
+    return (
+      (setting?.value as Record<string, unknown> | undefined) ?? {
+        email: "hello@dceyloncollection.com",
+        phone: "",
+        eyebrow: "Contact D Ceylon",
+        heading: "Tell us what you’re hoping to find.",
+        description:
+          "A place, a feeling, or a first question is enough. We’ll help you find a considered way into Sri Lanka.",
+        promise: "We’ll reply with a human point of view, not a packed itinerary or a hard sell.",
+      }
+    );
+  }
 }
 
 function summary(item: EditorialArticle): Record<string, unknown> {

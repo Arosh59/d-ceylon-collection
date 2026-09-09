@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { EditorialApiError } from "@dceylon/sdk";
@@ -39,6 +40,9 @@ export default async function JournalArticlePage({
   }
 
   if (!article) notFound();
+  const heroImage = article.heroImageUrl?.startsWith("/images/")
+    ? article.heroImageUrl
+    : null;
 
   return (
     <main id="main-content">
@@ -48,6 +52,18 @@ export default async function JournalArticlePage({
           <h1 className="mt-4 text-5xl text-navy sm:text-7xl">{article.title}</h1>
           {article.summary ? (
             <p className="mt-6 text-xl text-ink-muted">{article.summary}</p>
+          ) : null}
+          {heroImage ? (
+            <div className="relative mt-10 aspect-[4/3] overflow-hidden rounded-3xl bg-mist shadow-soft">
+              <Image
+                alt={`View from ${article.title}`}
+                className="object-cover"
+                fill
+                priority
+                sizes="(min-width: 768px) 48rem, 100vw"
+                src={heroImage}
+              />
+            </div>
           ) : null}
           <div className="mt-10 whitespace-pre-wrap leading-8 text-ink-muted">
             {article.content}

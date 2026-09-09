@@ -16,12 +16,13 @@ credentials. When running the backend workspace directly, copy `.env.example` to
 set `DATABASE_URL` explicitly. The API now verifies database configuration and connectivity before
 it reports a successful startup.
 
-NestJS owns password, Google token exchange, application JWT, refresh-session, role, permission,
-and ownership checks. Copy the JWT, Firebase Admin, SMTP, and reset URL settings from `.env.example`;
+NestJS owns password, Google token exchange, application JWT, refresh-session, role, permission, and
+ownership checks. Copy the JWT, Firebase Admin, SMTP, and reset URL settings from `.env.example`;
 see `docs/authentication.md` for Firebase setup and the controlled administrator bootstrap.
 
 The canonical OpenAPI document is `packages/sdk/openapi/v1.json`. On startup NestJS verifies that
-all 68 paths and 90 operations are implemented before serving that document at `/openapi/v1.json`.
+every committed operation is implemented, merges newly generated operations, and serves the result
+at `/openapi/v1.json`.
 
 Prisma maps all 55 legacy tables and the NestJS-owned editorial tables. The full baseline migration
 can initialize an empty database; on an existing database, record it with

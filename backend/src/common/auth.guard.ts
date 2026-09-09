@@ -12,7 +12,7 @@ import { jwtVerify, type JWTPayload } from "jose";
 import { SecurityAuditService } from "../database/security-audit.service";
 import { ApplicationJwtService } from "../modules/auth/application-jwt.service";
 import { AuthService } from "../modules/auth/auth.service";
-import { IS_PUBLIC, REQUIRED_ROLES } from "./auth.decorators";
+import { ALLOW_PASSWORD_CHANGE_REQUIRED, IS_PUBLIC, REQUIRED_ROLES } from "./auth.decorators";
 import type { AuthenticatedRequest, AuthenticatedUser } from "./auth.types";
 
 @Injectable()
@@ -56,6 +56,15 @@ export class AuthGuard implements CanActivate {
     const user = await this.currentUser(payload);
     request.user = user;
 
+    const allowPasswordChangeRequired = this.reflector.getAllAndOverride<boolean>(
+      ALLOW_PASSWORD_CHANGE_REQUIRED,
+      [context.getHandler(), context.getClass()],
+    );
+    if (user.mustChangePassword && !allowPasswordChangeRequired) {
+      await this.recordAuthentication(request, "password-change-required", user.subject);
+      throw new ForbiddenException("The temporary password must be replaced before continuing.");
+    }
+
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(REQUIRED_ROLES, [
       context.getHandler(),
       context.getClass(),
@@ -96,6 +105,7 @@ export class AuthGuard implements CanActivate {
       displayName: identity.displayName,
       roles: identity.roles,
       permissions: identity.permissions,
+      mustChangePassword: identity.mustChangePassword,
       claims: payload as Record<string, unknown>,
       ...(identity.email ? { email: identity.email } : {}),
       ...(identity.customerId ? { customerId: identity.customerId } : {}),
@@ -122,6 +132,7 @@ function userFromClaims(payload: JWTPayload): AuthenticatedUser {
     displayName: stringClaim(payload.name) ?? payload.sub!,
     roles: stringArray(payload.roles),
     permissions: stringArray(payload.permissions),
+    mustChangePassword: payload.must_change_password === true,
     claims: payload as Record<string, unknown>,
     ...(stringClaim(payload.email) ? { email: stringClaim(payload.email)! } : {}),
     ...(stringClaim(payload.customer_id) ? { customerId: stringClaim(payload.customer_id)! } : {}),

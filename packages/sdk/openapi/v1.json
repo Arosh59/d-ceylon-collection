@@ -22,16 +22,29 @@
                 "type": "object",
                 "required": ["name", "email", "password"],
                 "properties": {
-                  "name": { "type": "string", "minLength": 2, "maxLength": 100 },
-                  "email": { "type": "string", "format": "email" },
-                  "password": { "type": "string", "minLength": 8, "maxLength": 128 }
+                  "name": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 100
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 128
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Authenticated customer session tokens and identity." }
+          "200": {
+            "description": "Authenticated customer session tokens and identity."
+          }
         }
       }
     },
@@ -47,15 +60,24 @@
                 "type": "object",
                 "required": ["email", "password"],
                 "properties": {
-                  "email": { "type": "string", "format": "email" },
-                  "password": { "type": "string", "minLength": 1, "maxLength": 128 }
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Authenticated application session tokens and identity." }
+          "200": {
+            "description": "Authenticated application session tokens and identity."
+          }
         }
       }
     },
@@ -70,7 +92,12 @@
               "schema": {
                 "type": "object",
                 "required": ["idToken"],
-                "properties": { "idToken": { "type": "string", "minLength": 100 } }
+                "properties": {
+                  "idToken": {
+                    "type": "string",
+                    "minLength": 100
+                  }
+                }
               }
             }
           }
@@ -93,13 +120,20 @@
               "schema": {
                 "type": "object",
                 "required": ["refreshToken"],
-                "properties": { "refreshToken": { "type": "string", "minLength": 40 } }
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "minLength": 40
+                  }
+                }
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Rotated application session tokens and current identity." }
+          "200": {
+            "description": "Rotated application session tokens and current identity."
+          }
         }
       }
     },
@@ -114,12 +148,21 @@
               "schema": {
                 "type": "object",
                 "required": ["refreshToken"],
-                "properties": { "refreshToken": { "type": "string", "minLength": 40 } }
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "minLength": 40
+                  }
+                }
               }
             }
           }
         },
-        "responses": { "204": { "description": "Refresh session revoked." } }
+        "responses": {
+          "204": {
+            "description": "Refresh session revoked."
+          }
+        }
       }
     },
     "/api/v1/auth/forgot-password": {
@@ -133,12 +176,21 @@
               "schema": {
                 "type": "object",
                 "required": ["email"],
-                "properties": { "email": { "type": "string", "format": "email" } }
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                }
               }
             }
           }
         },
-        "responses": { "202": { "description": "Password recovery request accepted." } }
+        "responses": {
+          "202": {
+            "description": "Password recovery request accepted."
+          }
+        }
       }
     },
     "/api/v1/auth/reset-password": {
@@ -153,15 +205,24 @@
                 "type": "object",
                 "required": ["token", "password"],
                 "properties": {
-                  "token": { "type": "string", "minLength": 40 },
-                  "password": { "type": "string", "minLength": 8, "maxLength": 128 }
+                  "token": {
+                    "type": "string",
+                    "minLength": 40
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "maxLength": 128
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "204": { "description": "Password changed and active refresh sessions revoked." }
+          "204": {
+            "description": "Password changed and active refresh sessions revoked."
+          }
         }
       }
     },
@@ -174,6 +235,548 @@
             "description": "Current user, roles, permissions, customer, and organisation identity."
           }
         }
+      }
+    },
+    "/api/v1/auth/change-password": {
+      "post": {
+        "operationId": "changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": ["Authentication"]
+      }
+    },
+    "/api/v1/access/me": {
+      "get": {
+        "tags": ["Identity and Access"],
+        "operationId": "GetCurrentAccessV1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentAccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/access/customer/{customerId}": {
+      "get": {
+        "tags": ["Identity and Access"],
+        "operationId": "GetCustomerPortalV1",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalAccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/access/agent/{organisationId}": {
+      "get": {
+        "tags": ["Identity and Access"],
+        "operationId": "GetAgentPortalV1",
+        "parameters": [
+          {
+            "name": "organisationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalAccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/access/staff": {
+      "get": {
+        "tags": ["Identity and Access"],
+        "operationId": "GetStaffPortalV1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalAccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/access/administrator": {
+      "get": {
+        "tags": ["Identity and Access"],
+        "operationId": "GetAdministratorPortalV1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortalAccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/administration/summary": {
+      "get": {
+        "tags": ["Administration"],
+        "summary": "Gets live administrator dashboard totals and recent audit activity.",
+        "operationId": "GetAdministrationSummaryV1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["counts", "recentActivity", "bookingStatuses", "quoteStatuses"],
+                  "properties": {
+                    "counts": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "integer",
+                        "format": "int64"
+                      }
+                    },
+                    "recentActivity": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "bookingStatuses": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdministrationStatusCount"
+                      }
+                    },
+                    "quoteStatuses": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdministrationStatusCount"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/administration/content/options": {
+      "get": {
+        "operationId": "GetAdministrationContentOptionsV1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
+      }
+    },
+    "/api/v1/administration/content/contact": {
+      "get": {
+        "operationId": "GetAdministrationContactV1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
+      },
+      "put": {
+        "operationId": "UpdateAdministrationContactV1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdministrationContactWriteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
+      }
+    },
+    "/api/v1/administration/content/{resource}": {
+      "get": {
+        "operationId": "GetAdministrationContentV1",
+        "parameters": [
+          {
+            "name": "resource",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
+      },
+      "post": {
+        "operationId": "CreateAdministrationContentV1",
+        "parameters": [
+          {
+            "name": "resource",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdministrationContentWriteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
+      }
+    },
+    "/api/v1/administration/content/{resource}/{id}": {
+      "get": {
+        "operationId": "GetAdministrationContentRecordV1",
+        "parameters": [
+          {
+            "name": "resource",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
+      },
+      "put": {
+        "operationId": "UpdateAdministrationContentV1",
+        "parameters": [
+          {
+            "name": "resource",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdministrationContentWriteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
+      },
+      "delete": {
+        "operationId": "ArchiveAdministrationContentV1",
+        "parameters": [
+          {
+            "name": "resource",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
+      }
+    },
+    "/api/v1/administration/users": {
+      "get": {
+        "operationId": "GetAdministrationUsersV1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
+      }
+    },
+    "/api/v1/administration/users/{id}": {
+      "put": {
+        "operationId": "UpdateAdministrationUserV1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdministrationUserUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "",
+        "tags": ["Administration content"]
       }
     },
     "/api/v1/catalogue/products": {
@@ -735,168 +1338,6 @@
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/access/me": {
-      "get": {
-        "tags": ["Identity and Access"],
-        "operationId": "GetCurrentAccessV1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CurrentAccessResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/access/customer/{customerId}": {
-      "get": {
-        "tags": ["Identity and Access"],
-        "operationId": "GetCustomerPortalV1",
-        "parameters": [
-          {
-            "name": "customerId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PortalAccessResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/access/agent/{organisationId}": {
-      "get": {
-        "tags": ["Identity and Access"],
-        "operationId": "GetAgentPortalV1",
-        "parameters": [
-          {
-            "name": "organisationId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PortalAccessResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/access/staff": {
-      "get": {
-        "tags": ["Identity and Access"],
-        "operationId": "GetStaffPortalV1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PortalAccessResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/access/administrator": {
-      "get": {
-        "tags": ["Identity and Access"],
-        "operationId": "GetAdministratorPortalV1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PortalAccessResponse"
                 }
               }
             }
@@ -1975,6 +2416,19 @@
             }
           }
         }
+      }
+    },
+    "/api/v1/editorial/site/contact": {
+      "get": {
+        "operationId": "GetContactContentV1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": ["Editorial"]
       }
     },
     "/api/v1/customer/travel-plans": {
@@ -4611,78 +5065,240 @@
           }
         }
       }
-    },
-    "/api/v1/administration/summary": {
-      "get": {
-        "tags": ["Administration"],
-        "summary": "Gets live administrator dashboard totals and recent audit activity.",
-        "operationId": "GetAdministrationSummaryV1",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": ["counts", "recentActivity", "bookingStatuses", "quoteStatuses"],
-                  "properties": {
-                    "counts": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "integer",
-                        "format": "int64"
-                      }
-                    },
-                    "recentActivity": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": true
-                      }
-                    },
-                    "bookingStatuses": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/AdministrationStatusCount"
-                      }
-                    },
-                    "quoteStatuses": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/AdministrationStatusCount"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
     "schemas": {
+      "RegisterRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "GoogleLoginRequest": {
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string"
+          }
+        },
+        "required": ["idToken"]
+      },
+      "RefreshRequest": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": ["refreshToken"]
+      },
+      "LogoutRequest": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "required": ["refreshToken"]
+      },
+      "ForgotPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": ["email"]
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["token", "password"]
+      },
+      "ChangePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          }
+        },
+        "required": ["currentPassword", "newPassword"]
+      },
+      "AdministrationContactWriteRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "eyebrow": {
+            "type": "string"
+          },
+          "heading": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "promise": {
+            "type": "string"
+          },
+          "concurrencyToken": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "eyebrow", "heading", "description", "promise"]
+      },
+      "AdministrationContentWriteRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "heroImage": {
+            "type": "string"
+          },
+          "assetKey": {
+            "type": "string"
+          },
+          "altText": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "heroMediaId": {
+            "type": "string"
+          },
+          "publicationState": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "productTypeId": {
+            "type": "string"
+          },
+          "startingPrice": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "durationMinutes": {
+            "type": "number"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "district": {
+            "type": "string"
+          },
+          "province": {
+            "type": "string"
+          },
+          "categoryIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "collectionIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "destinationIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mediaAssetIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "concurrencyToken": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "slug"]
+      },
+      "AdministrationUserUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "isActive": {
+            "type": "boolean"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "AdministrationStatusCount": {
         "type": "object",
         "required": ["status", "count"],
@@ -6093,30 +6709,18 @@
             ]
           },
           "latitude": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double"
           },
           "longitude": {
-            "type": [
-              "number",
-              "null"
-            ],
+            "type": ["number", "null"],
             "format": "double"
           },
           "district": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "province": {
-            "type": [
-              "string",
-              "null"
-            ]
+            "type": ["string", "null"]
           },
           "categories": {
             "type": "array",
@@ -6126,10 +6730,7 @@
           },
           "publishedProductCount": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
+            "type": ["integer", "string"],
             "format": "int32"
           }
         }
@@ -8456,6 +9057,13 @@
             "format": "date-time"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
       }
     }
   },

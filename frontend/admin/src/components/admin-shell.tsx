@@ -7,14 +7,23 @@ import { ADMIN_MODULES } from "@/lib/admin-modules";
 import { SignOutButton } from "./sign-out-button";
 
 const navigationSlugs = [
-  "products",
-  "destinations",
   "collections",
+  "destinations",
+  "experiences",
+  "accommodation",
+  "catalogue",
+  "product-types",
+  "categories",
+  "tags",
+  "media",
+  "journal",
+  "contact",
   "customers",
   "quote-requests",
   "quotes",
   "bookings",
   "tasks",
+  "users",
 ] as const;
 
 interface AdminShellProps {

@@ -98,6 +98,7 @@ export class PasswordResetService {
           userId: record.userId,
           passwordHash,
           passwordChangedAtUtc: now,
+          mustChangePassword: false,
           createdAtUtc: now,
           updatedAtUtc: now,
           concurrencyToken: randomUUID(),
@@ -105,6 +106,7 @@ export class PasswordResetService {
         update: {
           passwordHash,
           passwordChangedAtUtc: now,
+          mustChangePassword: false,
           failedLoginCount: 0,
           lockedUntilUtc: null,
           updatedAtUtc: now,

@@ -245,6 +245,7 @@ export class AuthService {
       where: { id: userId },
       include: {
         customerAccountRecords: true,
+        passwordCredential: true,
         userRoles: {
           include: {
             role: { include: { rolePermissions: { include: { permission: true } } } },
@@ -272,9 +273,44 @@ export class AuthService {
           ),
         ),
       ].sort(),
+      mustChangePassword: user.passwordCredential?.mustChangePassword ?? false,
       customerId: user.customerAccountRecords?.id ?? null,
       organisationId: organisations[0]?.organisation_id ?? null,
     };
+  }
+
+  public async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+    context: AuthenticationContext,
+  ): Promise<void> {
+    const credential = await this.database.passwordCredential.findUnique({ where: { userId } });
+    if (!credential || !(await this.passwords.verify(currentPassword, credential.passwordHash))) {
+      await this.audit.record("password-change", "denied", userId, context.correlationId);
+      throw invalidCredentials();
+    }
+    const now = new Date();
+    const passwordHash = await this.passwords.hash(newPassword);
+    await this.database.$transaction([
+      this.database.passwordCredential.update({
+        where: { userId },
+        data: {
+          passwordHash,
+          passwordChangedAtUtc: now,
+          mustChangePassword: false,
+          failedLoginCount: 0,
+          lockedUntilUtc: null,
+          updatedAtUtc: now,
+          concurrencyToken: randomUUID(),
+        },
+      }),
+      this.database.refreshSession.updateMany({
+        where: { userId, revokedAtUtc: null },
+        data: { revokedAtUtc: now },
+      }),
+    ]);
+    await this.audit.record("password-change", "succeeded", userId, context.correlationId);
   }
 
   public async assertActiveSession(userId: string, sessionId: string): Promise<void> {

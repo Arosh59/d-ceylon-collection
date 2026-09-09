@@ -8,10 +8,11 @@ import {
 } from "@nestjs/swagger";
 import type { Request } from "express";
 
-import { CurrentUser, Public } from "../../common/auth.decorators";
+import { AllowPasswordChangeRequired, CurrentUser, Public } from "../../common/auth.decorators";
 import type { AuthenticatedRequest, AuthenticatedUser } from "../../common/auth.types";
 import {
   ForgotPasswordRequest,
+  ChangePasswordRequest,
   GoogleLoginRequest,
   LoginRequest,
   LogoutRequest,
@@ -95,6 +96,7 @@ export class AuthController {
   }
 
   @Get("me")
+  @AllowPasswordChangeRequired()
   @ApiBearerAuth()
   @ApiOkResponse()
   public me(@CurrentUser() user: AuthenticatedUser): AuthenticationIdentity {
@@ -104,9 +106,27 @@ export class AuthController {
       email: user.email ?? null,
       roles: user.roles,
       permissions: user.permissions,
+      mustChangePassword: user.mustChangePassword,
       customerId: user.customerId ?? null,
       organisationId: user.organisationId ?? null,
     };
+  }
+
+  @Post("change-password")
+  @AllowPasswordChangeRequired()
+  @HttpCode(204)
+  @ApiNoContentResponse()
+  public async changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() body: ChangePasswordRequest,
+    @Req() request: Request,
+  ): Promise<void> {
+    await this.auth.changePassword(
+      user.subject,
+      body.currentPassword,
+      body.newPassword,
+      contextFor(request),
+    );
   }
 }
 

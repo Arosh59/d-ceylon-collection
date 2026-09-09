@@ -1,7 +1,9 @@
 const modules = [
   ["products", "Products", "Catalogue product governance."],
+  ["catalogue", "Explore catalogue", "Manage every journey shown in Explore."],
   ["product-types", "Product types", "Structured product taxonomy."],
   ["categories", "Categories", "Catalogue classification."],
+  ["tags", "Tags", "Search and discovery labels."],
   ["collections", "Collections", "Collection editorial configuration."],
   ["destinations", "Destinations", "Destination editorial coordination."],
   ["experiences", "Experiences", "Experience catalogue oversight."],
@@ -24,6 +26,7 @@ const modules = [
   ["assignments", "Assignments", "Operational assignment foundation."],
   ["tasks", "Operations tasks", "Booking fulfilment and operational task review."],
   ["journal", "Journal", "PostgreSQL-backed editorial content."],
+  ["contact", "Contact page", "Public contact details and messaging."],
   ["media", "Media", "Editorial media metadata."],
   ["promotions", "Promotions", "Editorial promotion management."],
   ["users", "Users", "Identity account governance."],

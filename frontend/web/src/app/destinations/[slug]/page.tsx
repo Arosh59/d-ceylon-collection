@@ -130,16 +130,16 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             }
             caption={
               slug === "colombo"
-                ? "A slow city drift reveals Colombo's lake, skyline, and evening lights."
+                ? "Colombo's lake, skyline, and evening lights."
                 : slug === "ella"
-                  ? "A slow hill-country drift reveals Ella's green valley and railway landscape."
+                  ? "Ella's green valley and railway landscape."
                   : slug === "galle"
-                    ? "A slow coastal drift reveals Galle Fort and its ocean-facing walls."
+                    ? "Galle Fort and its ocean-facing walls."
                     : slug === "kandy"
-                      ? "A calm lakeside drift reveals Kandy's water, gardens, and hill-country setting."
+                      ? "Kandy's lake, gardens, and hill-country setting."
                       : slug === "tangalle"
-                        ? "A slow shoreline drift reveals Tangalle's tropical coast."
-                        : "A slow panoramic motion reveals the Sigiriya Rock Fortress and its surrounding gardens."
+                        ? "Tangalle's tropical coast."
+                        : "Sigiriya Rock Fortress and its surrounding gardens."
             }
             imageSrc={destinationMotionImageBySlug[slug] ?? `/images/destinations/${slug}.jpg`}
             slides={destinationMotionSlidesBySlug[slug]}

@@ -13,19 +13,23 @@ export const metadata: Metadata = {
 };
 
 export default async function DestinationMapPage() {
-  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
+  // NEXT_PUBLIC_* values are frozen into a Next.js bundle at build time. Prefer an
+  // unprefixed server variable so one Docker image can be configured safely at runtime.
+  const googleMapsApiKey =
+    process.env.GOOGLE_MAPS_API_KEY?.trim() ||
+    process.env["NEXT_PUBLIC_GOOGLE_MAPS_API_KEY"]?.trim();
   const catalogue = await getCatalogueClient();
   const destinations = await catalogue.getDestinations({ pageNumber: 1, pageSize: 100 });
   const regions = destinations.items.map((destination) => ({
-    categories: destination.categories,
-    district: destination.district,
+    categories: destination.categories ?? [],
+    district: destination.district ?? null,
     id: destination.id,
     imageUrl: destinationImageUrl(destination.heroMedia?.assetKey) ?? null,
-    latitude: destination.latitude,
-    longitude: destination.longitude,
+    latitude: destination.latitude ?? null,
+    longitude: destination.longitude ?? null,
     name: destination.name,
-    productCount: Number(destination.publishedProductCount),
-    province: destination.province,
+    productCount: Number(destination.publishedProductCount ?? 0),
+    province: destination.province ?? null,
     slug: destination.slug,
     summary: destination.summary,
   }));

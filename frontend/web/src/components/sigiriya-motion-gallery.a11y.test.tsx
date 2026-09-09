@@ -16,7 +16,7 @@ describe("SigiriyaMotionGallery accessibility", () => {
     expect(results.violations).toEqual([]);
   });
 
-  it("keeps slideshow controls accessible", async () => {
+  it("keeps a multi-image source accessible when rendered without motion controls", async () => {
     const { container } = render(
       <DestinationMotionGallery
         alt="Galle Fort"

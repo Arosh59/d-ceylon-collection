@@ -4,6 +4,88 @@ export type ClientOptions = {
   baseUrl: "http://127.0.0.1:8080/" | (string & {});
 };
 
+export type RegisterRequest = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type LoginRequest = {
+  email: string;
+  password: string;
+};
+
+export type GoogleLoginRequest = {
+  idToken: string;
+};
+
+export type RefreshRequest = {
+  refreshToken: string;
+};
+
+export type LogoutRequest = {
+  refreshToken: string;
+};
+
+export type ForgotPasswordRequest = {
+  email: string;
+};
+
+export type ResetPasswordRequest = {
+  token: string;
+  password: string;
+};
+
+export type ChangePasswordRequest = {
+  currentPassword: string;
+  newPassword: string;
+};
+
+export type AdministrationContactWriteRequest = {
+  email: string;
+  phone?: string;
+  eyebrow: string;
+  heading: string;
+  description: string;
+  promise: string;
+  concurrencyToken?: string;
+};
+
+export type AdministrationContentWriteRequest = {
+  name: string;
+  slug: string;
+  summary?: string;
+  description?: string;
+  content?: string;
+  heroImage?: string;
+  assetKey?: string;
+  altText?: string;
+  width?: number;
+  height?: number;
+  heroMediaId?: string;
+  publicationState?: string;
+  status?: string;
+  productTypeId?: string;
+  startingPrice?: number;
+  currency?: string;
+  durationMinutes?: number;
+  latitude?: number;
+  longitude?: number;
+  district?: string;
+  province?: string;
+  categoryIds?: Array<string>;
+  collectionIds?: Array<string>;
+  destinationIds?: Array<string>;
+  tagIds?: Array<string>;
+  mediaAssetIds?: Array<string>;
+  concurrencyToken?: string;
+};
+
+export type AdministrationUserUpdateRequest = {
+  isActive?: boolean;
+  roles?: Array<string>;
+};
+
 export type AdministrationStatusCount = {
   status: string;
   count: number;
@@ -334,11 +416,6 @@ export type DestinationDetailResponse = {
   summary: string;
   description: string;
   heroMedia: null | MediaMetadataResponse;
-  latitude: number | null;
-  longitude: number | null;
-  district: string | null;
-  province: string | null;
-  categories: Array<NamedReferenceResponse>;
   publishedProductCount: number | string;
 };
 
@@ -348,12 +425,12 @@ export type DestinationSummaryResponse = {
   slug: string;
   summary: string;
   heroMedia: null | MediaMetadataResponse;
-  latitude: number | null;
-  longitude: number | null;
-  district: string | null;
-  province: string | null;
-  categories: Array<NamedReferenceResponse>;
-  publishedProductCount: number | string;
+  latitude?: number | null;
+  longitude?: number | null;
+  district?: string | null;
+  province?: string | null;
+  categories?: Array<NamedReferenceResponse>;
+  publishedProductCount?: number | string;
 };
 
 export type DriverResponse = {
@@ -1119,6 +1196,309 @@ export type MeResponses = {
   200: unknown;
 };
 
+export type ChangePasswordData = {
+  body: ChangePasswordRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/auth/change-password";
+};
+
+export type ChangePasswordResponses = {
+  204: void;
+};
+
+export type ChangePasswordResponse = ChangePasswordResponses[keyof ChangePasswordResponses];
+
+export type GetCurrentAccessV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/access/me";
+};
+
+export type GetCurrentAccessV1Errors = {
+  /**
+   * Unauthorized
+   */
+  401: ProblemDetails;
+};
+
+export type GetCurrentAccessV1Error = GetCurrentAccessV1Errors[keyof GetCurrentAccessV1Errors];
+
+export type GetCurrentAccessV1Responses = {
+  /**
+   * OK
+   */
+  200: CurrentAccessResponse;
+};
+
+export type GetCurrentAccessV1Response =
+  GetCurrentAccessV1Responses[keyof GetCurrentAccessV1Responses];
+
+export type GetCustomerPortalV1Data = {
+  body?: never;
+  path: {
+    customerId: string;
+  };
+  query?: never;
+  url: "/api/v1/access/customer/{customerId}";
+};
+
+export type GetCustomerPortalV1Errors = {
+  /**
+   * Unauthorized
+   */
+  401: ProblemDetails;
+  /**
+   * Forbidden
+   */
+  403: ProblemDetails;
+};
+
+export type GetCustomerPortalV1Error = GetCustomerPortalV1Errors[keyof GetCustomerPortalV1Errors];
+
+export type GetCustomerPortalV1Responses = {
+  /**
+   * OK
+   */
+  200: PortalAccessResponse;
+};
+
+export type GetCustomerPortalV1Response =
+  GetCustomerPortalV1Responses[keyof GetCustomerPortalV1Responses];
+
+export type GetAgentPortalV1Data = {
+  body?: never;
+  path: {
+    organisationId: string;
+  };
+  query?: never;
+  url: "/api/v1/access/agent/{organisationId}";
+};
+
+export type GetAgentPortalV1Errors = {
+  /**
+   * Unauthorized
+   */
+  401: ProblemDetails;
+  /**
+   * Forbidden
+   */
+  403: ProblemDetails;
+};
+
+export type GetAgentPortalV1Error = GetAgentPortalV1Errors[keyof GetAgentPortalV1Errors];
+
+export type GetAgentPortalV1Responses = {
+  /**
+   * OK
+   */
+  200: PortalAccessResponse;
+};
+
+export type GetAgentPortalV1Response = GetAgentPortalV1Responses[keyof GetAgentPortalV1Responses];
+
+export type GetStaffPortalV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/access/staff";
+};
+
+export type GetStaffPortalV1Responses = {
+  /**
+   * OK
+   */
+  200: PortalAccessResponse;
+};
+
+export type GetStaffPortalV1Response = GetStaffPortalV1Responses[keyof GetStaffPortalV1Responses];
+
+export type GetAdministratorPortalV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/access/administrator";
+};
+
+export type GetAdministratorPortalV1Responses = {
+  /**
+   * OK
+   */
+  200: PortalAccessResponse;
+};
+
+export type GetAdministratorPortalV1Response =
+  GetAdministratorPortalV1Responses[keyof GetAdministratorPortalV1Responses];
+
+export type GetAdministrationSummaryV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/administration/summary";
+};
+
+export type GetAdministrationSummaryV1Errors = {
+  /**
+   * Unauthorized
+   */
+  401: ProblemDetails;
+  /**
+   * Forbidden
+   */
+  403: ProblemDetails;
+};
+
+export type GetAdministrationSummaryV1Error =
+  GetAdministrationSummaryV1Errors[keyof GetAdministrationSummaryV1Errors];
+
+export type GetAdministrationSummaryV1Responses = {
+  /**
+   * OK
+   */
+  200: {
+    counts: {
+      [key: string]: number;
+    };
+    recentActivity: Array<{
+      [key: string]: unknown;
+    }>;
+    bookingStatuses: Array<AdministrationStatusCount>;
+    quoteStatuses: Array<AdministrationStatusCount>;
+  };
+};
+
+export type GetAdministrationSummaryV1Response =
+  GetAdministrationSummaryV1Responses[keyof GetAdministrationSummaryV1Responses];
+
+export type GetAdministrationContentOptionsV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/administration/content/options";
+};
+
+export type GetAdministrationContentOptionsV1Responses = {
+  200: unknown;
+};
+
+export type GetAdministrationContactV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/administration/content/contact";
+};
+
+export type GetAdministrationContactV1Responses = {
+  200: unknown;
+};
+
+export type UpdateAdministrationContactV1Data = {
+  body: AdministrationContactWriteRequest;
+  path?: never;
+  query?: never;
+  url: "/api/v1/administration/content/contact";
+};
+
+export type UpdateAdministrationContactV1Responses = {
+  200: unknown;
+};
+
+export type GetAdministrationContentV1Data = {
+  body?: never;
+  path: {
+    resource: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/content/{resource}";
+};
+
+export type GetAdministrationContentV1Responses = {
+  200: unknown;
+};
+
+export type CreateAdministrationContentV1Data = {
+  body: AdministrationContentWriteRequest;
+  path: {
+    resource: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/content/{resource}";
+};
+
+export type CreateAdministrationContentV1Responses = {
+  201: unknown;
+};
+
+export type ArchiveAdministrationContentV1Data = {
+  body?: never;
+  path: {
+    resource: string;
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/content/{resource}/{id}";
+};
+
+export type ArchiveAdministrationContentV1Responses = {
+  204: void;
+};
+
+export type ArchiveAdministrationContentV1Response =
+  ArchiveAdministrationContentV1Responses[keyof ArchiveAdministrationContentV1Responses];
+
+export type GetAdministrationContentRecordV1Data = {
+  body?: never;
+  path: {
+    resource: string;
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/content/{resource}/{id}";
+};
+
+export type GetAdministrationContentRecordV1Responses = {
+  200: unknown;
+};
+
+export type UpdateAdministrationContentV1Data = {
+  body: AdministrationContentWriteRequest;
+  path: {
+    resource: string;
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/content/{resource}/{id}";
+};
+
+export type UpdateAdministrationContentV1Responses = {
+  200: unknown;
+};
+
+export type GetAdministrationUsersV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/administration/users";
+};
+
+export type GetAdministrationUsersV1Responses = {
+  200: unknown;
+};
+
+export type UpdateAdministrationUserV1Data = {
+  body: AdministrationUserUpdateRequest;
+  path: {
+    id: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/users/{id}";
+};
+
+export type UpdateAdministrationUserV1Responses = {
+  200: unknown;
+};
+
 export type GetProductsV1Data = {
   body?: never;
   path?: never;
@@ -1397,128 +1777,6 @@ export type GetDestinationBySlugV1Responses = {
 
 export type GetDestinationBySlugV1Response =
   GetDestinationBySlugV1Responses[keyof GetDestinationBySlugV1Responses];
-
-export type GetCurrentAccessV1Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/access/me";
-};
-
-export type GetCurrentAccessV1Errors = {
-  /**
-   * Unauthorized
-   */
-  401: ProblemDetails;
-};
-
-export type GetCurrentAccessV1Error = GetCurrentAccessV1Errors[keyof GetCurrentAccessV1Errors];
-
-export type GetCurrentAccessV1Responses = {
-  /**
-   * OK
-   */
-  200: CurrentAccessResponse;
-};
-
-export type GetCurrentAccessV1Response =
-  GetCurrentAccessV1Responses[keyof GetCurrentAccessV1Responses];
-
-export type GetCustomerPortalV1Data = {
-  body?: never;
-  path: {
-    customerId: string;
-  };
-  query?: never;
-  url: "/api/v1/access/customer/{customerId}";
-};
-
-export type GetCustomerPortalV1Errors = {
-  /**
-   * Unauthorized
-   */
-  401: ProblemDetails;
-  /**
-   * Forbidden
-   */
-  403: ProblemDetails;
-};
-
-export type GetCustomerPortalV1Error = GetCustomerPortalV1Errors[keyof GetCustomerPortalV1Errors];
-
-export type GetCustomerPortalV1Responses = {
-  /**
-   * OK
-   */
-  200: PortalAccessResponse;
-};
-
-export type GetCustomerPortalV1Response =
-  GetCustomerPortalV1Responses[keyof GetCustomerPortalV1Responses];
-
-export type GetAgentPortalV1Data = {
-  body?: never;
-  path: {
-    organisationId: string;
-  };
-  query?: never;
-  url: "/api/v1/access/agent/{organisationId}";
-};
-
-export type GetAgentPortalV1Errors = {
-  /**
-   * Unauthorized
-   */
-  401: ProblemDetails;
-  /**
-   * Forbidden
-   */
-  403: ProblemDetails;
-};
-
-export type GetAgentPortalV1Error = GetAgentPortalV1Errors[keyof GetAgentPortalV1Errors];
-
-export type GetAgentPortalV1Responses = {
-  /**
-   * OK
-   */
-  200: PortalAccessResponse;
-};
-
-export type GetAgentPortalV1Response = GetAgentPortalV1Responses[keyof GetAgentPortalV1Responses];
-
-export type GetStaffPortalV1Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/access/staff";
-};
-
-export type GetStaffPortalV1Responses = {
-  /**
-   * OK
-   */
-  200: PortalAccessResponse;
-};
-
-export type GetStaffPortalV1Response = GetStaffPortalV1Responses[keyof GetStaffPortalV1Responses];
-
-export type GetAdministratorPortalV1Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/access/administrator";
-};
-
-export type GetAdministratorPortalV1Responses = {
-  /**
-   * OK
-   */
-  200: PortalAccessResponse;
-};
-
-export type GetAdministratorPortalV1Response =
-  GetAdministratorPortalV1Responses[keyof GetAdministratorPortalV1Responses];
 
 export type DeleteCustomerProfileV1Data = {
   body?: never;
@@ -2210,6 +2468,17 @@ export type GetPromotionsV1Responses = {
 };
 
 export type GetPromotionsV1Response = GetPromotionsV1Responses[keyof GetPromotionsV1Responses];
+
+export type GetContactContentV1Data = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: "/api/v1/editorial/site/contact";
+};
+
+export type GetContactContentV1Responses = {
+  200: unknown;
+};
 
 export type GetCustomerTravelPlansV1Data = {
   body?: never;
@@ -3730,43 +3999,3 @@ export type CreateOperationBookingResourceAssignmentV1Responses = {
 
 export type CreateOperationBookingResourceAssignmentV1Response =
   CreateOperationBookingResourceAssignmentV1Responses[keyof CreateOperationBookingResourceAssignmentV1Responses];
-
-export type GetAdministrationSummaryV1Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: "/api/v1/administration/summary";
-};
-
-export type GetAdministrationSummaryV1Errors = {
-  /**
-   * Unauthorized
-   */
-  401: ProblemDetails;
-  /**
-   * Forbidden
-   */
-  403: ProblemDetails;
-};
-
-export type GetAdministrationSummaryV1Error =
-  GetAdministrationSummaryV1Errors[keyof GetAdministrationSummaryV1Errors];
-
-export type GetAdministrationSummaryV1Responses = {
-  /**
-   * OK
-   */
-  200: {
-    counts: {
-      [key: string]: number;
-    };
-    recentActivity: Array<{
-      [key: string]: unknown;
-    }>;
-    bookingStatuses: Array<AdministrationStatusCount>;
-    quoteStatuses: Array<AdministrationStatusCount>;
-  };
-};
-
-export type GetAdministrationSummaryV1Response =
-  GetAdministrationSummaryV1Responses[keyof GetAdministrationSummaryV1Responses];

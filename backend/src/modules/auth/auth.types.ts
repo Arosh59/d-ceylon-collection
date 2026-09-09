@@ -4,6 +4,7 @@ export interface AuthenticationIdentity {
   email: string | null;
   roles: string[];
   permissions: string[];
+  mustChangePassword: boolean;
   customerId: string | null;
   organisationId: string | null;
 }

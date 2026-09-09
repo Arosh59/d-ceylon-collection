@@ -71,6 +71,7 @@ function user(role: string, customerId?: string, organisationId?: string): Authe
     displayName: `Test ${role}`,
     roles: [role],
     permissions: [],
+    mustChangePassword: false,
     claims: {},
     ...(customerId ? { customerId } : {}),
     ...(organisationId ? { organisationId } : {}),

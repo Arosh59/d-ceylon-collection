@@ -524,7 +524,7 @@ function GoogleDestinationMap({
             <p className="mt-4 leading-7 text-ink-muted">
               {apiKey
                 ? "Check the connection and Google Maps key restrictions. You can still browse every destination in the list."
-                : "Add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to the web environment. You can still browse every destination in the list."}
+                : "Add GOOGLE_MAPS_API_KEY to the web runtime environment. You can still browse every destination in the list."}
             </p>
           </div>
         </div>

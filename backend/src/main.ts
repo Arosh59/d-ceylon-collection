@@ -55,8 +55,24 @@ async function bootstrap(): Promise<void> {
       .build(),
     { operationIdFactory: (_controller, method) => method },
   );
-  const openApi = loadCanonicalOpenApi();
-  verifyImplementedOperations(openApi, generatedOpenApi);
+  const canonicalOpenApi = loadCanonicalOpenApi();
+  verifyImplementedOperations(canonicalOpenApi, generatedOpenApi);
+  const openApi = {
+    ...canonicalOpenApi,
+    paths: { ...generatedOpenApi.paths, ...canonicalOpenApi.paths },
+    components: {
+      ...canonicalOpenApi.components,
+      ...generatedOpenApi.components,
+      schemas: {
+        ...generatedOpenApi.components?.schemas,
+        ...canonicalOpenApi.components?.schemas,
+      },
+      securitySchemes: {
+        ...generatedOpenApi.components?.securitySchemes,
+        ...canonicalOpenApi.components?.securitySchemes,
+      },
+    },
+  };
   SwaggerModule.setup("openapi", app, openApi, {
     jsonDocumentUrl: "/openapi/v1.json",
     swaggerOptions: { persistAuthorization: true },

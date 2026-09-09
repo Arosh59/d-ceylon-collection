@@ -24,6 +24,8 @@ the current database roles include `administrator`.
 - `POST /api/v1/auth/logout` revokes the active refresh session.
 - `POST /api/v1/auth/forgot-password` sends a generic, non-enumerating response and SMTP email.
 - `POST /api/v1/auth/reset-password` consumes a single-use reset token and revokes active sessions.
+- `POST /api/v1/auth/change-password` replaces an authenticated password and revokes active
+  sessions.
 - `GET /api/v1/auth/me` returns current roles, permissions, customer ID, and organisation ID.
 
 Access tokens use issuer and audience `dceylon-api` by default and expire after 15 minutes. The API
@@ -57,8 +59,14 @@ npm run auth:bootstrap-admin --workspace=@dceylon/backend
 ```
 
 The command refuses ambiguous or inactive users, upserts a password credential, and assigns the
-existing `administrator` role without removing any current roles. Remove the bootstrap variables
-afterward.
+existing `administrator` role without removing any current roles. A bootstrapped administrator must
+replace the temporary password immediately after the first sign-in. Remove the bootstrap variables
+afterward and never commit a real password.
+
+Administrator accounts can manage products, product types, categories, tags, collections,
+destinations, media metadata, journal articles, contact-page content, and user roles from the admin
+application. PostgreSQL remains the source of truth, protected write requests are audited, and the
+last active administrator cannot be deactivated or stripped of the administrator role.
 
 ## Testing mode
 

@@ -74,12 +74,57 @@ model PasswordCredential {
   passwordChangedAtUtc          DateTime @map("password_changed_at_utc") @db.Timestamptz(6)
   failedLoginCount              Int @default(0) @map("failed_login_count")
   lockedUntilUtc                DateTime? @map("locked_until_utc") @db.Timestamptz(6)
+  mustChangePassword            Boolean @default(false) @map("must_change_password")
   createdAtUtc                  DateTime @map("created_at_utc") @db.Timestamptz(6)
   updatedAtUtc                  DateTime @map("updated_at_utc") @db.Timestamptz(6)
   concurrencyToken              String @map("concurrency_token") @db.Uuid
   user                          ApplicationUser @relation(fields: [userId], references: [id], onDelete: Cascade, map: "FK_password_credentials_users_user_id")
   @@map("password_credentials")
   @@schema("identity_access")
+}
+
+model JournalArticle {
+  id                            String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status                        String @default("draft") @db.VarChar(16)
+  slug                          String @unique @db.VarChar(160)
+  title                         String @db.VarChar(240)
+  summary                       String?
+  content                       String?
+  heroImage                     String? @map("hero_image") @db.VarChar(2048)
+  datePublished                 DateTime? @map("date_published") @db.Timestamptz(6)
+  createdAtUtc                  DateTime @default(now()) @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc                  DateTime @default(now()) @map("updated_at_utc") @db.Timestamptz(6)
+  concurrencyToken              String @default(dbgenerated("gen_random_uuid()")) @map("concurrency_token") @db.Uuid
+  @@index([status, datePublished], map: "ix_journal_articles_status_date_published")
+  @@map("journal_articles")
+  @@schema("editorial")
+}
+
+model EditorialPromotion {
+  id                            String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status                        String @default("draft") @db.VarChar(16)
+  sort                          Int @default(0)
+  title                         String @db.VarChar(240)
+  summary                       String?
+  callToActionLabel             String? @map("cta_label") @db.VarChar(120)
+  callToActionUrl               String? @map("cta_url") @db.VarChar(2048)
+  image                         String? @db.VarChar(2048)
+  createdAtUtc                  DateTime @default(now()) @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc                  DateTime @default(now()) @map("updated_at_utc") @db.Timestamptz(6)
+  concurrencyToken              String @default(dbgenerated("gen_random_uuid()")) @map("concurrency_token") @db.Uuid
+  @@index([status, sort, id], map: "ix_promotions_status_sort")
+  @@map("promotions")
+  @@schema("editorial")
+}
+
+model SiteSetting {
+  key                           String @id @db.VarChar(100)
+  value                         Json
+  createdAtUtc                  DateTime @default(now()) @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc                  DateTime @default(now()) @map("updated_at_utc") @db.Timestamptz(6)
+  concurrencyToken              String @default(dbgenerated("gen_random_uuid()")) @map("concurrency_token") @db.Uuid
+  @@map("site_settings")
+  @@schema("editorial")
 }
 
 model RefreshSession {

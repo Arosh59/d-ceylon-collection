@@ -4,9 +4,11 @@ import type { AuthenticatedRequest, AuthenticatedUser } from "./auth.types";
 
 export const IS_PUBLIC = "dceylon:is-public";
 export const REQUIRED_ROLES = "dceylon:required-roles";
+export const ALLOW_PASSWORD_CHANGE_REQUIRED = "dceylon:allow-password-change-required";
 
 export const Public = () => SetMetadata(IS_PUBLIC, true);
 export const Roles = (...roles: string[]) => SetMetadata(REQUIRED_ROLES, roles);
+export const AllowPasswordChangeRequired = () => SetMetadata(ALLOW_PASSWORD_CHANGE_REQUIRED, true);
 
 export const CurrentUser = createParamDecorator(
   (_data: unknown, context: ExecutionContext): AuthenticatedUser => {

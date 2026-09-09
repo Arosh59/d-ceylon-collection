@@ -32,3 +32,8 @@ export class ResetPasswordRequest {
   @ApiProperty() @IsString() @MinLength(40) public token!: string;
   @ApiProperty() @IsString() @Length(8, 128) public password!: string;
 }
+
+export class ChangePasswordRequest {
+  @ApiProperty() @IsString() @Length(1, 128) public currentPassword!: string;
+  @ApiProperty() @IsString() @Length(8, 128) public newPassword!: string;
+}

@@ -25,7 +25,10 @@ export function SignInButton() {
         setBusy(true);
         const response = await post("google", { idToken: await result.user.getIdToken() });
         if (!response.ok) throw new Error(await responseError(response));
-        window.location.assign("/");
+        const exchange = (await response.json()) as { identity?: { mustChangePassword?: boolean } };
+        window.location.assign(
+          exchange.identity?.mustChangePassword ? "/auth/change-password" : "/",
+        );
       } catch (reason) {
         if (active) setError(messageFor(reason, "Google sign-in could not be completed."));
       } finally {
@@ -45,7 +48,8 @@ export function SignInButton() {
     try {
       const response = await post("login", { email, password });
       if (!response.ok) throw new Error(await responseError(response));
-      window.location.assign("/");
+      const result = (await response.json()) as { identity?: { mustChangePassword?: boolean } };
+      window.location.assign(result.identity?.mustChangePassword ? "/auth/change-password" : "/");
     } catch (reason) {
       setError(messageFor(reason, "Sign-in is temporarily unavailable."));
     } finally {

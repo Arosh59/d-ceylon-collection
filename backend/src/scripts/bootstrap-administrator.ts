@@ -11,8 +11,11 @@ async function run(): Promise<void> {
   const email = required("BOOTSTRAP_ADMIN_EMAIL").toLowerCase();
   const password = required("BOOTSTRAP_ADMIN_PASSWORD");
   const name = process.env.BOOTSTRAP_ADMIN_NAME?.trim() || "Administrator";
-  if (password.length < 12)
-    throw new Error("BOOTSTRAP_ADMIN_PASSWORD must be at least 12 characters.");
+  const minimumLength = process.env.APP_ENVIRONMENT === "Development" ? 8 : 12;
+  if (password.length < minimumLength)
+    throw new Error(
+      `BOOTSTRAP_ADMIN_PASSWORD must be at least ${minimumLength} characters in ${process.env.APP_ENVIRONMENT ?? "this environment"}.`,
+    );
 
   const database = new PrismaClient();
   try {
@@ -59,6 +62,7 @@ async function run(): Promise<void> {
           userId,
           passwordHash,
           passwordChangedAtUtc: now,
+          mustChangePassword: true,
           createdAtUtc: now,
           updatedAtUtc: now,
           concurrencyToken: randomUUID(),
@@ -66,6 +70,7 @@ async function run(): Promise<void> {
         update: {
           passwordHash,
           passwordChangedAtUtc: now,
+          mustChangePassword: true,
           failedLoginCount: 0,
           lockedUntilUtc: null,
           updatedAtUtc: now,

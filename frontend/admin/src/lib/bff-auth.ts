@@ -6,6 +6,7 @@ export interface AdminIdentity {
   email: string | null;
   roles: string[];
   permissions: string[];
+  mustChangePassword: boolean;
   customerId: string | null;
   organisationId: string | null;
 }
@@ -25,6 +26,7 @@ const actions = new Set([
   "logout",
   "forgot-password",
   "reset-password",
+  "change-password",
 ]);
 
 export async function handleAuthenticationPost(
@@ -35,6 +37,10 @@ export async function handleAuthenticationPost(
   if (!isSameSite(request)) return problem(403, "The request origin is not allowed.");
 
   const refreshToken = request.cookies.get(cookieNames().refresh)?.value;
+  const accessToken = request.cookies.get(cookieNames().access)?.value;
+  if (action === "change-password" && !accessToken) {
+    return problem(401, "Your administrator session has expired. Please sign in again.");
+  }
   let body: unknown;
   try {
     body =
@@ -56,7 +62,7 @@ export async function handleAuthenticationPost(
 
   let backend: Response;
   try {
-    backend = await callBackend(action, body, request);
+    backend = await callBackend(action, body, request, accessToken);
   } catch {
     return problem(503, "The authentication service could not be reached. Please try again.");
   }
@@ -75,6 +81,11 @@ export async function handleAuthenticationPost(
   }
   if (action === "forgot-password") return NextResponse.json(await backend.json(), { status: 202 });
   if (action === "reset-password") return new NextResponse(null, { status: 204 });
+  if (action === "change-password") {
+    const response = new NextResponse(null, { status: 204 });
+    clearAuthenticationCookies(response);
+    return response;
+  }
 
   const exchange = (await backend.json()) as TokenExchange;
   if (!exchange.identity.roles.includes("administrator")) {
@@ -200,10 +211,18 @@ function clearAuthenticationCookies(response: NextResponse): void {
   });
 }
 
-function callBackend(action: string, body: unknown, request: NextRequest): Promise<Response> {
+function callBackend(
+  action: string,
+  body: unknown,
+  request: NextRequest,
+  accessToken?: string,
+): Promise<Response> {
   return fetch(new URL(`/api/v1/auth/${action}`, apiBaseUrl()), {
     method: "POST",
-    headers: forwardedHeaders(request),
+    headers: {
+      ...forwardedHeaders(request),
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    },
     body: JSON.stringify(body),
     cache: "no-store",
     signal: AbortSignal.timeout(10_000),

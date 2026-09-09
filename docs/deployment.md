@@ -33,7 +33,11 @@ Configure these server-side runtime values:
 APP_ENVIRONMENT=Production
 API_BASE_URL=https://api.example.com
 SITE_URL=https://www.example.com
+GOOGLE_MAPS_API_KEY=
 ```
+
+`GOOGLE_MAPS_API_KEY` is a browser key read at container runtime. Restrict it to the production
+site's HTTPS referrer and the Maps JavaScript API. Do not pass it as a Docker build argument.
 
 Configure these public Firebase values at image build time:
 
@@ -59,6 +63,10 @@ Deploy backend and migrations first, then web and admin. Validate password login
 refresh, logout, reset email, customer access, and administrator rejection/acceptance. Remove old
 legacy identity-provider variables and rotate any previously exposed session, provider, or API
 secrets.
+
+Fresh databases receive the conflict-safe published starter catalogue migration. It inserts only
+missing public slugs and asset keys; it does not replace existing editorial records. Confirm the
+catalogue verification URLs return non-empty `items` arrays before deploying the web image.
 
 Never use `prisma migrate reset` or `prisma db push` against an existing environment. Production
 also requires managed backups, TLS, image scanning, monitoring, rollback, and disaster recovery.

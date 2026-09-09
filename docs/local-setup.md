@@ -77,6 +77,14 @@ If login fails, confirm the API is healthy, the authentication migration was app
 has a password credential and the required database role. The admin UI never reads local frontend
 credentials; every login is verified by NestJS.
 
+The bootstrap password is temporary. The admin application redirects the first successful sign-in to
+`/auth/change-password`, and the API revokes all existing refresh sessions after the replacement is
+saved.
+
+The bootstrap password is temporary. The admin application redirects the first successful sign-in to
+`/auth/change-password`, and the API revokes all existing refresh sessions after the replacement is
+saved.
+
 The default origins are API `http://127.0.0.1:8080`, web `http://127.0.0.1:3000`, and admin
 `http://127.0.0.1:3001`. Editorial content is stored in the application PostgreSQL database.
 

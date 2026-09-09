@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { EmptyState } from "@/components/ui/empty-state";
@@ -48,27 +49,51 @@ export default async function JournalPage() {
           />
         ) : (
           <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {page.items.map((article) => (
-              <li
-                className="rounded-3xl border border-navy/10 bg-white p-7 shadow-soft"
-                key={article.slug}
-              >
-                <p className="eyebrow">{article.publishedAtUtc?.slice(0, 10) ?? "Journal"}</p>
-                <h2 className="mt-3 text-3xl text-navy">{article.title}</h2>
-                {article.summary ? <p className="mt-3 text-ink-muted">{article.summary}</p> : null}
-                <Link
-                  className="mt-6 inline-block font-semibold text-navy underline decoration-gold"
-                  href={`/journal/${article.slug}`}
+            {page.items.map((article) => {
+              const heroImage = localEditorialImage(article.heroImageUrl);
+              return (
+                <li
+                  className="overflow-hidden rounded-3xl border border-navy/10 bg-white shadow-soft"
+                  key={article.slug}
                 >
-                  Read story
-                </Link>
-              </li>
-            ))}
+                  {heroImage ? (
+                    <div className="relative aspect-[4/3] bg-mist">
+                      <Image
+                        alt={`View from ${article.title}`}
+                        className="object-cover"
+                        fill
+                        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                        src={heroImage}
+                      />
+                    </div>
+                  ) : null}
+                  <div className="p-7">
+                    <p className="eyebrow">
+                      {article.publishedAtUtc?.slice(0, 10) ?? "Journal"}
+                    </p>
+                    <h2 className="mt-3 text-3xl text-navy">{article.title}</h2>
+                    {article.summary ? (
+                      <p className="mt-3 text-ink-muted">{article.summary}</p>
+                    ) : null}
+                    <Link
+                      className="mt-6 inline-block font-semibold text-navy underline decoration-gold"
+                      href={`/journal/${article.slug}`}
+                    >
+                      Read story
+                    </Link>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
     </main>
   );
+}
+
+function localEditorialImage(value: string | null | undefined): string | null {
+  return value?.startsWith("/images/") ? value : null;
 }
 
 function JournalUnavailable() {

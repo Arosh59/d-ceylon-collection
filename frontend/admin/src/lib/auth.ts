@@ -35,6 +35,7 @@ export async function requireAdministrator(returnTo = "/"): Promise<Administrato
   if (!response.ok) throw new Error("The administrator identity could not be loaded.");
   const identity = (await response.json()) as AdminIdentity;
   if (!identity.roles.includes("administrator")) redirect("/auth/forbidden");
+  if (identity.mustChangePassword) redirect("/auth/change-password");
   return {
     accessToken,
     user: { name: identity.displayName, email: identity.email, roles: identity.roles },

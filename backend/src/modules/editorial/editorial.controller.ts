@@ -28,4 +28,10 @@ export class EditorialController {
   public promotions(): Promise<Record<string, unknown>[]> {
     return this.editorial.promotions();
   }
+
+  @Get("site/contact")
+  @ApiOperation({ operationId: "GetContactContentV1" })
+  public contact(): Promise<Record<string, unknown>> {
+    return this.editorial.contact();
+  }
 }
