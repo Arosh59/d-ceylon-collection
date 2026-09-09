@@ -1,7 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "node:crypto";
+import { existsSync } from "node:fs";
+import { loadEnvFile } from "node:process";
 
 import { PasswordService } from "../modules/auth/password.service";
+
+if (existsSync(".env")) loadEnvFile(".env");
 
 async function run(): Promise<void> {
   const email = required("BOOTSTRAP_ADMIN_EMAIL").toLowerCase();
