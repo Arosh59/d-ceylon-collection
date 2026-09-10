@@ -4,17 +4,20 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SignInPanel } from "./sign-in-panel";
 
+const { signInWithPopupMock } = vi.hoisted(() => ({ signInWithPopupMock: vi.fn() }));
+
 vi.mock("firebase/auth", () => ({
-  getRedirectResult: vi.fn().mockResolvedValue(null),
-  signInWithRedirect: vi.fn().mockResolvedValue(undefined),
+  signInWithPopup: signInWithPopupMock,
 }));
 vi.mock("@/lib/firebase-client", () => ({
   firebaseGoogleAuthentication: () => ({ auth: {}, provider: {} }),
-  hasFirebaseGoogleConfiguration: () => true,
 }));
 
 describe("SignInPanel", () => {
-  beforeEach(() => vi.restoreAllMocks());
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    signInWithPopupMock.mockReset();
+  });
 
   it("submits customer registration to the BFF without exposing tokens", async () => {
     const fetchMock = vi
@@ -54,6 +57,33 @@ describe("SignInPanel", () => {
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/auth/testing",
       expect.objectContaining({ method: "POST" }),
+    );
+  });
+
+  it("exchanges the Google popup ID token through the BFF", async () => {
+    signInWithPopupMock.mockResolvedValue({
+      user: { getIdToken: vi.fn().mockResolvedValue("firebase-id-token") },
+    });
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ error: "This account cannot use the customer portal." }), {
+        status: 403,
+      }),
+    );
+    const user = userEvent.setup();
+    render(<SignInPanel callbackUrl="/portal/customer" testingEnabled={false} />);
+
+    await user.click(screen.getByRole("button", { name: "Continue with Google" }));
+
+    expect(signInWithPopupMock).toHaveBeenCalledWith({}, {});
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/auth/google",
+      expect.objectContaining({
+        body: JSON.stringify({ idToken: "firebase-id-token" }),
+        method: "POST",
+      }),
+    );
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "This account cannot use the customer portal.",
     );
   });
 });

@@ -13,7 +13,7 @@ const contentSecurityPolicy = [
   "frame-ancestors 'none'",
   "img-src 'self' data: https://maps.googleapis.com https://maps.gstatic.com https://maps.google.com",
   "object-src 'none'",
-  `script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://maps.gstatic.com${developmentScriptSource}`,
+  `script-src 'self' 'unsafe-inline' https://apis.google.com https://maps.googleapis.com https://maps.gstatic.com${developmentScriptSource}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
 ].join("; ");
 

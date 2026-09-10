@@ -1,13 +1,10 @@
 "use client";
 
-import { getRedirectResult, signInWithRedirect } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import Link from "next/link";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
-import {
-  firebaseGoogleAuthentication,
-  hasFirebaseGoogleConfiguration,
-} from "@/lib/firebase-client";
+import { firebaseGoogleAuthentication } from "@/lib/firebase-client";
 
 interface SignInPanelProps {
   callbackUrl: string;
@@ -27,30 +24,6 @@ export function SignInPanel({ callbackUrl, mode = "sign-in", testingEnabled }: S
   const [persona, setPersona] = useState("customer");
   const [testKey, setTestKey] = useState("");
   const isSignUp = mode === "sign-up";
-
-  useEffect(() => {
-    let active = true;
-    async function finishGoogleRedirect() {
-      if (!hasFirebaseGoogleConfiguration()) return;
-      try {
-        const { auth } = firebaseGoogleAuthentication();
-        const result = await getRedirectResult(auth);
-        if (!result || !active) return;
-        setBusy(true);
-        const response = await post("google", { idToken: await result.user.getIdToken() });
-        if (!response.ok) throw new Error(await responseError(response));
-        window.location.assign(callbackUrl);
-      } catch (reason) {
-        if (active) setError(messageFor(reason, "Google sign-in could not be completed."));
-      } finally {
-        if (active) setBusy(false);
-      }
-    }
-    void finishGoogleRedirect();
-    return () => {
-      active = false;
-    };
-  }, [callbackUrl]);
 
   async function submitCredentials(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -80,9 +53,13 @@ export function SignInPanel({ callbackUrl, mode = "sign-in", testingEnabled }: S
     setBusy(true);
     try {
       const { auth, provider } = firebaseGoogleAuthentication();
-      await signInWithRedirect(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const response = await post("google", { idToken: await result.user.getIdToken() });
+      if (!response.ok) throw new Error(await responseError(response));
+      window.location.assign(callbackUrl);
     } catch (reason) {
-      setError(messageFor(reason, "Google sign-in is not configured on this site."));
+      setError(messageFor(reason, "Google sign-in could not be completed."));
+    } finally {
       setBusy(false);
     }
   }
