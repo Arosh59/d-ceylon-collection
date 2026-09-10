@@ -10,6 +10,12 @@ keys, concurrency tokens, ownership predicates, fixed-precision amounts, and cor
 protect the workflow. No card number, CVV, raw payment credential, charge, capture, webhook result,
 or refund operation is implemented in this phase.
 
+Product booking profiles, experience departures, room types, and nightly room inventory now provide
+real server-side availability reads. Availability does not yet create an inventory hold and is not
+connected to the accepted-quote booking transaction, so it must not be treated as a reservation.
+
 Invoice and voucher records are foundations only. They are not issued documents, vouchers, receipts,
-or proof of payment. Supplier operations, administration, live availability, bookings fulfilment,
-and payment-provider integration remain out of scope.
+or proof of payment. Atomic inventory holds, direct catalogue checkout, booking fulfilment, and
+payment-provider integration remain incomplete. Until those boundaries are implemented and
+certified, the public availability UI links signed-in customers to trip planning rather than
+claiming that a booking or payment succeeded.

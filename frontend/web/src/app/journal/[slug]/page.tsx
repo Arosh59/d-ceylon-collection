@@ -40,9 +40,7 @@ export default async function JournalArticlePage({
   }
 
   if (!article) notFound();
-  const heroImage = article.heroImageUrl?.startsWith("/images/")
-    ? article.heroImageUrl
-    : null;
+  const heroImage = article.heroImageUrl?.startsWith("/images/") ? article.heroImageUrl : null;
 
   return (
     <main id="main-content">

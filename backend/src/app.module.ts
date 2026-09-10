@@ -10,6 +10,7 @@ import { RequestLoggingMiddleware } from "./common/request-logging.middleware";
 import { DatabaseModule } from "./database/database.module";
 import { AccessModule } from "./modules/access/access.module";
 import { AdministrationModule } from "./modules/administration/administration.module";
+import { AvailabilityModule } from "./modules/availability/availability.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { BookingsModule } from "./modules/bookings/bookings.module";
 import { CatalogueModule } from "./modules/catalogue/catalogue.module";
@@ -28,6 +29,7 @@ import { validateEnvironment } from "./configuration";
     AuthModule,
     AccessModule,
     AdministrationModule,
+    AvailabilityModule,
     CatalogueModule,
     CustomersModule,
     EditorialModule,

@@ -13,9 +13,15 @@ contract at `/api/v1` and publishes that contract at `/openapi/v1.json`.
 - NestJS and PostgreSQL own editorial content through the `editorial` schema.
 - `packages/sdk/openapi/v1.json` is the reviewed public contract consumed by both Next.js hosts.
 
-The backend contains modules for access, catalogue, customers and travellers, editorial content,
-travel planning, quotes, bookings, payments, and supplier operations. Owner and organisation IDs
-come from validated claims rather than request bodies.
+The backend contains modules for access, catalogue, availability, customers and travellers,
+editorial content, travel planning, quotes, bookings, payments, and supplier operations. Owner and
+organisation IDs come from validated claims rather than request bodies.
+
+Public availability is read at `GET /api/v1/catalogue/products/{slug}/availability`. Date, party,
+occupancy, cutoff, closed-state, and every-night stay checks are enforced server-side. Administrator
+booking-profile and inventory operations are rooted at
+`GET /api/v1/administration/products/{productId}/availability`; all writes require the administrator
+role, use concurrency tokens for existing records, and emit security audit events.
 
 ## Commands
 

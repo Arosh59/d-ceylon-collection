@@ -21,6 +21,7 @@ only after its documented checks pass.
 | 13    | Administration application                             | Complete    |
 | 14    | AI gateway and isolated FastAPI skeleton               | Complete    |
 | 15    | Production hardening and release readiness             | In progress |
+| 16    | Commercial availability and direct-booking expansion   | In progress |
 
 Phase 0 is marked complete only after repository structure and documentation validation pass.
 
@@ -127,3 +128,10 @@ baseline, release checklist, security guidance, and a tested local application-d
 restore exercise are committed. It remains open for Azure/Key Vault configuration, performance
 testing against approved infrastructure, a production encrypted-backup restore exercise, payment and
 supplier certification, monitoring/on-call assignment, and formal security/privacy/release approval.
+
+Phase 16 is in progress. The repository-wide commercial audit is recorded, and the first additive
+tranche provides booking profiles, experience departures, room types, nightly room inventory,
+server-owned public availability queries, an accessible public selector, and audited administrator
+inventory management. Direct checkout remains fail-closed until atomic expiring inventory holds are
+connected to the booking lifecycle. Live capture additionally depends on an approved payment
+provider, credentials, signed webhook contract, and certification.

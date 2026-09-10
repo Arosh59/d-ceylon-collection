@@ -595,6 +595,81 @@ select {
   gap: 1rem;
 }
 
+.availability-layout {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.availability-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid #d6b768;
+  border-radius: 0.85rem;
+  background: #fffbeb;
+  padding: 1rem;
+  color: var(--navy);
+}
+
+.availability-callout p {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.availability-card {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: white;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.availability-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+
+.availability-section-header h2,
+.availability-card h3 {
+  margin: 0;
+  color: var(--navy);
+}
+
+.availability-section-header p,
+.availability-meta,
+.availability-empty {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.availability-record {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  padding: 1rem;
+}
+
+.availability-record summary {
+  color: var(--navy);
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.availability-empty {
+  padding: 1rem 0;
+}
+
 .records-header {
   border-bottom: 1px solid var(--border);
   padding: 1.2rem;
@@ -674,6 +749,24 @@ select {
   display: grid;
   gap: 1.2rem;
   margin-top: 1.5rem;
+}
+
+.availability-card .editor-form {
+  margin-top: 1rem;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--navy);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.checkbox-field input {
+  width: 1rem;
+  height: 1rem;
 }
 
 .editor-grid {
@@ -929,7 +1022,9 @@ select {
 
   .admin-header,
   .section-heading-row,
-  .breadcrumb-row {
+  .breadcrumb-row,
+  .availability-callout,
+  .availability-section-header {
     align-items: flex-start;
     flex-direction: column;
   }

@@ -576,6 +576,9 @@ model Product {
   productDestinations           ProductDestination[]
   productMedia                  ProductMedia[]
   productTags                   ProductTag[]
+  bookingProfile                ProductBookingProfile?
+  experienceSlots               ExperienceSlot[]
+  roomTypes                     RoomType[]
   @@index([name], map: "ix_products_name")
   @@index([productTypeId], map: "ix_products_product_type_id")
   @@index([publicationState], map: "ix_products_publication_state")
@@ -585,6 +588,107 @@ model Product {
   @@index([publicationState, name], map: "ix_products_publication_state_name")
   @@map("products")
   @@schema("catalogue")
+}
+
+model ProductBookingProfile {
+  productId                String   @id(map: "PK_product_booking_profiles") @map("product_id") @db.Uuid
+  bookingMode              String   @default("request") @map("booking_mode") @db.VarChar(20)
+  pricingUnit              String   @default("person") @map("pricing_unit") @db.VarChar(30)
+  timeZone                 String   @default("Asia/Colombo") @map("time_zone") @db.VarChar(80)
+  meetingPoint             String?  @map("meeting_point") @db.VarChar(500)
+  pickupAvailable          Boolean  @default(false) @map("pickup_available")
+  pickupInstructions       String?  @map("pickup_instructions") @db.VarChar(1000)
+  languages                String[] @default([]) @db.VarChar(80)
+  minimumAge               Int?     @map("minimum_age")
+  maximumGroupSize         Int?     @map("maximum_group_size")
+  accessibilityInformation String?  @map("accessibility_information") @db.VarChar(2000)
+  inclusions               String[] @default([]) @db.VarChar(500)
+  exclusions               String[] @default([]) @db.VarChar(500)
+  whatToBring              String[] @default([]) @map("what_to_bring") @db.VarChar(500)
+  importantInformation     String[] @default([]) @map("important_information") @db.VarChar(500)
+  cancellationPolicy       String?  @map("cancellation_policy") @db.VarChar(4000)
+  weatherPolicy            String?  @map("weather_policy") @db.VarChar(2000)
+  instantConfirmation      Boolean  @default(false) @map("instant_confirmation")
+  createdAtUtc             DateTime @default(now()) @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc             DateTime @default(now()) @map("updated_at_utc") @db.Timestamptz(6)
+  concurrencyToken         String   @default(dbgenerated("gen_random_uuid()")) @map("concurrency_token") @db.Uuid
+  product                  Product  @relation(fields: [productId], references: [id], onDelete: Cascade, map: "FK_product_booking_profiles_products_product_id")
+
+  @@index([bookingMode], map: "ix_product_booking_profiles_booking_mode")
+  @@map("product_booking_profiles")
+  @@schema("catalogue")
+}
+
+model ExperienceSlot {
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId            String    @map("product_id") @db.Uuid
+  startsAtUtc          DateTime  @map("starts_at_utc") @db.Timestamptz(6)
+  endsAtUtc            DateTime? @map("ends_at_utc") @db.Timestamptz(6)
+  capacity             Int
+  reservedCapacity     Int       @default(0) @map("reserved_capacity")
+  minimumParticipants  Int       @default(1) @map("minimum_participants")
+  priceOverride        Decimal?  @map("price_override") @db.Decimal(18, 2)
+  currency             String    @db.Char(3)
+  status               String    @default("open") @db.VarChar(20)
+  bookingCutoffMinutes Int       @default(0) @map("booking_cutoff_minutes")
+  createdAtUtc         DateTime  @default(now()) @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc         DateTime  @default(now()) @map("updated_at_utc") @db.Timestamptz(6)
+  concurrencyToken     String    @default(dbgenerated("gen_random_uuid()")) @map("concurrency_token") @db.Uuid
+  product              Product   @relation(fields: [productId], references: [id], onDelete: Restrict, map: "FK_experience_slots_products_product_id")
+
+  @@unique([productId, startsAtUtc], map: "ux_experience_slots_product_start")
+  @@index([productId, status, startsAtUtc], map: "ix_experience_slots_product_status_start")
+  @@map("experience_slots")
+  @@schema("bookings")
+}
+
+model RoomType {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  productId          String               @map("product_id") @db.Uuid
+  name               String               @db.VarChar(160)
+  slug               String               @db.VarChar(160)
+  description        String?              @db.VarChar(2000)
+  maximumAdults      Int                  @map("maximum_adults")
+  maximumChildren    Int                  @default(0) @map("maximum_children")
+  roomQuantity       Int                  @map("room_quantity")
+  beds               String?              @db.VarChar(300)
+  bathrooms          Int                  @default(1)
+  amenities          String[]             @default([]) @db.VarChar(160)
+  mealPlan           String?              @map("meal_plan") @db.VarChar(160)
+  basePrice          Decimal              @map("base_price") @db.Decimal(18, 2)
+  currency           String               @db.Char(3)
+  cancellationPolicy String?              @map("cancellation_policy") @db.VarChar(4000)
+  isActive           Boolean              @default(true) @map("is_active")
+  createdAtUtc       DateTime             @default(now()) @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc       DateTime             @default(now()) @map("updated_at_utc") @db.Timestamptz(6)
+  concurrencyToken   String               @default(dbgenerated("gen_random_uuid()")) @map("concurrency_token") @db.Uuid
+  product            Product              @relation(fields: [productId], references: [id], onDelete: Restrict, map: "FK_room_types_products_product_id")
+  inventory          RoomNightInventory[]
+
+  @@unique([productId, slug], map: "ux_room_types_product_slug")
+  @@index([productId, isActive, name], map: "ix_room_types_product_active_name")
+  @@map("room_types")
+  @@schema("catalogue")
+}
+
+model RoomNightInventory {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  roomTypeId        String   @map("room_type_id") @db.Uuid
+  stayDate          DateTime @map("stay_date") @db.Date
+  capacity          Int
+  reservedCapacity  Int      @default(0) @map("reserved_capacity")
+  priceOverride     Decimal? @map("price_override") @db.Decimal(18, 2)
+  minimumStayNights Int      @default(1) @map("minimum_stay_nights")
+  isClosed          Boolean  @default(false) @map("is_closed")
+  createdAtUtc      DateTime @default(now()) @map("created_at_utc") @db.Timestamptz(6)
+  updatedAtUtc      DateTime @default(now()) @map("updated_at_utc") @db.Timestamptz(6)
+  concurrencyToken  String   @default(dbgenerated("gen_random_uuid()")) @map("concurrency_token") @db.Uuid
+  roomType          RoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade, map: "FK_room_night_inventory_room_types_room_type_id")
+
+  @@unique([roomTypeId, stayDate], map: "ux_room_night_inventory_room_date")
+  @@index([stayDate, isClosed], map: "ix_room_night_inventory_date_closed")
+  @@map("room_night_inventory")
+  @@schema("bookings")
 }
 
 model ProductCategory {

@@ -62,6 +62,30 @@ describe("catalogue client", () => {
     });
   });
 
+  it("checks product availability with explicit dates and party size", async () => {
+    const request = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response(JSON.stringify({ kind: "experience", slots: [] }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      }),
+    );
+    const client = createCatalogueClient({
+      baseUrl: "https://api.example.test",
+      fetch: request,
+    });
+
+    await client.getProductAvailability("tea-estate", {
+      startDate: "2026-10-10",
+      endDate: "2026-10-10",
+      adults: 2,
+      children: 1,
+    });
+
+    expect(String(request.mock.calls[0]?.[0])).toBe(
+      "https://api.example.test/api/v1/catalogue/products/tea-estate/availability?startDate=2026-10-10&endDate=2026-10-10&adults=2&children=1",
+    );
+  });
+
   it("keeps API problem details for HTTP errors", async () => {
     const request = vi.fn<typeof fetch>().mockResolvedValue(
       new Response(

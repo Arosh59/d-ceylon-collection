@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { AdminShell } from "@/components/admin-shell";
 import { ContentEditor } from "@/components/content-editor";
 import {
@@ -31,6 +32,17 @@ export default async function EditContentPage({
       user={session.user}
     >
       <section className="records-panel p-5">
+        {managed.resource === "products" ? (
+          <div className="availability-callout">
+            <div>
+              <strong>Availability and booking details</strong>
+              <p>Manage slots, room types, nightly inventory, capacity, pricing, and policies.</p>
+            </div>
+            <Link className="secondary-button" href={`/modules/${slug}/${id}/availability`}>
+              Manage availability
+            </Link>
+          </div>
+        ) : null}
         <ContentEditor
           moduleSlug={slug}
           options={options}

@@ -68,9 +68,7 @@ export default async function JournalPage() {
                     </div>
                   ) : null}
                   <div className="p-7">
-                    <p className="eyebrow">
-                      {article.publishedAtUtc?.slice(0, 10) ?? "Journal"}
-                    </p>
+                    <p className="eyebrow">{article.publishedAtUtc?.slice(0, 10) ?? "Journal"}</p>
                     <h2 className="mt-3 text-3xl text-navy">{article.title}</h2>
                     {article.summary ? (
                       <p className="mt-3 text-ink-muted">{article.summary}</p>

@@ -4,10 +4,13 @@ import type {
   GetCollectionsV1Responses,
   GetDestinationBySlugV1Responses,
   GetDestinationsV1Responses,
+  GetProductAvailabilityV1Data,
+  GetProductAvailabilityV1Responses,
   GetProductBySlugV1Responses,
   GetProductsV1Responses,
   GetProductTypesV1Responses,
   GetTagsV1Responses,
+  ProductBookingProfileResponse,
 } from "./generated";
 
 export type CataloguePage = GetProductsV1Responses[200];
@@ -41,6 +44,16 @@ export interface CatalogueSearch extends CataloguePagination {
   sort?: "name" | "price-asc" | "price-desc" | "duration-asc" | undefined;
 }
 
+export type ProductBookingProfile = ProductBookingProfileResponse;
+
+export type AvailabilityQuery = GetProductAvailabilityV1Data["query"];
+export type ExperienceAvailability = Extract<
+  GetProductAvailabilityV1Responses[200],
+  { kind: "experience" }
+>;
+export type StayAvailability = Extract<GetProductAvailabilityV1Responses[200], { kind: "stay" }>;
+export type ProductAvailability = GetProductAvailabilityV1Responses[200];
+
 export interface CatalogueClientOptions {
   baseUrl: string;
   correlationId?: string;
@@ -54,6 +67,7 @@ export interface CatalogueClient {
   getDestination(slug: string): Promise<DestinationDetail>;
   getDestinations(query?: CataloguePagination): Promise<DestinationPage>;
   getProduct(slug: string): Promise<ProductDetail>;
+  getProductAvailability(slug: string, query: AvailabilityQuery): Promise<ProductAvailability>;
   getProducts(query?: CatalogueSearch): Promise<CataloguePage>;
   getProductTypes(query?: CataloguePagination): Promise<GetProductTypesV1Responses[200]>;
   getTags(query?: CataloguePagination): Promise<GetTagsV1Responses[200]>;
@@ -147,6 +161,17 @@ export function createCatalogueClient(options: CatalogueClientOptions): Catalogu
       get<DestinationPage>("/api/v1/catalogue/destinations", pagination(query)),
     getProduct: (slug) =>
       get<ProductDetail>(`/api/v1/catalogue/products/${encodeURIComponent(slug)}`),
+    getProductAvailability: (slug, query) =>
+      get<ProductAvailability>(
+        `/api/v1/catalogue/products/${encodeURIComponent(slug)}/availability`,
+        {
+          startDate: query.startDate,
+          endDate: query.endDate,
+          adults: query.adults,
+          children: query.children,
+          rooms: query.rooms,
+        },
+      ),
     getProducts: (query = {}) =>
       get<CataloguePage>("/api/v1/catalogue/products", {
         query: query.query,
@@ -172,8 +197,7 @@ export function createCatalogueClient(options: CatalogueClientOptions): Catalogu
 
 function isTimeoutError(error: unknown): boolean {
   return (
-    error instanceof DOMException &&
-    (error.name === "AbortError" || error.name === "TimeoutError")
+    error instanceof DOMException && (error.name === "AbortError" || error.name === "TimeoutError")
   );
 }
 

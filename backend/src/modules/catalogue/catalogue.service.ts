@@ -115,6 +115,25 @@ export class CatalogueService {
              COALESCE((SELECT json_agg(json_build_object('id', t.id, 'name', t.name, 'slug', t.slug) ORDER BY t.name)
                          FROM catalogue.product_tags px JOIN catalogue.tags t ON t.id = px.tag_id
                         WHERE px.product_id = p.id), '[]') AS tags,
+             CASE WHEN profile.product_id IS NULL THEN NULL ELSE json_build_object(
+               'bookingMode', profile.booking_mode,
+               'pricingUnit', profile.pricing_unit,
+               'timeZone', profile.time_zone,
+               'meetingPoint', profile.meeting_point,
+               'pickupAvailable', profile.pickup_available,
+               'pickupInstructions', profile.pickup_instructions,
+               'languages', profile.languages,
+               'minimumAge', profile.minimum_age,
+               'maximumGroupSize', profile.maximum_group_size,
+               'accessibilityInformation', profile.accessibility_information,
+               'inclusions', profile.inclusions,
+               'exclusions', profile.exclusions,
+               'whatToBring', profile.what_to_bring,
+               'importantInformation', profile.important_information,
+               'cancellationPolicy', profile.cancellation_policy,
+               'weatherPolicy', profile.weather_policy,
+               'instantConfirmation', profile.instant_confirmation
+             ) END AS "bookingProfile",
              COALESCE((SELECT json_agg(json_build_object('id', m.id, 'assetKey', m.asset_key,
                                                         'altText', m.alt_text, 'width', m.width, 'height', m.height)
                                        ORDER BY pm.sort_order, pm.media_asset_id)
@@ -122,6 +141,7 @@ export class CatalogueService {
                         WHERE pm.product_id = p.id), '[]') AS media
         FROM catalogue.products p
         JOIN catalogue.product_types pt ON pt.id = p.product_type_id
+        LEFT JOIN catalogue.product_booking_profiles profile ON profile.product_id = p.id
        WHERE p.slug = ${slug} AND p.publication_state = 'Published'
        LIMIT 1
     `);

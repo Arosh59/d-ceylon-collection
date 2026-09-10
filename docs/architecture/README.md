@@ -18,6 +18,7 @@ duplicate backend domain decisions.
 NestJS host
 ├── authentication and database-backed access
 ├── catalogue
+├── availability and inventory
 ├── customers and travellers
 ├── editorial
 ├── travel planning
@@ -33,6 +34,9 @@ The backend uses the existing schema and table names. Editorial content is store
 `editorial` PostgreSQL schema and served directly by NestJS. Prisma migrations are baselined against
 the existing database; startup never applies schema changes. New migrations must be reviewed and
 deployed as a separate operational step.
+
+The reviewed commercial extension map and remaining fail-closed boundaries are documented in
+[Commercial Platform Architecture Audit](commercial-platform-audit.md).
 
 ## Contract and security
 

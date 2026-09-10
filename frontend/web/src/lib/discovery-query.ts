@@ -37,9 +37,13 @@ export function catalogueQueryRecord(search: CatalogueSearch): Record<string, st
     minimumPrice: search.minimumPrice === undefined ? undefined : String(search.minimumPrice),
     maximumPrice: search.maximumPrice === undefined ? undefined : String(search.maximumPrice),
     minimumDurationMinutes:
-      search.minimumDurationMinutes === undefined ? undefined : String(search.minimumDurationMinutes),
+      search.minimumDurationMinutes === undefined
+        ? undefined
+        : String(search.minimumDurationMinutes),
     maximumDurationMinutes:
-      search.maximumDurationMinutes === undefined ? undefined : String(search.maximumDurationMinutes),
+      search.maximumDurationMinutes === undefined
+        ? undefined
+        : String(search.maximumDurationMinutes),
     sort: search.sort === "name" ? undefined : search.sort,
   };
 }

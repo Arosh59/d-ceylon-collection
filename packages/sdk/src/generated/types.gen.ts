@@ -86,6 +86,127 @@ export type AdministrationUserUpdateRequest = {
   roles?: Array<string>;
 };
 
+export type AvailabilitySearchResponse = {
+  startDate: string;
+  endDate: string;
+  adults: number;
+  children: number;
+  rooms: number;
+  dayCount: number;
+  participants?: number;
+};
+
+export type ExperienceSlotAvailabilityResponse = {
+  id: string;
+  startsAtUtc: string;
+  endsAtUtc: string | null;
+  remainingCapacity: number;
+  minimumParticipants: number;
+  price: number | null;
+  currency: string;
+  instantConfirmation: boolean;
+};
+
+export type ExperienceAvailabilityResponse = {
+  kind: "experience";
+  productId: string;
+  productSlug: string;
+  bookingMode: "instant" | "request";
+  pricingUnit: "person" | "group";
+  timeZone: string;
+  search: AvailabilitySearchResponse;
+  slots: Array<ExperienceSlotAvailabilityResponse>;
+};
+
+export type RoomTypeAvailabilityResponse = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  maximumAdults: number;
+  maximumChildren: number;
+  beds: string | null;
+  bathrooms: number;
+  amenities: Array<string>;
+  mealPlan: string | null;
+  currency: string;
+  cancellationPolicy: string | null;
+  availableUnits: number;
+  totalPrice: number;
+  minimumStayNights: number;
+};
+
+export type StayAvailabilityResponse = {
+  kind: "stay";
+  productId: string;
+  productSlug: string;
+  bookingMode: "instant" | "request";
+  pricingUnit: "night" | "room";
+  timeZone: string;
+  search: AvailabilitySearchResponse;
+  roomTypes: Array<RoomTypeAvailabilityResponse>;
+};
+
+export type BookingProfileWriteRequest = {
+  bookingMode: string;
+  pricingUnit: string;
+  timeZone: string;
+  meetingPoint?: string;
+  pickupAvailable: boolean;
+  pickupInstructions?: string;
+  languages: Array<string>;
+  minimumAge?: number;
+  maximumGroupSize?: number;
+  accessibilityInformation?: string;
+  inclusions: Array<string>;
+  exclusions: Array<string>;
+  whatToBring: Array<string>;
+  importantInformation: Array<string>;
+  cancellationPolicy?: string;
+  weatherPolicy?: string;
+  instantConfirmation: boolean;
+  concurrencyToken?: string;
+};
+
+export type ExperienceSlotWriteRequest = {
+  startsAtUtc: string;
+  endsAtUtc?: string;
+  capacity: number;
+  minimumParticipants: number;
+  priceOverride?: number;
+  currency: string;
+  status: string;
+  bookingCutoffMinutes: number;
+  concurrencyToken?: string;
+};
+
+export type RoomTypeWriteRequest = {
+  name: string;
+  slug: string;
+  description?: string;
+  maximumAdults: number;
+  maximumChildren: number;
+  roomQuantity: number;
+  beds?: string;
+  bathrooms: number;
+  amenities: Array<string>;
+  mealPlan?: string;
+  basePrice: number;
+  currency: string;
+  cancellationPolicy?: string;
+  isActive: boolean;
+  concurrencyToken?: string;
+};
+
+export type RoomInventoryWriteRequest = {
+  stayDate: string;
+  capacity: number;
+  priceOverride?: number;
+  minimumStayNights: number;
+  isClosed: boolean;
+  concurrencyToken?: string;
+};
+
 export type AdministrationStatusCount = {
   status: string;
   count: number;
@@ -737,6 +858,26 @@ export type ProblemDetails = {
   instance?: null | string;
 };
 
+export type ProductBookingProfileResponse = {
+  bookingMode: "instant" | "request";
+  pricingUnit: "person" | "group" | "night" | "room";
+  timeZone: string;
+  meetingPoint: null | string;
+  pickupAvailable: boolean;
+  pickupInstructions: null | string;
+  languages: Array<string>;
+  minimumAge: null | number;
+  maximumGroupSize: null | number;
+  accessibilityInformation: null | string;
+  inclusions: Array<string>;
+  exclusions: Array<string>;
+  whatToBring: Array<string>;
+  importantInformation: Array<string>;
+  cancellationPolicy: null | string;
+  weatherPolicy: null | string;
+  instantConfirmation: boolean;
+};
+
 export type ProductDetailResponse = {
   id: string;
   name: string;
@@ -752,6 +893,7 @@ export type ProductDetailResponse = {
   destinations: Array<NamedReferenceResponse>;
   tags: Array<NamedReferenceResponse>;
   media: Array<MediaMetadataResponse>;
+  bookingProfile: null | ProductBookingProfileResponse;
 };
 
 export type ProductSummaryResponse = {
@@ -1496,6 +1638,122 @@ export type UpdateAdministrationUserV1Data = {
 };
 
 export type UpdateAdministrationUserV1Responses = {
+  200: unknown;
+};
+
+export type GetProductAvailabilityV1Data = {
+  body?: never;
+  path: {
+    slug: string;
+  };
+  query: {
+    startDate: string;
+    endDate: string;
+    adults?: number;
+    children?: number;
+    rooms?: number;
+  };
+  url: "/api/v1/catalogue/products/{slug}/availability";
+};
+
+export type GetProductAvailabilityV1Responses = {
+  200: ExperienceAvailabilityResponse | StayAvailabilityResponse;
+};
+
+export type GetProductAvailabilityV1Response =
+  GetProductAvailabilityV1Responses[keyof GetProductAvailabilityV1Responses];
+
+export type GetAdministrationProductAvailabilityV1Data = {
+  body?: never;
+  path: {
+    productId: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/products/{productId}/availability";
+};
+
+export type GetAdministrationProductAvailabilityV1Responses = {
+  200: unknown;
+};
+
+export type SaveAdministrationProductBookingProfileV1Data = {
+  body: BookingProfileWriteRequest;
+  path: {
+    productId: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/products/{productId}/availability/profile";
+};
+
+export type SaveAdministrationProductBookingProfileV1Responses = {
+  200: unknown;
+};
+
+export type CreateAdministrationExperienceSlotV1Data = {
+  body: ExperienceSlotWriteRequest;
+  path: {
+    productId: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/products/{productId}/availability/experience-slots";
+};
+
+export type CreateAdministrationExperienceSlotV1Responses = {
+  201: unknown;
+};
+
+export type UpdateAdministrationExperienceSlotV1Data = {
+  body: ExperienceSlotWriteRequest;
+  path: {
+    productId: string;
+    slotId: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/products/{productId}/availability/experience-slots/{slotId}";
+};
+
+export type UpdateAdministrationExperienceSlotV1Responses = {
+  200: unknown;
+};
+
+export type CreateAdministrationRoomTypeV1Data = {
+  body: RoomTypeWriteRequest;
+  path: {
+    productId: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/products/{productId}/availability/room-types";
+};
+
+export type CreateAdministrationRoomTypeV1Responses = {
+  201: unknown;
+};
+
+export type UpdateAdministrationRoomTypeV1Data = {
+  body: RoomTypeWriteRequest;
+  path: {
+    productId: string;
+    roomTypeId: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/products/{productId}/availability/room-types/{roomTypeId}";
+};
+
+export type UpdateAdministrationRoomTypeV1Responses = {
+  200: unknown;
+};
+
+export type SaveAdministrationRoomInventoryV1Data = {
+  body: RoomInventoryWriteRequest;
+  path: {
+    productId: string;
+    roomTypeId: string;
+  };
+  query?: never;
+  url: "/api/v1/administration/products/{productId}/availability/room-types/{roomTypeId}/inventory";
+};
+
+export type SaveAdministrationRoomInventoryV1Responses = {
   200: unknown;
 };
 

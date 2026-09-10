@@ -278,12 +278,12 @@ if (process.argv.includes("--verify-migration")) {
     value
       .replace(', "editorial"', "")
       .replace(
-        /^\s*(?:externalIdentities|passwordCredential|passwordResetTokens|refreshSessions)\s+[^\n]*\n/gmu,
+        /^\s*(?:externalIdentities|passwordCredential|passwordResetTokens|refreshSessions|bookingProfile|experienceSlots|roomTypes)\s+[^\n]*\n/gmu,
         "",
       )
       .replace(/^\s*(?:latitude|longitude|district|province)\s+[^\n]*\n/gmu, "")
       .replace(
-        /^model (?:UserIdentity|PasswordCredential|RefreshSession|PasswordResetToken|JournalArticle|EditorialPromotion|SiteSetting) \{[\s\S]*?^\}\n+/gmu,
+        /^model (?:UserIdentity|PasswordCredential|RefreshSession|PasswordResetToken|JournalArticle|EditorialPromotion|SiteSetting|ProductBookingProfile|ExperienceSlot|RoomType|RoomNightInventory) \{[\s\S]*?^\}\n+/gmu,
         "",
       );
   const current = normalize(stripReviewedAdditions(readFileSync(schemaPath, "utf8")));

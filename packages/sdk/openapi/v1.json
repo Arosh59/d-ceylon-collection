@@ -779,6 +779,368 @@
         "tags": ["Administration content"]
       }
     },
+    "/api/v1/catalogue/products/{slug}/availability": {
+      "get": {
+        "operationId": "GetProductAvailabilityV1",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date",
+              "example": "2026-12-10",
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date",
+              "example": "2026-12-11",
+              "type": "string"
+            }
+          },
+          {
+            "name": "adults",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "maximum": 30,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "children",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 0,
+              "maximum": 20,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "name": "rooms",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "maximum": 10,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ExperienceAvailabilityResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/StayAvailabilityResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
+        "tags": ["Availability"]
+      }
+    },
+    "/api/v1/administration/products/{productId}/availability": {
+      "get": {
+        "operationId": "GetAdministrationProductAvailabilityV1",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": ["Administration availability"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/administration/products/{productId}/availability/profile": {
+      "put": {
+        "operationId": "SaveAdministrationProductBookingProfileV1",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingProfileWriteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": ["Administration availability"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/administration/products/{productId}/availability/experience-slots": {
+      "post": {
+        "operationId": "CreateAdministrationExperienceSlotV1",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperienceSlotWriteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": ["Administration availability"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/administration/products/{productId}/availability/experience-slots/{slotId}": {
+      "put": {
+        "operationId": "UpdateAdministrationExperienceSlotV1",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slotId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperienceSlotWriteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": ["Administration availability"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/administration/products/{productId}/availability/room-types": {
+      "post": {
+        "operationId": "CreateAdministrationRoomTypeV1",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoomTypeWriteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": ["Administration availability"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/administration/products/{productId}/availability/room-types/{roomTypeId}": {
+      "put": {
+        "operationId": "UpdateAdministrationRoomTypeV1",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roomTypeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoomTypeWriteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": ["Administration availability"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/administration/products/{productId}/availability/room-types/{roomTypeId}/inventory": {
+      "put": {
+        "operationId": "SaveAdministrationRoomInventoryV1",
+        "parameters": [
+          {
+            "name": "productId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roomTypeId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoomInventoryWriteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "",
+        "tags": ["Administration availability"],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/api/v1/catalogue/products": {
       "get": {
         "tags": ["Catalogue"],
@@ -5299,6 +5661,459 @@
           }
         }
       },
+      "AvailabilitySearchResponse": {
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "number"
+          },
+          "children": {
+            "type": "number"
+          },
+          "rooms": {
+            "type": "number"
+          },
+          "dayCount": {
+            "type": "number"
+          },
+          "participants": {
+            "type": "number"
+          }
+        },
+        "required": ["startDate", "endDate", "adults", "children", "rooms", "dayCount"]
+      },
+      "ExperienceSlotAvailabilityResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "startsAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endsAtUtc": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          },
+          "remainingCapacity": {
+            "type": "number"
+          },
+          "minimumParticipants": {
+            "type": "number"
+          },
+          "price": {
+            "type": ["number", "null"]
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "instantConfirmation": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "startsAtUtc",
+          "endsAtUtc",
+          "remainingCapacity",
+          "minimumParticipants",
+          "price",
+          "currency",
+          "instantConfirmation"
+        ]
+      },
+      "ExperienceAvailabilityResponse": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["experience"]
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productSlug": {
+            "type": "string"
+          },
+          "bookingMode": {
+            "type": "string",
+            "enum": ["instant", "request"]
+          },
+          "pricingUnit": {
+            "type": "string",
+            "enum": ["person", "group"]
+          },
+          "timeZone": {
+            "type": "string",
+            "example": "Asia/Colombo"
+          },
+          "search": {
+            "$ref": "#/components/schemas/AvailabilitySearchResponse"
+          },
+          "slots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExperienceSlotAvailabilityResponse"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "productId",
+          "productSlug",
+          "bookingMode",
+          "pricingUnit",
+          "timeZone",
+          "search",
+          "slots"
+        ]
+      },
+      "RoomTypeAvailabilityResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": ["string", "null"]
+          },
+          "maximumAdults": {
+            "type": "number"
+          },
+          "maximumChildren": {
+            "type": "number"
+          },
+          "beds": {
+            "type": ["string", "null"]
+          },
+          "bathrooms": {
+            "type": "number"
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mealPlan": {
+            "type": ["string", "null"]
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "cancellationPolicy": {
+            "type": ["string", "null"]
+          },
+          "availableUnits": {
+            "type": "number"
+          },
+          "totalPrice": {
+            "type": "number"
+          },
+          "minimumStayNights": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "description",
+          "maximumAdults",
+          "maximumChildren",
+          "beds",
+          "bathrooms",
+          "amenities",
+          "mealPlan",
+          "currency",
+          "cancellationPolicy",
+          "availableUnits",
+          "totalPrice",
+          "minimumStayNights"
+        ]
+      },
+      "StayAvailabilityResponse": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["stay"]
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productSlug": {
+            "type": "string"
+          },
+          "bookingMode": {
+            "type": "string",
+            "enum": ["instant", "request"]
+          },
+          "pricingUnit": {
+            "type": "string",
+            "enum": ["night", "room"]
+          },
+          "timeZone": {
+            "type": "string",
+            "example": "Asia/Colombo"
+          },
+          "search": {
+            "$ref": "#/components/schemas/AvailabilitySearchResponse"
+          },
+          "roomTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoomTypeAvailabilityResponse"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "productId",
+          "productSlug",
+          "bookingMode",
+          "pricingUnit",
+          "timeZone",
+          "search",
+          "roomTypes"
+        ]
+      },
+      "BookingProfileWriteRequest": {
+        "type": "object",
+        "properties": {
+          "bookingMode": {
+            "type": "string"
+          },
+          "pricingUnit": {
+            "type": "string"
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "meetingPoint": {
+            "type": "string"
+          },
+          "pickupAvailable": {
+            "type": "boolean"
+          },
+          "pickupInstructions": {
+            "type": "string"
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "minimumAge": {
+            "type": "number"
+          },
+          "maximumGroupSize": {
+            "type": "number"
+          },
+          "accessibilityInformation": {
+            "type": "string"
+          },
+          "inclusions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "exclusions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "whatToBring": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "importantInformation": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cancellationPolicy": {
+            "type": "string"
+          },
+          "weatherPolicy": {
+            "type": "string"
+          },
+          "instantConfirmation": {
+            "type": "boolean"
+          },
+          "concurrencyToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "bookingMode",
+          "pricingUnit",
+          "timeZone",
+          "pickupAvailable",
+          "languages",
+          "inclusions",
+          "exclusions",
+          "whatToBring",
+          "importantInformation",
+          "instantConfirmation"
+        ]
+      },
+      "ExperienceSlotWriteRequest": {
+        "type": "object",
+        "properties": {
+          "startsAtUtc": {
+            "type": "string"
+          },
+          "endsAtUtc": {
+            "type": "string"
+          },
+          "capacity": {
+            "type": "number"
+          },
+          "minimumParticipants": {
+            "type": "number"
+          },
+          "priceOverride": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "bookingCutoffMinutes": {
+            "type": "number"
+          },
+          "concurrencyToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "startsAtUtc",
+          "capacity",
+          "minimumParticipants",
+          "currency",
+          "status",
+          "bookingCutoffMinutes"
+        ]
+      },
+      "RoomTypeWriteRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "maximumAdults": {
+            "type": "number"
+          },
+          "maximumChildren": {
+            "type": "number"
+          },
+          "roomQuantity": {
+            "type": "number"
+          },
+          "beds": {
+            "type": "string"
+          },
+          "bathrooms": {
+            "type": "number"
+          },
+          "amenities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mealPlan": {
+            "type": "string"
+          },
+          "basePrice": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "cancellationPolicy": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "concurrencyToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "slug",
+          "maximumAdults",
+          "maximumChildren",
+          "roomQuantity",
+          "bathrooms",
+          "amenities",
+          "basePrice",
+          "currency",
+          "isActive"
+        ]
+      },
+      "RoomInventoryWriteRequest": {
+        "type": "object",
+        "properties": {
+          "stayDate": {
+            "type": "string"
+          },
+          "capacity": {
+            "type": "number"
+          },
+          "priceOverride": {
+            "type": "number"
+          },
+          "minimumStayNights": {
+            "type": "number"
+          },
+          "isClosed": {
+            "type": "boolean"
+          },
+          "concurrencyToken": {
+            "type": "string"
+          }
+        },
+        "required": ["stayDate", "capacity", "minimumStayNights", "isClosed"]
+      },
       "AdministrationStatusCount": {
         "type": "object",
         "required": ["status", "count"],
@@ -7764,6 +8579,98 @@
           }
         }
       },
+      "ProductBookingProfileResponse": {
+        "required": [
+          "bookingMode",
+          "pricingUnit",
+          "timeZone",
+          "meetingPoint",
+          "pickupAvailable",
+          "pickupInstructions",
+          "languages",
+          "minimumAge",
+          "maximumGroupSize",
+          "accessibilityInformation",
+          "inclusions",
+          "exclusions",
+          "whatToBring",
+          "importantInformation",
+          "cancellationPolicy",
+          "weatherPolicy",
+          "instantConfirmation"
+        ],
+        "type": "object",
+        "properties": {
+          "bookingMode": {
+            "type": "string",
+            "enum": ["instant", "request"]
+          },
+          "pricingUnit": {
+            "type": "string",
+            "enum": ["person", "group", "night", "room"]
+          },
+          "timeZone": {
+            "type": "string"
+          },
+          "meetingPoint": {
+            "type": ["null", "string"]
+          },
+          "pickupAvailable": {
+            "type": "boolean"
+          },
+          "pickupInstructions": {
+            "type": ["null", "string"]
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "minimumAge": {
+            "type": ["null", "integer"]
+          },
+          "maximumGroupSize": {
+            "type": ["null", "integer"]
+          },
+          "accessibilityInformation": {
+            "type": ["null", "string"]
+          },
+          "inclusions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "exclusions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "whatToBring": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "importantInformation": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cancellationPolicy": {
+            "type": ["null", "string"]
+          },
+          "weatherPolicy": {
+            "type": ["null", "string"]
+          },
+          "instantConfirmation": {
+            "type": "boolean"
+          }
+        }
+      },
       "ProductDetailResponse": {
         "required": [
           "id",
@@ -7779,7 +8686,8 @@
           "collections",
           "destinations",
           "tags",
-          "media"
+          "media",
+          "bookingProfile"
         ],
         "type": "object",
         "properties": {
@@ -7844,6 +8752,16 @@
             "items": {
               "$ref": "#/components/schemas/MediaMetadataResponse"
             }
+          },
+          "bookingProfile": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProductBookingProfileResponse"
+              }
+            ]
           }
         }
       },
