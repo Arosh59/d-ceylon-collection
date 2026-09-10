@@ -64,6 +64,17 @@ BOOTSTRAP_ADMIN_PASSWORD='replace-with-a-long-random-password' \
 npm run auth:bootstrap-admin --workspace=@dceylon/backend
 ```
 
+The production runtime image contains the compiled bootstrap script rather than the TypeScript
+development tooling. Run it as a one-off process inside the deployed API container, passing the
+bootstrap values only to that process:
+
+```sh
+BOOTSTRAP_ADMIN_EMAIL=admin@example.com \
+BOOTSTRAP_ADMIN_PASSWORD='replace-with-at-least-12-random-characters' \
+BOOTSTRAP_ADMIN_NAME='Administrator' \
+node backend/dist/scripts/bootstrap-administrator.js
+```
+
 The command refuses ambiguous or inactive users, upserts a password credential, and assigns the
 existing `administrator` role without removing any current roles. A bootstrapped administrator must
 replace the temporary password immediately after the first sign-in. Remove the bootstrap variables
