@@ -39,6 +39,11 @@ Create a Firebase project, enable Authentication > Sign-in method > Google, and 
 production frontend hosts under Authentication > Settings > Authorized domains. Register both web
 applications and provide their `NEXT_PUBLIC_FIREBASE_*` values at Next.js build time.
 
+The separately hosted admin application uses Firebase's popup flow. Do not replace it with
+`signInWithRedirect` unless the deployment also proxies `/__/auth/*` to the configured
+`firebaseapp.com` auth domain; modern browsers block the cross-site storage used by the unproxied
+redirect flow.
+
 Create a Firebase service account for the backend and store `FIREBASE_PROJECT_ID`,
 `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY` in the deployment secret store. Preserve private
 key newlines as escaped `\n` characters when the platform requires a single-line value. Never add

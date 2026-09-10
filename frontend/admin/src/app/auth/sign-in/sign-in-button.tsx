@@ -1,45 +1,15 @@
 "use client";
 
-import { getRedirectResult, signInWithRedirect } from "firebase/auth";
-import { useEffect, useState, type FormEvent } from "react";
+import { signInWithPopup } from "firebase/auth";
+import { useState, type FormEvent } from "react";
 
-import {
-  firebaseGoogleAuthentication,
-  hasFirebaseGoogleConfiguration,
-} from "@/lib/firebase-client";
+import { firebaseGoogleAuthentication } from "@/lib/firebase-client";
 
 export function SignInButton() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    async function completeGoogleSignIn() {
-      if (!hasFirebaseGoogleConfiguration()) return;
-      try {
-        const { auth } = firebaseGoogleAuthentication();
-        const result = await getRedirectResult(auth);
-        if (!result || !active) return;
-        setBusy(true);
-        const response = await post("google", { idToken: await result.user.getIdToken() });
-        if (!response.ok) throw new Error(await responseError(response));
-        const exchange = (await response.json()) as { identity?: { mustChangePassword?: boolean } };
-        window.location.assign(
-          exchange.identity?.mustChangePassword ? "/auth/change-password" : "/",
-        );
-      } catch (reason) {
-        if (active) setError(messageFor(reason, "Google sign-in could not be completed."));
-      } finally {
-        if (active) setBusy(false);
-      }
-    }
-    void completeGoogleSignIn();
-    return () => {
-      active = false;
-    };
-  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -62,9 +32,14 @@ export function SignInButton() {
     setError(null);
     try {
       const { auth, provider } = firebaseGoogleAuthentication();
-      await signInWithRedirect(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const response = await post("google", { idToken: await result.user.getIdToken() });
+      if (!response.ok) throw new Error(await responseError(response));
+      const exchange = (await response.json()) as { identity?: { mustChangePassword?: boolean } };
+      window.location.assign(exchange.identity?.mustChangePassword ? "/auth/change-password" : "/");
     } catch (reason) {
-      setError(messageFor(reason, "Google sign-in is not configured for this site."));
+      setError(messageFor(reason, "Google sign-in could not be completed."));
+    } finally {
       setBusy(false);
     }
   }
