@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value:
               "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; frame-src https://*.firebaseapp.com https://accounts.google.com; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://accounts.google.com; object-src 'none'; form-action 'self'; " +
-              `script-src 'self' 'unsafe-inline'${developmentScriptSource}`,
+              `script-src 'self' 'unsafe-inline' https://apis.google.com${developmentScriptSource}; style-src 'self' 'unsafe-inline'`,
           },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },
